@@ -93,8 +93,17 @@
     .round-label { color:var(--muted);font-size:13px;margin:8px 0 0; }
     .progress-bar { height:5px;background:#1a3944;border-radius:10px;overflow:hidden;margin:20px 0 17px; }
     .progress-fill { height:100%;width:0;background:linear-gradient(90deg,var(--lime),var(--blue));transition:width .2s; }
-    .controls { display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap; }
-    .controls .btn { min-width:95px; }
+    .controls { display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap; }
+    .transport-controls { margin:18px 0 4px; }
+    .transport-btn { width:44px;height:44px;display:grid;place-items:center;border:1px solid transparent;border-radius:50%;background:transparent;color:var(--text);font-size:19px;line-height:1;padding:0;transition:background .15s,color .15s,transform .15s; }
+    .transport-btn:hover { background:#ffffff12;color:var(--lime);transform:scale(1.06); }
+    .transport-btn:focus-visible { outline:2px solid var(--sky);outline-offset:3px; }
+    .transport-main { width:58px;height:58px;background:var(--lime);color:#142000;font-size:24px;box-shadow:0 0 0 5px #b6d90018; }
+    .transport-main:hover { background:#c9ed18;color:#142000; }
+    .sound-control { color:var(--muted);font-size:21px;margin-left:4px; }
+    #app.mode-play .transport-btn { width:clamp(44px,6vh,58px);height:clamp(44px,6vh,58px);font-size:22px; }
+    #app.mode-play .transport-main { width:clamp(58px,8vh,76px);height:clamp(58px,8vh,76px);font-size:28px; }
+    @media(max-width:470px) { .transport-controls { gap:6px; }.transport-btn { width:40px;height:40px; }.transport-main { width:54px;height:54px; } }
     .settings { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:22px;text-align:left; }
     label { display:block;color:var(--muted);font-size:12px;font-weight:650;margin-bottom:7px; }
     input,select { width:100%;min-width:0;background:#071920;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 11px; }
@@ -149,10 +158,12 @@
         <h2 class="current-name" id="currentName">Prepare sua aula</h2>
         <p class="round-label" id="roundLabel">Adicione os blocos e pressione iniciar</p>
         <div class="progress-bar" aria-label="Progresso da aula"><div class="progress-fill" id="overallProgress"></div></div>
-        <div class="controls">
-          <button class="btn primary" id="startBtn" type="button">▶ Iniciar</button>
-          <button class="btn" id="resetBtn" type="button">↺ Reiniciar</button>
-          <button class="btn" id="soundBtn" type="button" aria-pressed="true">🔊 Som ligado</button>
+        <div class="controls transport-controls" role="group" aria-label="Controles do cronômetro">
+          <button class="transport-btn" id="previousBtn" type="button" aria-label="Exercício anterior" title="Exercício anterior">⏮</button>
+          <button class="transport-btn transport-main" id="startBtn" type="button" aria-label="Iniciar" title="Iniciar">▶</button>
+          <button class="transport-btn" id="resetBtn" type="button" aria-label="Parar e voltar ao início" title="Parar e voltar ao início">■</button>
+          <button class="transport-btn" id="nextBtn" type="button" aria-label="Próximo exercício" title="Próximo exercício">⏭</button>
+          <button class="transport-btn sound-control" id="soundBtn" type="button" aria-label="Desligar som" title="Desligar som" aria-pressed="true">♫</button>
         </div>
         <button class="btn" id="exitTimerFullscreen" type="button">✕ Sair da tela cheia</button>
         <div class="settings">
@@ -330,7 +341,9 @@
       const doneBlocks=blocks.slice(0,blockIndex).reduce((s,b)=>s+b.duration,0)+Math.max(0,blockIndex)*settings().rest;
       const done=finished?segments:doneRounds+doneBlocks+(phase==='rest'?current?.duration||0:0)+(max-remaining);
       els.overall.style.width=(segments?Math.max(0,Math.min(100,done/segments*100)):0)+'%';
-      els.start.textContent=finished?'↻ Nova execução':running?'Ⅱ Pausar':'▶ Iniciar';
+      els.start.textContent=finished?'▶':running?'Ⅱ':'▶';
+      els.start.setAttribute('aria-label',finished?'Reiniciar aula':running?'Pausar':'Iniciar');
+      els.start.title=finished?'Reiniciar aula':running?'Pausar':'Iniciar';
       els.start.disabled=noBlocks;
       renderList();
     }
@@ -377,6 +390,23 @@
     function reset() {
       stopInterval();running=false;finished=false;phase='exercise';blockIndex=0;roundIndex=1;
       remaining=blocks[0]?.duration||intVal(els.exerciseSeconds,45,1);totalPhase=remaining;lastSecond=null;render();
+    }
+    function jumpBlock(delta) {
+      if(!blocks.length)return;
+      stopInterval();
+      finished=false;phase='exercise';
+      if(delta<0) {
+        if(blockIndex>0) blockIndex--;
+        else if(roundIndex>1){roundIndex--;blockIndex=blocks.length-1;}
+        else {blockIndex=0;roundIndex=1;}
+      } else {
+        if(blockIndex<blocks.length-1) blockIndex++;
+        else if(roundIndex<settings().rounds){roundIndex++;blockIndex=0;}
+        else {finish();return;}
+      }
+      remaining=blocks[blockIndex]?.duration||45;totalPhase=remaining;lastSecond=null;
+      if(running){startedAt=Date.now();timerId=setInterval(tick,100);}
+      render();
     }
     function moveBlock(i,delta) {
       const j=i+delta;if(j<0||j>=blocks.length)return;
@@ -455,7 +485,9 @@
     });
     $('startBtn').addEventListener('click',start);
     $('resetBtn').addEventListener('click',reset);
-    $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;els.sound.textContent=soundEnabled?'🔊 Som ligado':'🔇 Som desligado';els.sound.setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)tone();});
+    $('previousBtn').addEventListener('click',()=>jumpBlock(-1));
+    $('nextBtn').addEventListener('click',()=>jumpBlock(1));
+    $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;els.sound.textContent=soundEnabled?'♫':'♩';els.sound.setAttribute('aria-label',soundEnabled?'Desligar som':'Ligar som');els.sound.title=soundEnabled?'Desligar som':'Ligar som';els.sound.setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)tone();});
     $('fullscreenBtn').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('timerPanel').requestFullscreen();}catch(e){alert('A tela cheia não está disponível neste navegador.');}});
     $('exitTimerFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{setViewMode('script');}});
     $('groupSelectedBtn').addEventListener('click',()=>{
