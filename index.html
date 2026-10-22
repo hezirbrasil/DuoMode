@@ -26,18 +26,32 @@
     .btn.danger { color:#ffaaa6; }
     .layout { display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);gap:18px;align-items:start; }
     .mode-btn[aria-pressed="true"] { border-color:var(--lime);background:#b6d90020;color:var(--lime); }
-    #app.mode-play .layout { grid-template-columns:minmax(0,1fr); }
+    /* Play mode uses a CSS full-screen fallback so it works on iOS Safari too. */
+    #app.mode-play { position:fixed;inset:0;z-index:9999;width:100%;height:100vh;height:100dvh;max-width:none;margin:0;padding:12px clamp(10px,3vw,28px);overflow-y:auto;background:var(--bg); }
+    #app.mode-play header { display:none; }
+    #app.mode-play .layout { grid-template-columns:minmax(0,1fr);min-height:100%;gap:0; }
     #app.mode-play #scriptPanel { display:none; }
-    #app.mode-play #timerPanel { min-height:calc(100vh - 145px);display:flex;flex-direction:column;align-items:center;justify-content:center; }
-    #app.mode-play #timerPanel .clock-wrap { width:min(58vh, min(78vw,520px));margin:clamp(8px,2vh,22px) auto; }
-    #app.mode-play #timerPanel .time { font-size:clamp(64px,13vh,124px); }
-    #app.mode-play #timerPanel .current-name { font-size:clamp(24px,4vh,40px); }
+    #app.mode-play #timerPanel { width:100%;min-height:calc(100vh - 24px);min-height:calc(100dvh - 24px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(12px,3vh,28px); }
+    #app.mode-play #timerPanel .clock-wrap { width:min(48vh, min(76vw,500px));width:min(48dvh, min(76vw,500px));margin:clamp(6px,1.5vh,18px) auto;flex-shrink:0; }
+    #app.mode-play #timerPanel .time { font-size:clamp(64px,13vh,124px);font-size:clamp(64px,13dvh,124px); }
+    #app.mode-play #timerPanel .current-name { font-size:clamp(24px,4vh,40px);font-size:clamp(24px,4dvh,40px); }
     #app.mode-play #timerPanel .round-label { font-size:clamp(14px,2vh,19px); }
     #app.mode-play #timerPanel .progress-bar { width:min(760px,100%); }
     #app.mode-play #timerPanel .settings { width:min(650px,100%); }
+    #app.mode-play #timerPanel .eyebrow { margin-bottom:6px; }
+    #app.mode-play #exitTimerFullscreen { display:inline-flex; }
     #app.mode-script .layout { grid-template-columns:minmax(0,1fr); }
     #app.mode-script #timerPanel { display:none; }
-    @media(max-width:800px) { #app.mode-play #timerPanel { min-height:calc(100vh - 130px); } }
+    @media(max-width:800px) {
+      #app.mode-play #timerPanel { min-height:calc(100vh - 24px);min-height:calc(100dvh - 24px); }
+      #app.mode-play #timerPanel .settings { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    }
+    @media(max-height:620px) {
+      #app.mode-play { overflow-y:auto; }
+      #app.mode-play #timerPanel .clock-wrap { width:min(42vh, min(54vw,340px));width:min(42dvh, min(54vw,340px));margin:4px auto; }
+      #app.mode-play #timerPanel .time { font-size:clamp(52px,10vh,84px);font-size:clamp(52px,10dvh,84px); }
+      #app.mode-play #timerPanel .settings { margin-top:8px; }
+    }
 
     .panel { background:linear-gradient(160deg,rgba(16,45,56,.96),rgba(9,28,36,.97));border:1px solid var(--line);border-radius:21px;padding:clamp(16px,2.5vw,25px);box-shadow:0 18px 48px #0002; }
     .eyebrow { margin:0 0 6px;color:var(--lime);font-size:11px;font-weight:850;letter-spacing:.2em;text-transform:uppercase; }
@@ -443,7 +457,7 @@
     $('resetBtn').addEventListener('click',reset);
     $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;els.sound.textContent=soundEnabled?'🔊 Som ligado':'🔇 Som desligado';els.sound.setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)tone();});
     $('fullscreenBtn').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('timerPanel').requestFullscreen();}catch(e){alert('A tela cheia não está disponível neste navegador.');}});
-    $('exitTimerFullscreen').addEventListener('click',async()=>{if(document.fullscreenElement)await document.exitFullscreen();});
+    $('exitTimerFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{setViewMode('script');}});
     $('groupSelectedBtn').addEventListener('click',()=>{
       if(running){alert('Pause o timer antes de agrupar blocos.');return;}
       const indexes=[...selectedBlocks].filter(i=>i>=0&&i<blocks.length).sort((a,b)=>a-b);
@@ -457,7 +471,7 @@
       const indexes=[...selectedBlocks];if(!indexes.length){alert('Selecione os exercícios que deseja desagrupar.');return;}
       indexes.forEach(i=>{if(blocks[i])delete blocks[i].group;});selectedBlocks.clear();render();
     });
-    async function setViewMode(mode) {
+    function setViewMode(mode) {
       const play=mode==='play';
       $('app').classList.toggle('mode-play',play);
       $('app').classList.toggle('mode-script',!play);
@@ -465,11 +479,9 @@
       $('modeScriptBtn').setAttribute('aria-pressed',String(!play));
       if(play) {
         render();
-        try {
-          if(!document.fullscreenElement) await $('timerPanel').requestFullscreen();
-        } catch(e) { /* Some browsers require fullscreen permission or do not support it. */ }
+        window.scrollTo(0,0);
       } else if(document.fullscreenElement) {
-        try { await document.exitFullscreen(); } catch(e) {}
+        document.exitFullscreen().catch(()=>{});
       }
     }
     $('modePlayBtn').addEventListener('click',()=>setViewMode('play'));
