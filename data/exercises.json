@@ -16,7 +16,7 @@
   },
   "exercises": [
     {
-      "name": "Supino",
+      "name": "Supino com Halteres",
       "category": "peito",
       "types": [
         "fullbody"
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "name": "Crucifixo",
+      "name": "Crucifixo com Halteres",
       "category": "peito",
       "types": [
         "fullbody"
@@ -73,42 +73,42 @@
       ]
     },
     {
-      "name": "Remada unilateral E/D",
+      "name": "Remada unilateral com Halter E/D",
       "category": "costas",
       "types": [
         "fullbody"
       ]
     },
     {
-      "name": "Desenvolvimento",
+      "name": "Desenvolvimento com Halteres",
       "category": "ombros",
       "types": [
         "fullbody"
       ]
     },
     {
-      "name": "Desenvolvimento Arnold",
+      "name": "Desenvolvimento Arnold com Halteres",
       "category": "ombros",
       "types": [
         "fullbody"
       ]
     },
     {
-      "name": "Elevação Lateral",
+      "name": "Elevação Lateral com Halteres",
       "category": "ombros",
       "types": [
         "fullbody"
       ]
     },
     {
-      "name": "Elevação Lateral + Elevação Frontal",
+      "name": "Elevação Lateral + Frontal com Halteres",
       "category": "ombros",
       "types": [
         "fullbody"
       ]
     },
     {
-      "name": "Crucifixo Invertido",
+      "name": "Crucifixo Invertido com Halteres",
       "category": "ombros",
       "types": [
         "fullbody"
@@ -122,7 +122,7 @@
       ]
     },
     {
-      "name": "Recuo + Bíceps",
+      "name": "Recuo + Bíceps com Halteres",
       "category": "composto",
       "types": [
         "fullbody",
@@ -130,14 +130,14 @@
       ]
     },
     {
-      "name": "Tríceps Francês",
+      "name": "Tríceps Francês com Halter",
       "category": "tríceps",
       "types": [
         "fullbody"
       ]
     },
     {
-      "name": "Tríceps Coice E/D",
+      "name": "Tríceps Coice com Halter E/D",
       "category": "tríceps",
       "types": [
         "fullbody"
@@ -168,7 +168,7 @@
       ]
     },
     {
-      "name": "Búlgaro E/D",
+      "name": "Agachamento Búlgaro com Halteres E/D",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -232,7 +232,7 @@
       ]
     },
     {
-      "name": "Agachamento Goblet",
+      "name": "Agachamento Goblet com Halter",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -272,7 +272,7 @@
       ]
     },
     {
-      "name": "Avanço + Elevação Lateral",
+      "name": "Avanço + Elevação Lateral com Halteres",
       "category": "composto",
       "types": [
         "fullbody",
@@ -296,7 +296,7 @@
       ]
     },
     {
-      "name": "Stiff",
+      "name": "Stiff com Halteres",
       "category": "posterior",
       "types": [
         "fullbody",
@@ -304,7 +304,7 @@
       ]
     },
     {
-      "name": "Stiff unilateral E/D",
+      "name": "Stiff unilateral com Halter E/D",
       "category": "posterior",
       "types": [
         "fullbody",
@@ -312,7 +312,7 @@
       ]
     },
     {
-      "name": "Panturrilha",
+      "name": "Panturrilha com Halteres",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -320,7 +320,7 @@
       ]
     },
     {
-      "name": "Terra + Desenvolvimento",
+      "name": "Terra + Desenvolvimento com Halteres",
       "category": "composto",
       "types": [
         "fullbody",
@@ -328,7 +328,7 @@
       ]
     },
     {
-      "name": "Agachamento + Desenvolvimento",
+      "name": "Agachamento + Desenvolvimento com Halteres",
       "category": "composto",
       "types": [
         "fullbody",
@@ -336,7 +336,7 @@
       ]
     },
     {
-      "name": "Polichinelo + Desenvolvimento",
+      "name": "Polichinelo + Desenvolvimento com Halteres",
       "category": "composto",
       "types": [
         "fullbody",
