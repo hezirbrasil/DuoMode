@@ -51,45 +51,26 @@
     #app.mode-play #soundBtn { display:none !important; }
     #app.mode-play #backToScriptBtn { display:grid; position:fixed;top:12px;left:12px;z-index:10001;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);font-size:26px;place-items:center; }
     #app.mode-edit .layout { grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr); }
-    #app.mode-edit #scriptPanel { display:none; }
+    #app.mode-edit #scriptPanel { display:block; }
+    #app.mode-edit #timerPanel { display:block; }
     #app.mode-script { max-width:980px; }
     #app.mode-script header { display:none; }
-    #app.mode-script .layout { grid-template-columns:minmax(0,1fr); }
-    #app.mode-script #timerPanel { display:none; }
-    #app.mode-script #scriptPanel { display:block !important; }
+    #app.mode-script .layout { display:block;min-height:0; }
+    #app.mode-script #timerPanel { display:none !important; }
+    #app.mode-script #scriptPanel { display:block !important;width:100%; }
     #app.mode-script #scriptPanel > .section-head,
     #app.mode-script #scriptPanel > .sequence-visual,
     #app.mode-script #scriptPanel > .group-tools,
     #app.mode-script #scriptPanel > p.subtle,
     #app.mode-script #scriptPanel > div:not(.exercise-list) { display:none !important; }
-    #app.mode-script #scriptPanel .exercise-item { grid-template-columns:24px minmax(0,1fr); }
-    #app.mode-script #scriptPanel .exercise-item .block-editor { display:none !important; }
-    #app.mode-script #scriptPanel .exercise-item .item-actions { grid-column:2;grid-row:3; }
-    #app.mode-script #scriptPanel .script-back { display:inline-flex; }
-    .script-back { display:none;position:fixed;top:12px;left:12px;z-index:10002;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800; }
-    #app.mode-script #scriptPanel { display:block !important; }
-    #app.mode-script #scriptPanel .exercise-item {
-      display:grid;grid-template-columns:22px minmax(0,1fr);grid-template-rows:auto auto auto;
-      align-items:start;gap:8px 10px;padding:16px 14px;border:1px solid var(--line);
-      border-radius:14px;background:var(--panel);margin:8px 0;min-width:0;
-    }
+    #app.mode-script #scriptPanel .exercise-item { display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px 10px;padding:16px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:8px 0;min-width:0; }
     #app.mode-script #scriptPanel .exercise-item > input[type=checkbox] { grid-column:1;grid-row:1;width:16px;height:16px;margin-top:5px; }
     #app.mode-script #scriptPanel .exercise-item > .index { grid-column:1;grid-row:2;font-size:25px;font-weight:950;color:var(--lime);line-height:1.1; }
     #app.mode-script #scriptPanel .exercise-item > div:not(.block-editor):not(.item-actions) { grid-column:2;grid-row:1 / span 2;min-width:0;width:100%; }
-    #app.mode-script #scriptPanel .exercise-item .item-actions { grid-column:2;grid-row:3;display:flex;flex-wrap:wrap;gap:7px;min-width:0; }
-    #app.mode-script #scriptPanel .exercise-item .block-editor { grid-column:1/-1;min-width:0;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:10px; }
-    #app.mode-script #scriptPanel .exercise-item .block-editor select { min-width:0;width:100%;min-height:40px;font-size:13px; }
-    #app.mode-script #scriptPanel .exercise-item .block-editor input { min-width:0;width:100%; }
-    #app.mode-script #scriptPanel .exercise-item .duration-edit { grid-column:1/-1; }
-    #app.mode-script #scriptPanel .exercise-item .duration-edit input { width:64px; }
-    #app.mode-script #scriptPanel .exercise-item strong { display:inline-block;max-width:100%;overflow-wrap:anywhere;word-break:normal;white-space:normal;font-size:clamp(17px,2vw,22px);line-height:1.25; }
-    #app.mode-script #scriptPanel .exercise-item .icon-btn { width:36px;height:36px;border-radius:10px; }
-    #app.mode-script #scriptPanel .group-header { background:#b6d90012;color:var(--lime);border:1px solid var(--line);border-radius:14px 14px 0 0;padding:15px 14px;font-size:15px;letter-spacing:0;text-transform:none; }
-    #app.mode-script #scriptPanel .group-summary { color:var(--sky);font-size:14px; }
-    #app.mode-script #scriptPanel .group-header-row { margin-top:18px; }
-    #app.mode-script #scriptPanel .group-rename { border-color:var(--line);background:var(--panel2);color:var(--sky); }
-    #app.mode-script #scriptPanel .icon-btn { width:38px;height:38px;border-radius:10px;background:var(--panel2);border-color:var(--line);color:var(--text); }
-    #app.mode-script #scriptPanel .block-editor select { min-height:42px;font-size:14px;border-radius:10px;}
+    #app.mode-script #scriptPanel .exercise-item .block-editor { display:none !important; }
+    #app.mode-script #scriptPanel .exercise-item .item-actions { grid-column:2;grid-row:3;display:flex;flex-wrap:wrap;gap:7px; }
+    #app.mode-script #scriptPanel .script-back { display:inline-flex; }
+    .script-back { display:none;position:fixed;top:12px;left:12px;z-index:10002;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800; }
     @media(max-width:800px) {
       #app.mode-play #timerPanel { min-height:calc(100vh - 24px);min-height:calc(100dvh - 24px); }
       #app.mode-play #timerPanel .settings { grid-template-columns:repeat(3,minmax(0,1fr)); }
