@@ -65,6 +65,10 @@
     #app.mode-script #scriptPanel > .group-tools,
     #app.mode-script #scriptPanel > p.subtle,
     #app.mode-script #scriptPanel > div:not(.exercise-list) { display:none !important; }
+    #app.mode-script #scriptPanel #exerciseList,
+    #app.mode-edit #scriptPanel #exerciseList { display:block !important;visibility:visible !important;height:auto !important;max-height:none !important;overflow:visible !important; }
+    #app.mode-script #scriptPanel .exercise-item,
+    #app.mode-edit #scriptPanel .exercise-item { visibility:visible !important;opacity:1; }
     #app.mode-script #scriptPanel .group-header-row { display:none !important; }
     #app.mode-script #scriptPanel .exercise-item { display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto;align-items:center;gap:8px 12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);margin:7px 0;min-width:0; }
     #app.mode-script #scriptPanel .exercise-item > input[type=checkbox],
