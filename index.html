@@ -305,11 +305,12 @@
           <p class="subtle" id="bankStatus" style="margin:8px 0 0">Banco de exercícios importado do aplicativo original.</p>
         </div>
         <div class="section-head" style="margin:16px 0 8px"><h2 style="font-size:16px;margin:0">Adicionar bloco</h2><span class="subtle">Inclua um exercício na sequência</span></div>
-        <form class="add-form" id="addForm">
-          <input id="newExercise" type="text" maxlength="90" placeholder="Nome do exercício ou bloco" aria-label="Nome do exercício" required>
-          <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos" required><span>seg</span></div>
-          <button class="btn blue" type="submit">＋ Adicionar</button>
-        </form>
+        <div class="add-form" id="addForm">
+          <input id="newExercise" type="text" maxlength="90" placeholder="Digite o nome do exercício" aria-label="Nome do exercício">
+          <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos"></div>
+          <button class="btn blue" id="addExerciseBtn" type="button">＋ Adicionar exercício</button>
+        </div>
+        <p id="addExerciseStatus" role="status" aria-live="polite" class="subtle" style="margin:8px 0 12px;min-height:20px">Digite um exercício e clique em Adicionar exercício.</p>
         <div class="library-tools">
           <button class="btn primary" id="loadClass50Btn" type="button">Carregar aula de 50 min</button>
           <button class="btn" id="loadExampleBtn" type="button">Carregar exemplo</button>
@@ -748,11 +749,39 @@
       reset();
       renderList();
     });
-    $('addForm').addEventListener('submit',e=>{
-      e.preventDefault();const name=$('newExercise').value.trim();const duration=intVal($('newDurationMin'),0,0,60)*60+intVal($('newDuration'),45,0,59);
-      if(!name)return;if(duration<1){alert('Informe uma duração de pelo menos 1 segundo.');return;}
-      if(running){alert('Pause o timer antes de alterar os blocos.');return;}
-      blocks.push({name,duration});$('newExercise').value='';reset();$('newDurationMin').value=els.exerciseMinutes.value;$('newDuration').value=els.exerciseSeconds.value;renderList();
+    $('addExerciseBtn').addEventListener('click',()=>{
+      const status=$('addExerciseStatus');
+      const name=$('newExercise').value.trim();
+      const duration=intVal($('newDurationMin'),0,0,60)*60+intVal($('newDuration'),45,0,59);
+      if(!name){status.textContent='Digite o nome do exercício antes de adicionar.';$('newExercise').focus();return;}
+      if(duration<1){status.textContent='Informe uma duração de pelo menos 1 segundo.';$('newDuration').focus();return;}
+      if(running){status.textContent='Pause o timer antes de alterar os blocos.';return;}
+      try {
+        const block={name,duration};
+        blocks.push(block);
+        status.textContent='Adicionando exercício…';
+        $('newExercise').value='';
+        $('newDurationMin').value=els.exerciseMinutes.value;
+        $('newDuration').value=els.exerciseSeconds.value;
+        try { reset(); } catch(error) { console.error('Erro ao atualizar o timer:',error); }
+        try { renderList(); } catch(error) { console.error('Erro ao desenhar a lista:',error); }
+        // Garantia visual independente do renderizador completo: o item adicionado aparece na lista.
+        const list=$('exerciseList');
+        if(list && ![...list.querySelectorAll('strong')].some(el=>el.textContent.trim()===name)) {
+          const row=document.createElement('div');
+          row.className='exercise-item';
+          row.style.cssText='display:flex!important;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);visibility:visible!important;opacity:1!important';
+          const label=document.createElement('strong');label.textContent=name;label.style.cssText='display:block!important;visibility:visible!important;color:var(--text);flex:1;overflow-wrap:anywhere';
+          const durationLabel=document.createElement('span');durationLabel.textContent=fmt(duration);durationLabel.style.cssText='color:var(--muted);font-size:12px';
+          row.append(label,durationLabel);list.append(row);
+        }
+        status.textContent='✓ "'+name+'" foi adicionado à aula. Total: '+blocks.length+' exercício(s).';
+        status.style.color='var(--lime)';
+      } catch(error) {
+        console.error('Falha ao adicionar exercício:',error);
+        status.textContent='Não foi possível adicionar: '+(error?.message||String(error));
+        status.style.color='#ff8b8b';
+      }
     });
 
     $('startBtn').addEventListener('click',start);
