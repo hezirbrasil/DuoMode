@@ -174,6 +174,7 @@
           <button class="btn blue" type="submit">＋ Adicionar</button>
         </form>
         <div class="library-tools">
+          <button class="btn primary" id="loadClass50Btn" type="button">Carregar aula de 50 min</button>
           <button class="btn" id="loadExampleBtn" type="button">Carregar exemplo</button>
           <button class="btn" id="clearBtn" type="button">Limpar blocos</button>
         </div>
@@ -287,7 +288,7 @@
         const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'');
         const check=document.createElement('input');check.type='checkbox';check.checked=selectedBlocks.has(i);check.setAttribute('aria-label','Selecionar '+b.name);check.addEventListener('change',()=>{check.checked?selectedBlocks.add(i):selectedBlocks.delete(i);});
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
-        const info=document.createElement('div');const strong=document.createElement('strong');strong.textContent=b.name;const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':'Exercício');
+        const info=document.createElement('div');const strong=document.createElement('strong');strong.textContent=b.name;const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
         info.append(strong,small);
         const actions=document.createElement('div');actions.className='item-actions';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.addEventListener('click',fn);return btn;};
@@ -301,10 +302,11 @@
       const current=blocks[blockIndex];
       const max=Math.max(1,totalPhase);
       els.time.textContent=fmt(remaining);
-      els.phaseText.textContent=finished?'Aula concluída':running?(phase==='exercise'?'Exercício':'Descanso'):noBlocks?'Adicione blocos':'Pronto para começar';
-      els.phaseBadge.classList.toggle('rest',phase==='rest'&&!finished);
-      els.clockWrap.classList.toggle('rest',phase==='rest'&&!finished);
-      els.caption.textContent=finished?'Tempo total concluído':'Tempo restante';
+      const isRecovery=phase==='rest'||current?.type==='rest';
+      els.phaseText.textContent=finished?'Aula concluída':running?(isRecovery?'Descanso':'Exercício'):noBlocks?'Adicione blocos':'Pronto para começar';
+      els.phaseBadge.classList.toggle('rest',isRecovery&&!finished);
+      els.clockWrap.classList.toggle('rest',isRecovery&&!finished);
+      els.caption.textContent=finished?'Tempo total concluído':isRecovery?'Tempo de recuperação':'Tempo restante';
       els.progress.style.strokeDasharray=CIRC;
       els.progress.style.strokeDashoffset=CIRC*(1-Math.max(0,Math.min(1,remaining/max)));
       els.name.textContent=finished?'Parabéns! Aula finalizada':current?current.name:'Nenhum bloco adicionado';
@@ -378,6 +380,38 @@
       blocks=[{name:'Agachamento livre',duration:intVal(els.exerciseSeconds,45,1)},{name:'Polichinelo',duration:intVal(els.exerciseSeconds,45,1)},{name:'Prancha',duration:intVal(els.exerciseSeconds,45,1)}];
       reset();
     }
+    function loadClass50() {
+      if(running&&!confirm('A aula está em execução. Substituir os blocos?'))return;
+      const planned=[];
+      const add=(name,duration,group,type='exercise')=>planned.push({name,duration,group,type});
+      const warmup=['Marcha acelerada','Polichinelo leve','Agachamento livre sem carga','Mobilidade de ombros e quadril','Corrida estacionária leve'];
+      warmup.forEach(name=>add(name,60,'Aquecimento'));
+      const mainBlocks=[
+        {group:'Bloco 1 — Força',exercises:['Agachamento goblet','Remada curvada','Supino com halteres','Afundo alternado']},
+        {group:'Bloco 2 — Full Body',exercises:['Agachamento + desenvolvimento','Terra com halteres','Elevação lateral','Joelhada alternada']},
+        {group:'Bloco 3 — Condicionamento',exercises:['Polichinelo','Agachamento lateral','Escalador','Sprawl adaptado']}
+      ];
+      mainBlocks.forEach(section=>{
+        for(let round=1;round<=3;round++){
+          section.exercises.forEach(name=>{
+            add(name,40,section.group);
+            add('Descanso — próximo exercício',20,section.group,'rest');
+          });
+        }
+      });
+      const challenge=['Polichinelo','Agachamento livre','Escalador','Socos alternados no ar','Joelhada alternada','Agachamento com rotação','Marcha acelerada'];
+      challenge.forEach(name=>{
+        add(name,40,'Desafio final');
+        add('Recuperação / transição',20,'Desafio final','rest');
+      });
+      add('Caminhada leve e respiração',60,'Volta à calma');
+      add('Mobilidade e alongamentos suaves',60,'Volta à calma');
+      blocks=planned;
+      selectedBlocks.clear();collapsedGroups.clear();
+      els.exerciseSeconds.value='40';els.restSeconds.value='0';els.rounds.value='1';
+      reset();
+      alert('Aula de 50 minutos carregada! O cronograma inclui aquecimento, 3 blocos principais, desafio final e volta à calma. Os descansos aparecem como intervalos próprios no timer.');
+    }
     function save() {
       const title=prompt('Nome para salvar esta aula:', 'Minha aula coletiva');
       if(!title?.trim())return;
@@ -450,6 +484,7 @@
     });
     $('saveBtn').addEventListener('click',save);
     $('loadExampleBtn').addEventListener('click',loadExample);
+    $('loadClass50Btn').addEventListener('click',loadClass50);
     $('clearBtn').addEventListener('click',()=>{if(running){alert('Pause o timer antes de limpar os blocos.');return;}if(confirm('Limpar todos os blocos da aula?')){blocks=[];reset();remaining=0;totalPhase=1;render();}});
     [els.exerciseSeconds,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){alert('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){/* wall-clock interval continues */}});
