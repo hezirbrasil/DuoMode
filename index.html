@@ -740,15 +740,36 @@
     $('bankCategory').addEventListener('change',renderBankPicker);
     $('bankSearch').addEventListener('input',renderBankPicker);
     $('addBankExercise').addEventListener('click',()=>{
-      if(running){alert('Pause o timer antes de alterar os blocos.');return;}
-      const name=$('bankExercise').value;
-      if(!name){alert('Selecione um exercício do banco.');return;}
+      const status=$('bankStatus');
+      const name=($('bankExercise').value||'').trim();
+      if(running){status.textContent='Pause o timer antes de alterar os blocos.';return;}
+      if(!name){status.textContent='Selecione um exercício no campo acima.';return;}
       const already=blocks.some(b=>b.name.toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR'));
       if(already && !confirm('Esse exercício já está na aula. Adicionar outra vez?')) return;
-      blocks.push({name,duration:intVal(els.exerciseSeconds,45,1,3600)});
-      reset();
-      renderList();
-    });
+      const block={name,duration:intVal(els.exerciseSeconds,45,1,3600)};
+      blocks.push(block);
+      status.textContent='Adicionando '+name+'…';
+      status.style.color='var(--lime)';
+      try { reset(); } catch(error) { console.error('Erro ao atualizar timer:',error); }
+      try { renderList(); } catch(error) { console.error('Erro ao desenhar lista:',error); }
+      const list=$('exerciseList');
+      const visible=[...list.querySelectorAll('strong')].some(el=>el.textContent.trim()===name);
+      if(!visible){
+        const row=document.createElement('div');
+        row.className='exercise-item';
+        row.style.cssText='display:flex!important;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);visibility:visible!important;opacity:1!important';
+        const label=document.createElement('strong');
+        label.textContent=name;
+        label.style.cssText='display:block!important;visibility:visible!important;color:var(--text);flex:1;overflow-wrap:anywhere';
+        const durationLabel=document.createElement('span');
+        durationLabel.textContent=fmt(block.duration);
+        durationLabel.style.cssText='color:var(--muted);font-size:12px';
+        row.append(label,durationLabel);
+        list.append(row);
+      }
+      $('blockCount').textContent=blocks.length+' bloco(s)';
+      status.textContent='✓ '+name+' adicionado à aula. Total: '+blocks.length+' bloco(s).';
+    });;
     $('addExerciseBtn').addEventListener('click',()=>{
       const status=$('addExerciseStatus');
       const name=$('newExercise').value.trim();
