@@ -50,9 +50,9 @@
     #app.mode-play #exitTimerFullscreen { display:none !important; }
     #app.mode-play #soundBtn { display:none !important; }
     #app.mode-play #backToScriptBtn { display:grid; position:fixed;top:12px;left:12px;z-index:10001;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);font-size:26px;place-items:center; }
-    #app.mode-edit .layout { grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr); }
-    #app.mode-edit #scriptPanel { display:block; }
-    #app.mode-edit #timerPanel { display:block; }
+    #app.mode-edit .layout { display:grid;grid-template-columns:minmax(0,1fr);gap:0; }
+    #app.mode-edit #scriptPanel { display:block !important;width:100%; }
+    #app.mode-edit #timerPanel { display:none !important; }
     #app.mode-script { max-width:980px; }
     #app.mode-script header { display:none; }
     #app.mode-script .layout { display:block;min-height:0; }
