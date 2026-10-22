@@ -166,7 +166,6 @@
       <div class="header-actions">
         <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Play</button>
         <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="true">☷ Modo Script</button>
-        <button class="btn" id="fullscreenBtn" type="button">⛶ Tela cheia do timer</button>
         <button class="btn" id="saveBtn" type="button">Salvar aula</button>
       </div>
     </header>
@@ -590,7 +589,6 @@
     $('previousBtn').addEventListener('click',()=>jumpBlock(-1));
     $('nextBtn').addEventListener('click',()=>jumpBlock(1));
     $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;els.sound.textContent=soundEnabled?'♫':'♩';els.sound.setAttribute('aria-label',soundEnabled?'Desligar som':'Ligar som');els.sound.title=soundEnabled?'Desligar som':'Ligar som';els.sound.setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)tone();});
-    $('fullscreenBtn').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('timerPanel').requestFullscreen();}catch(e){alert('A tela cheia não está disponível neste navegador.');}});
     $('maximizeTimerBtn').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await $('timerPanel').requestFullscreen();}catch(e){alert('A maximização não está disponível neste navegador.');}});
     $('exitTimerFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{setViewMode('script');}});
     $('backToScriptBtn').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}setViewMode('script');});
