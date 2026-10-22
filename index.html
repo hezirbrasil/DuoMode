@@ -657,12 +657,16 @@
     }
     function loadExample() {
       if(running&&!confirm('A aula está em execução. Substituir os blocos?'))return;
+      collapsedGroups.clear();
       const defaultDuration=intVal(els.exerciseMinutes,0,0,60)*60+intVal(els.exerciseSeconds,45,0,59)||45;blocks=[{name:'Agachamento Livre',duration:defaultDuration},{name:'Polichinelo',duration:defaultDuration},{name:'Prancha',duration:defaultDuration}];
       temporaryNames.clear();
       reset();
     }
     function loadClass50() {
       if(running&&!confirm('A aula está em execução. Substituir os blocos?'))return;
+      // Ao carregar a aula pronta, abrir todos os grupos para que os cartões
+      // de exercícios apareçam imediatamente na lista de edição.
+      collapsedGroups.clear();
       const planned=[];
       const add=(name,duration,group,type='exercise')=>planned.push({name,duration,group,type});
 
