@@ -223,12 +223,12 @@
     let blocks = (() => {
       const planned = [];
       const add = (name, duration, group, type='exercise') => planned.push({name,duration,group,type});
-      ['Marcha acelerada com braços ativos','Polichinelo leve','Agachamento livre sem carga','Mobilidade dinâmica de ombros e quadril','Corrida estacionária leve']
+      ['Aquecimento','Polichinelo + Desenvolvimento','Agachamento Livre','Elevação Lateral','Agachamento + Troca de Base']
         .forEach(name => add(name,60,'1 · Aquecimento'));
       const circuits = [
-        {group:'2 · Circuito A — Força global', exercises:['Agachamento goblet','Remada curvada com halteres','Supino com halteres','Afundo alternado']},
-        {group:'3 · Circuito B — Full Body', exercises:['Terra com halteres','Desenvolvimento com halteres','Agachamento + remada alta','Joelhada alternada']},
-        {group:'4 · Circuito C — Condicionamento', exercises:['Polichinelo','Agachamento lateral alternado','Escalador','Sprawl adaptado']}
+        {group:'2 · Circuito A — Força global', exercises:['Agachamento goblet','Remada Aberta','Supino','Avanço']},
+        {group:'3 · Circuito B — Full Body', exercises:['Terra','Desenvolvimento','Agachamento + remada alta','Joelhada no Step Alternada']},
+        {group:'4 · Circuito C — Condicionamento', exercises:['Polichinelo','Agachamento Lateral','Escalador','Sprawl']}
       ];
       circuits.forEach(section => {
         for(let round=1;round<=3;round++) section.exercises.forEach(name => {
@@ -236,7 +236,7 @@
           add('Descanso — transição',20,section.group,'rest');
         });
       });
-      ['Polichinelo','Agachamento livre','Escalador','Socos alternados no ar','Joelhada alternada','Agachamento com rotação','Marcha acelerada']
+      ['Polichinelo','Agachamento livre','Escalador','Flexão + Feet Touch','Joelhada no Step Alternada','Agachamento + Rotação','Marcha acelerada']
         .forEach(name => { add(name,40,'5 · Desafio final'); add('Recuperação / transição',20,'5 · Desafio final','rest'); });
       add('Caminhada leve e respiração',60,'6 · Volta à calma');
       add('Mobilidade e alongamentos suaves',60,'6 · Volta à calma');
@@ -450,23 +450,23 @@
       // Aula coletiva padrão: 50 minutos exatos, incluindo pausas e volta à calma.
       // 5 min aquecimento + 36 min circuito principal + 7 min desafio + 2 min volta à calma.
       const warmup=[
-        'Marcha acelerada com braços ativos',
-        'Polichinelo leve',
-        'Agachamento livre sem carga',
-        'Mobilidade dinâmica de ombros e quadril',
-        'Corrida estacionária leve'
+        'Aquecimento',
+        'Polichinelo + Desenvolvimento',
+        'Agachamento Livre',
+        'Elevação Lateral',
+        'Agachamento + Troca de Base'
       ];
       warmup.forEach(name=>add(name,60,'1 · Aquecimento'));
 
       const mainBlocks=[
         {group:'2 · Circuito A — Força global',exercises:[
-          'Agachamento goblet','Remada curvada com halteres','Supino com halteres','Afundo alternado'
+          'Agachamento goblet','Remada Aberta','Supino','Avanço'
         ]},
         {group:'3 · Circuito B — Full Body',exercises:[
-          'Terra com halteres','Desenvolvimento com halteres','Agachamento + remada alta','Joelhada alternada'
+          'Terra','Desenvolvimento','Agachamento + remada alta','Joelhada no Step Alternada'
         ]},
         {group:'4 · Circuito C — Condicionamento',exercises:[
-          'Polichinelo','Agachamento lateral alternado','Escalador','Sprawl adaptado'
+          'Polichinelo','Agachamento Lateral','Escalador','Sprawl'
         ]}
       ];
       mainBlocks.forEach(section=>{
@@ -480,8 +480,8 @@
 
       const challenge=[
         'Polichinelo','Agachamento livre','Escalador',
-        'Socos alternados no ar','Joelhada alternada',
-        'Agachamento com rotação','Marcha acelerada'
+        'Flexão + Feet Touch','Joelhada no Step Alternada',
+        'Agachamento + Rotação','Marcha acelerada'
       ];
       challenge.forEach(name=>{
         add(name,40,'5 · Desafio final');
