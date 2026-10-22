@@ -495,9 +495,26 @@
             extrasList.replaceChildren();
             extras.forEach((name,extraIndex)=>{
               const line=document.createElement('div');line.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--text)';
-              const label=document.createElement('span');label.textContent='No circuito: '+name;
-              const remove=document.createElement('button');remove.type='button';remove.className='icon-btn';remove.textContent='×';remove.title='Remover '+name+' do circuito';remove.addEventListener('click',()=>{if(running)return;extras.splice(extraIndex,1);b.extraExercises=extras;render();});
-              line.append(label,remove);extrasList.append(line);
+              const label=document.createElement('span');label.textContent=name;label.style.cssText='flex:1;min-width:0;overflow-wrap:anywhere';
+              const edit=document.createElement('button');edit.type='button';edit.className='icon-btn';edit.textContent='✎';edit.title='Editar nome ou trocar '+name;edit.setAttribute('aria-label','Editar exercício secundário '+name);
+              edit.addEventListener('click',()=>{
+                if(running)return;
+                const picker=document.createElement('div');picker.style.cssText='display:grid;grid-template-columns:minmax(0,1fr);gap:7px;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--panel2)';
+                const nameInput=document.createElement('input');nameInput.type='text';nameInput.value=name;nameInput.maxLength=90;nameInput.placeholder='Nome do exercício';nameInput.setAttribute('aria-label','Nome do exercício secundário');
+                const cat=document.createElement('select');cat.setAttribute('aria-label','Grupamento muscular para trocar exercício');
+                const all=document.createElement('option');all.value='all';all.textContent='Todos os grupos';cat.append(all);
+                [...new Set(exerciseBank.map(ex=>ex.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR')).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=categoryLabels[c]||c;cat.append(o);});
+                const choose=document.createElement('select');choose.setAttribute('aria-label','Trocar exercício secundário pelo banco');
+                const fill=()=>{choose.replaceChildren();const ph=document.createElement('option');ph.value='';ph.textContent='Ou trocar por exercício do banco…';choose.append(ph);exerciseBank.filter(ex=>(cat.value==='all'||ex.category===cat.value)&&ex.name!==b.name&&!extras.some((n,j)=>j!==extraIndex&&n===ex.name)).forEach(ex=>{const o=document.createElement('option');o.value=ex.name;o.textContent=ex.name;choose.append(o);});};
+                cat.addEventListener('change',fill);fill();
+                const actions=document.createElement('div');actions.style.cssText='display:flex;gap:7px';
+                const saveEdit=document.createElement('button');saveEdit.type='button';saveEdit.className='btn primary';saveEdit.textContent='Salvar';
+                saveEdit.addEventListener('click',()=>{const next=choose.value||nameInput.value.trim();if(!next)return;extras[extraIndex]=next;b.extraExercises=extras;render();});
+                const cancel=document.createElement('button');cancel.type='button';cancel.className='btn';cancel.textContent='Cancelar';cancel.addEventListener('click',()=>{picker.remove();edit.style.display='';});
+                actions.append(saveEdit,cancel);picker.append(nameInput,cat,choose,actions);line.append(picker);edit.style.display='none';nameInput.focus();
+              });
+              const remove=document.createElement('button');remove.type='button';remove.className='icon-btn';remove.textContent='×';remove.title='Remover '+name+' do circuito';remove.setAttribute('aria-label','Remover '+name+' do circuito');remove.addEventListener('click',()=>{if(running)return;extras.splice(extraIndex,1);b.extraExercises=extras;render();});
+              line.append(label,edit,remove);extrasList.append(line);
             });
           };
           refreshExtras();editor.append(extrasList);
