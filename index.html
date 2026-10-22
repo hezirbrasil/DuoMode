@@ -70,7 +70,8 @@
     #app.mode-script #scriptPanel .exercise-item > input[type=checkbox],
     #app.mode-script #scriptPanel .exercise-item .item-actions,
     #app.mode-script #scriptPanel .exercise-item small { display:none !important; }
-    #app.mode-script #scriptPanel .exercise-item .block-editor { display:grid !important;visibility:visible !important;grid-column:2;grid-row:2;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:6px;margin-top:10px;width:100%;min-width:0; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor { display:none !important;grid-column:2;grid-row:2;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:6px;margin-top:10px;width:100%;min-width:0; }
+    #app.mode-script #scriptPanel .exercise-item.show-bank .block-editor { display:grid !important; }
     #app.mode-script #scriptPanel .exercise-item .block-editor select { display:block !important;visibility:visible !important;min-width:0;width:100%;font-size:12px;padding:8px 6px; }
     #app.mode-script #scriptPanel .exercise-item .block-editor select:first-child { grid-column:1; }
     #app.mode-script #scriptPanel .exercise-item .block-editor select:nth-child(2) { grid-column:2; }
@@ -451,6 +452,11 @@
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
         const info=document.createElement('div');const nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap';const strong=document.createElement('strong');strong.textContent=b.name;const renameExercise=document.createElement('button');renameExercise.type='button';renameExercise.className='icon-btn';renameExercise.textContent='✎';renameExercise.title='Editar nome deste exercício';renameExercise.setAttribute('aria-label','Editar nome de '+b.name);renameExercise.addEventListener('click',()=>{if(running)return;const input=document.createElement('input');input.type='text';input.maxLength=90;input.value=b.name;input.setAttribute('aria-label','Nome do exercício');input.style.cssText='min-width:120px;max-width:100%;font:inherit;flex:1;padding:5px 8px';let saved=false;const finish=(save)=>{if(saved)return;saved=true;const value=input.value.trim();if(save&&value)b.name=value;render();};input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();finish(true);}else if(e.key==='Escape'){e.preventDefault();finish(false);}});input.addEventListener('blur',()=>finish(true));nameRow.replaceChild(input,strong);renameExercise.style.display='none';input.focus();input.select();});nameRow.append(strong,renameExercise);const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
         info.append(nameRow,small);
+        row.title='Clique para trocar o exercício pelo banco';
+        row.addEventListener('click',e=>{
+          if(e.target.closest('select,input,button,label'))return;
+          row.classList.toggle('show-bank');
+        });
         const editor=document.createElement('div');editor.className='block-editor';
         if(b.type!=='rest'){
           const currentExercise=exerciseBank.find(ex=>ex.name.toLocaleLowerCase('pt-BR')===b.name.toLocaleLowerCase('pt-BR'));
