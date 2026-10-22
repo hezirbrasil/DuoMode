@@ -35,6 +35,9 @@
     .exercise-item { grid-template-columns:20px 30px minmax(0,1fr) auto; }
     .group-label { grid-column:1/-1;color:var(--lime);font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;padding:2px 0 0; }
     .group-header { display:flex;align-items:center;gap:9px;width:100%;grid-column:1/-1;border:0;background:#b6d90012;color:var(--lime);padding:10px 12px;border-radius:9px;text-align:left;font-size:12px;font-weight:850;letter-spacing:.08em;text-transform:uppercase; }
+    .group-header-row { display:flex;align-items:stretch;gap:6px;grid-column:1/-1;min-width:0; }
+    .group-header-row .group-header { flex:1;min-width:0; }
+    .group-rename { border:1px solid var(--line);background:var(--panel2);color:var(--sky);border-radius:9px;padding:0 12px;font-size:13px;font-weight:800; }
     .group-header .group-chevron { margin-left:auto;transition:transform .15s; }
     .group-header[aria-expanded="false"] .group-chevron { transform:rotate(-90deg); }
     .group-summary { color:var(--muted);font-size:11px;font-weight:600;letter-spacing:0;text-transform:none; }
@@ -239,19 +242,30 @@
       blocks.forEach((b,i) => {
         if(b.group && !renderedGroupHeaders.has(b.group)) {
           renderedGroupHeaders.add(b.group);
+          const headerRow=document.createElement('div');headerRow.className='group-header-row';
           const header=document.createElement('button');
           header.type='button';header.className='group-header';
-          const expanded=!collapsedGroups.has(b.group);
+          const groupName=b.group;
+          const expanded=!collapsedGroups.has(groupName);
           header.setAttribute('aria-expanded',String(expanded));
-          header.innerHTML='<span class="group-chevron">▼</span>';
-          const title=document.createElement('span');title.textContent=b.group;
-          const summary=document.createElement('span');summary.className='group-summary';summary.textContent=groupCounts.get(b.group)+' exercícios';
+          const title=document.createElement('span');title.textContent=groupName;
+          const summary=document.createElement('span');summary.className='group-summary';summary.textContent=groupCounts.get(groupName)+' exercícios';
           header.replaceChildren(document.createTextNode(expanded?'▾ ':'▸ '),title,summary);
           header.addEventListener('click',()=>{
-            if(collapsedGroups.has(b.group))collapsedGroups.delete(b.group);else collapsedGroups.add(b.group);
+            if(collapsedGroups.has(groupName))collapsedGroups.delete(groupName);else collapsedGroups.add(groupName);
             renderList();
           });
-          els.list.append(header);
+          const rename=document.createElement('button');rename.type='button';rename.className='group-rename';rename.textContent='✎';rename.title='Renomear grupo '+groupName;rename.setAttribute('aria-label','Renomear grupo '+groupName);
+          rename.addEventListener('click',()=>{
+            if(running){alert('Pause o timer antes de renomear grupos.');return;}
+            const nextName=prompt('Novo nome para o grupo:',groupName);
+            if(!nextName?.trim())return;
+            const trimmed=nextName.trim();
+            blocks.forEach(item=>{if(item.group===groupName)item.group=trimmed;});
+            if(collapsedGroups.has(groupName)){collapsedGroups.delete(groupName);collapsedGroups.add(trimmed);}
+            render();
+          });
+          headerRow.append(header,rename);els.list.append(headerRow);
         }
         if(b.group && collapsedGroups.has(b.group)) return;
         const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'');
