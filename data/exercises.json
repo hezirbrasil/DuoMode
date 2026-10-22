@@ -1,0 +1,745 @@
+{
+  "source": "MMA Conditioning",
+  "sourceRepository": "https://github.com/hezirbrasil/MMA--Conditioning-Generator",
+  "importedAt": "2026-10-22",
+  "categories": {
+    "peito": "Peito",
+    "costas": "Costas",
+    "ombros": "Ombros",
+    "bíceps": "Bíceps",
+    "tríceps": "Tríceps",
+    "pernas": "Pernas",
+    "posterior": "Posterior",
+    "composto": "Compostos",
+    "core": "Core e abdômen",
+    "cardio": "Cardio e funcional"
+  },
+  "exercises": [
+    {
+      "name": "Supino",
+      "category": "peito",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Supino pegada fechada",
+      "category": "peito",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Crucifixo",
+      "category": "peito",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Flexão + Feet Touch",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Pulldown",
+      "category": "costas",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Remada Aberta",
+      "category": "costas",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Remada Fechada",
+      "category": "costas",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Remada Alta",
+      "category": "costas",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Remada unilateral E",
+      "category": "costas",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Remada unilateral D",
+      "category": "costas",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Desenvolvimento",
+      "category": "ombros",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Desenvolvimento Arnold",
+      "category": "ombros",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Elevação Lateral",
+      "category": "ombros",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Elevação Lateral + Elevação Frontal",
+      "category": "ombros",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Crucifixo Invertido",
+      "category": "ombros",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Bíceps",
+      "category": "bíceps",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Recuo + Bíceps",
+      "category": "composto",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Tríceps Francês",
+      "category": "tríceps",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Tríceps Coice E",
+      "category": "tríceps",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Tríceps Coice D",
+      "category": "tríceps",
+      "types": [
+        "fullbody"
+      ]
+    },
+    {
+      "name": "Agachamento Livre",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Touch Down",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Troca de Base",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Búlgaro E",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Búlgaro D",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Afundo + Salto",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento Neutro",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento Sumô",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Rotação",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Abre e Fecha Tocando o Solo",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Pico de Contração + Salto",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Salto",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento Goblet",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Remada Alta",
+      "category": "composto",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento Lateral",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Avanço",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Afundo E",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Afundo D",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Avanço + Elevação Lateral",
+      "category": "composto",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Afundo + Troca de Base",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Terra",
+      "category": "posterior",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Stiff",
+      "category": "posterior",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Stiff unilateral E",
+      "category": "posterior",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Stiff unilateral D",
+      "category": "posterior",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Panturrilha",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Terra + Desenvolvimento",
+      "category": "composto",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Desenvolvimento",
+      "category": "composto",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Polichinelo + Desenvolvimento",
+      "category": "composto",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Panturrilha",
+      "category": "composto",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal Remador",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal Remador Unilateral",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal Bicicleta",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal Oblíquo E",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal Oblíquo D",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal + Jab + Direto",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal Infra",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal Infra Alternado",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal Supra + Rotação de Tronco",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Superman",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal + Passar as Pernas por Cima",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha Baixa + Prancha Alta",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha + Shoulder Taps",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha Alternada",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha 3 Apoios E",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha 3 Apoios D",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha + Feet Touch",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha Abre e Fecha",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha T",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Escalador",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Sprawl",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Sprawl + Salto",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Hop Out Step",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Sprint",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Corrida Lateral + Touch Down",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Hand Walk",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Senta, Levanta e Pula",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Joelhada no Step E",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Joelhada no Step D",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Joelhada no Step Alternada",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    }
+  ],
+  "fightSequences": [
+    "Jab + Direto",
+    "Jab + Jab + Direto",
+    "Jab + Direto + Jab + Direto + Uppercut F + Uppercut T",
+    "Jab + Direto + Jab + Direto + Cruzado F + Cruzado T",
+    "Uppercut F + Uppercut T + Cruzado F + Recuo + Direto",
+    "Uppercut T + Uppercut F + Uppercut T + Uppercut F + Cruzado T + Cruzado F",
+    "Chute F + Chute médio T",
+    "Jab + Jab + Direto + Chute baixo F",
+    "Jab + Chute médio T + Direto + Chute médio T + Jab + Direto + Chute médio T",
+    "Jab + Direto + Uppercut F + Uppercut T + Cruzado F + Cruzado T",
+    "Uppercut F + Cruzado F + Uppercut T + Cruzado T",
+    "Jab + Direto + Uppercut F + Uppercut T + Uppercut F + Uppercut T",
+    "Jab + Direto + 2 Polichinelos",
+    "Jab + Direto + 2 Polichinelos + Uppercut F + Uppercut T + Uppercut F + Uppercut T + Touch Down",
+    "Uppercut F + Uppercut T + Uppercut F + Uppercut T + Touch Down",
+    "Jab + Direto + Cruzado F",
+    "Jab + Direto + Cruzado T",
+    "Jab + Uppercut F + Cruzado F",
+    "Jab + Direto + Chute baixo F",
+    "Jab + Direto + Chute médio F",
+    "Jab + Cruzado F + Chute baixo F",
+    "Direto + Cruzado F + Chute médio F",
+    "Jab + Direto + Chute frontal F",
+    "Jab + Direto + Joelhada frontal",
+    "Jab + Cruzado F + Direto + Chute baixo F",
+    "Direto + Uppercut F + Cruzado F",
+    "Jab + Direto + Cruzado F + Cruzado T",
+    "Jab + Direto + Chute baixo F + Direto",
+    "Jab + Cruzado F + Direto + Chute médio F",
+    "Direto + Cruzado T + Chute frontal F",
+    "Jab + Direto + Chute alto F",
+    "Jab + Cruzado F + Chute baixo F + Direto",
+    "Jab + Direto + Esquiva + Cruzado F",
+    "Direto + Recuo + Jab + Direto",
+    "Jab + Esquiva + Cruzado F + Chute baixo F",
+    "Cruzado F + Recuo + Direto",
+    "Jab + Direto + Uppercut T + Cruzado F",
+    "Jab + Direto + Joelhada frontal + Cruzado F",
+    "Direto + Esquiva + Cruzado F + Direto",
+    "Jab + Direto + Chute médio F + Cruzado F",
+    "Jab + Cruzado F + Cruzado T + Chute baixo F",
+    "Jab + Direto + Chute frontal F + Direto",
+    "Jab + Direto + Esquiva + Cruzado T",
+    "Jab + Recuo + Direto",
+    "Direto + Uppercut T + Cruzado T",
+    "Jab + Direto + Jab + Cruzado F",
+    "Jab + Direto + Cruzado F + Direto + Cruzado T",
+    "Jab + Jab + Direto + Cruzado F + Cruzado T",
+    "Jab + Direto + Uppercut F + Cruzado F",
+    "Jab + Direto + Uppercut T + Cruzado T",
+    "Jab + Uppercut F + Direto + Cruzado T",
+    "Jab + Direto + Esquiva + Direto + Cruzado F",
+    "Jab + Direto + Recuo + Direto + Cruzado F",
+    "Jab + Cruzado T + Direto + Cruzado F",
+    "Jab + Direto + Cruzado F + Uppercut T",
+    "Direto + Jab + Direto + Cruzado F",
+    "Direto + Uppercut F + Uppercut T + Cruzado F",
+    "Direto + Cruzado F + Direto + Cruzado T",
+    "Direto + Esquiva + Direto + Cruzado T",
+    "Direto + Recuo + Cruzado F + Direto",
+    "Direto + Uppercut T + Cruzado F + Direto",
+    "Uppercut F + Uppercut T",
+    "Uppercut T + Uppercut F + Direto",
+    "Uppercut F + Cruzado T + Uppercut T",
+    "Uppercut T + Cruzado F + Uppercut F + Cruzado T",
+    "Uppercut F + Uppercut T + Cruzado F",
+    "Uppercut T + Uppercut F + Direto + Cruzado T",
+    "Cruzado F + Cruzado T",
+    "Cruzado T + Cruzado F + Direto",
+    "Cruzado F + Direto + Cruzado T + Cruzado F",
+    "Cruzado T + Uppercut F + Cruzado F",
+    "Cruzado F + Esquiva + Cruzado T",
+    "Cruzado T + Recuo + Direto + Cruzado F",
+    "Chute baixo F + Direto",
+    "Chute baixo T + Direto + Cruzado F",
+    "Jab + Chute baixo T + Direto",
+    "Direto + Chute médio T",
+    "Jab + Direto + Chute médio T + Direto",
+    "Chute frontal F + Direto + Cruzado F",
+    "Chute frontal T + Direto",
+    "Chute médio F + Cruzado F + Direto",
+    "Chute médio T + Jab + Direto",
+    "Chute alto F + Direto + Cruzado T",
+    "Jab + Chute frontal F + Direto + Chute baixo T",
+    "Jab + Direto + Chute baixo F + Chute baixo T",
+    "Joelhada frontal + Direto",
+    "Jab + Direto + Joelhada frontal + Joelhada frontal",
+    "Direto + Joelhada frontal + Cruzado F",
+    "Clinch + Joelhada frontal + Joelhada frontal",
+    "Esquiva + Direto",
+    "Recuo + Jab + Cruzado F",
+    "Jab + Esquiva + Direto + Cruzado T",
+    "Bloqueio + Direto + Cruzado F",
+    "Recuo + Esquiva + Jab + Direto",
+    "Esquiva + Cruzado F + Direto + Chute baixo F",
+    "Bloqueio + Esquiva + Direto",
+    "Jab + Direto + Bloqueio + Cruzado F",
+    "2 Polichinelos + Jab + Direto",
+    "Jab + Direto + Touch Down",
+    "2 Polichinelos + Uppercut F + Uppercut T",
+    "Jab + Direto + Agachamento + Direto",
+    "Jab + Direto + Sprawl + Cruzado F"
+  ]
+}
