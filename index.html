@@ -393,8 +393,6 @@
       els.progress.style.strokeDasharray=CIRC;
       els.progress.style.strokeDashoffset=CIRC*(1-Math.max(0,Math.min(1,remaining/max)));
       els.name.textContent=finished?'Parabéns! Aula finalizada':current?(temporaryNames.get(current)||current.name):'Nenhum bloco adicionado';
-      $('editCurrentNameBtn').disabled=finished||!current||current.type==='rest';
-      $('editCurrentNameBtn').title='Alterar nome só nesta sessão';
       els.round.textContent=finished?'Você completou todos os rounds.':noBlocks?'Adicione exercícios para montar a aula.':'Round '+roundIndex+' de '+settings().rounds+' · Bloco '+(blockIndex+1)+' de '+blocks.length;
       const segments=blocks.reduce((s,b)=>s+b.duration,0)*settings().rounds+(blocks.length*Math.max(0,blocks.length-1))*settings().rest*settings().rounds;
       const doneRounds=(roundIndex-1)*(blocks.reduce((s,b)=>s+b.duration,0)+Math.max(0,blocks.length-1)*settings().rest);
@@ -570,18 +568,7 @@
       if(running){alert('Pause o timer antes de alterar os blocos.');return;}
       blocks.push({name,duration});$('newExercise').value='';reset();$('newDurationMin').value=els.exerciseMinutes.value;$('newDuration').value=els.exerciseSeconds.value;
     });
-    $('editCurrentNameBtn').addEventListener('click',()=>{
-      const current=blocks[blockIndex];
-      if(!current||current.type==='rest'||finished)return;
-      const original=current.name;
-      const currentName=temporaryNames.get(current)||original;
-      const edited=prompt('Nome temporário para este exercício (não altera o banco nem a aula salva):',currentName);
-      if(edited===null)return;
-      const trimmed=edited.trim();
-      if(!trimmed){alert('O nome não pode ficar vazio.');return;}
-      if(trimmed===original)temporaryNames.delete(current);else temporaryNames.set(current,trimmed);
-      render();
-    });
+
     $('startBtn').addEventListener('click',start);
     $('resetBtn').addEventListener('click',reset);
     $('previousBtn').addEventListener('click',()=>jumpBlock(-1));
