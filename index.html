@@ -580,8 +580,9 @@
       els.start.setAttribute('aria-label',finished?'Reiniciar aula':running?'Pausar':'Iniciar');
       els.start.title=finished?'Reiniciar aula':running?'Pausar':'Iniciar';
       els.start.disabled=noBlocks;
-      renderVisualSequence();
+      // Atualiza a lista primeiro para que um erro na sequência visual nunca esconda os blocos.
       renderList();
+      try { renderVisualSequence(); } catch (error) { console.error('Falha ao desenhar a sequência visual:', error); }
     }
     function stopInterval(){ if(timerId!==null){clearInterval(timerId);timerId=null;} }
     function start() {
@@ -745,12 +746,13 @@
       if(already && !confirm('Esse exercício já está na aula. Adicionar outra vez?')) return;
       blocks.push({name,duration:intVal(els.exerciseSeconds,45,1,3600)});
       reset();
+      renderList();
     });
     $('addForm').addEventListener('submit',e=>{
       e.preventDefault();const name=$('newExercise').value.trim();const duration=intVal($('newDurationMin'),0,0,60)*60+intVal($('newDuration'),45,0,59);
       if(!name)return;if(duration<1){alert('Informe uma duração de pelo menos 1 segundo.');return;}
       if(running){alert('Pause o timer antes de alterar os blocos.');return;}
-      blocks.push({name,duration});$('newExercise').value='';reset();$('newDurationMin').value=els.exerciseMinutes.value;$('newDuration').value=els.exerciseSeconds.value;
+      blocks.push({name,duration});$('newExercise').value='';reset();$('newDurationMin').value=els.exerciseMinutes.value;$('newDuration').value=els.exerciseSeconds.value;renderList();
     });
 
     $('startBtn').addEventListener('click',start);
