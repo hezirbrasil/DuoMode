@@ -25,6 +25,20 @@
     .btn.blue { background:var(--blue);border-color:var(--blue);color:#001c25; }
     .btn.danger { color:#ffaaa6; }
     .layout { display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);gap:18px;align-items:start; }
+    .mode-btn[aria-pressed="true"] { border-color:var(--lime);background:#b6d90020;color:var(--lime); }
+    #app.mode-play .layout { grid-template-columns:minmax(0,1fr); }
+    #app.mode-play #scriptPanel { display:none; }
+    #app.mode-play #timerPanel { min-height:calc(100vh - 145px);display:flex;flex-direction:column;align-items:center;justify-content:center; }
+    #app.mode-play #timerPanel .clock-wrap { width:min(58vh, min(78vw,520px));margin:clamp(8px,2vh,22px) auto; }
+    #app.mode-play #timerPanel .time { font-size:clamp(64px,13vh,124px); }
+    #app.mode-play #timerPanel .current-name { font-size:clamp(24px,4vh,40px); }
+    #app.mode-play #timerPanel .round-label { font-size:clamp(14px,2vh,19px); }
+    #app.mode-play #timerPanel .progress-bar { width:min(760px,100%); }
+    #app.mode-play #timerPanel .settings { width:min(650px,100%); }
+    #app.mode-script .layout { grid-template-columns:minmax(0,1fr); }
+    #app.mode-script #timerPanel { display:none; }
+    @media(max-width:800px) { #app.mode-play #timerPanel { min-height:calc(100vh - 130px); } }
+
     .panel { background:linear-gradient(160deg,rgba(16,45,56,.96),rgba(9,28,36,.97));border:1px solid var(--line);border-radius:21px;padding:clamp(16px,2.5vw,25px);box-shadow:0 18px 48px #0002; }
     .eyebrow { margin:0 0 6px;color:var(--lime);font-size:11px;font-weight:850;letter-spacing:.2em;text-transform:uppercase; }
     h2 { font-size:18px;margin:0 0 16px; }
@@ -93,13 +107,15 @@
   </style>
 </head>
 <body>
-  <div class="app" id="app">
+  <div class="app mode-script" id="app">
     <header>
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">A</div>
         <div><h1>ACUAS <span style="color:var(--blue)">FITNESS</span></h1><p>Timer de aulas coletivas</p></div>
       </div>
       <div class="header-actions">
+        <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Play</button>
+        <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="true">☷ Modo Script</button>
         <button class="btn" id="fullscreenBtn" type="button">⛶ Tela cheia do timer</button>
         <button class="btn" id="saveBtn" type="button">Salvar aula</button>
       </div>
@@ -132,9 +148,9 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel" id="scriptPanel">
         <div class="section-head">
-          <div><p class="eyebrow">Planejamento</p><h2>Blocos da aula</h2></div>
+          <div><p class="eyebrow">Modo Script · Planejamento</p><h2>Blocos da aula</h2></div>
           <span class="subtle" id="blockCount">3 blocos</span>
         </div>
         <div class="group-tools"><button class="btn blue" id="groupSelectedBtn" type="button">▦ Agrupar selecionados</button><button class="btn" id="ungroupSelectedBtn" type="button">Desagrupar selecionados</button></div>
@@ -407,6 +423,16 @@
       const indexes=[...selectedBlocks];if(!indexes.length){alert('Selecione os exercícios que deseja desagrupar.');return;}
       indexes.forEach(i=>{if(blocks[i])delete blocks[i].group;});selectedBlocks.clear();render();
     });
+    function setViewMode(mode) {
+      const play=mode==='play';
+      $('app').classList.toggle('mode-play',play);
+      $('app').classList.toggle('mode-script',!play);
+      $('modePlayBtn').setAttribute('aria-pressed',String(play));
+      $('modeScriptBtn').setAttribute('aria-pressed',String(!play));
+      if(play) render();
+    }
+    $('modePlayBtn').addEventListener('click',()=>setViewMode('play'));
+    $('modeScriptBtn').addEventListener('click',()=>setViewMode('script'));
     $('saveBtn').addEventListener('click',save);
     $('loadExampleBtn').addEventListener('click',loadExample);
     $('clearBtn').addEventListener('click',()=>{if(running){alert('Pause o timer antes de limpar os blocos.');return;}if(confirm('Limpar todos os blocos da aula?')){blocks=[];reset();remaining=0;totalPhase=1;render();}});
