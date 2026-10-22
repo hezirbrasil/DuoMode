@@ -154,6 +154,10 @@
     .transport-main { width:58px;height:58px;background:var(--lime);color:#142000;font-size:24px;box-shadow:0 0 0 5px #b6d90018; }
     .transport-main:hover { background:#c9ed18;color:#142000; }
     .sound-control { color:var(--muted);font-size:21px;margin-left:4px; }
+    #app.mode-play .transport-btn { border-radius:12px;background:transparent;color:var(--text);font-family:Arial,sans-serif;font-weight:800;letter-spacing:-2px; }
+    #app.mode-play .transport-btn:hover { background:var(--panel2);color:var(--lime); }
+    #app.mode-play .transport-main { border-radius:50%;background:var(--lime);color:#142000;letter-spacing:0; }
+    #app.mode-play .sound-control { letter-spacing:0;font-size:20px; }
     #app.mode-play .transport-btn { width:clamp(44px,6vh,58px);height:clamp(44px,6vh,58px);font-size:22px; }
     #app.mode-play .transport-main { width:clamp(58px,8vh,76px);height:clamp(58px,8vh,76px);font-size:28px; }
     @media(max-width:470px) { .transport-controls { gap:6px; }.transport-btn { width:40px;height:40px; }.transport-main { width:54px;height:54px; } }
@@ -228,11 +232,11 @@
         <p class="round-label" id="roundLabel">Adicione os blocos e pressione iniciar</p>
         <div class="progress-bar" aria-label="Progresso da aula"><div class="progress-fill" id="overallProgress"></div></div>
         <div class="controls transport-controls" role="group" aria-label="Controles do cronômetro">
-          <button class="transport-btn" id="previousBtn" type="button" aria-label="Exercício anterior" title="Exercício anterior">⏮</button>
+          <button class="transport-btn" id="previousBtn" type="button" aria-label="Exercício anterior" title="Exercício anterior">‹‹</button>
           <button class="transport-btn transport-main" id="startBtn" type="button" aria-label="Iniciar" title="Iniciar">▶</button>
           <button class="transport-btn" id="resetBtn" type="button" aria-label="Parar e voltar ao início" title="Parar e voltar ao início">■</button>
-          <button class="transport-btn" id="nextBtn" type="button" aria-label="Próximo exercício" title="Próximo exercício">⏭</button>
-          <button class="transport-btn sound-control" id="soundBtn" type="button" aria-label="Desligar som" title="Desligar som" aria-pressed="true">♫</button>
+          <button class="transport-btn" id="nextBtn" type="button" aria-label="Próximo exercício" title="Próximo exercício">››</button>
+          <button class="transport-btn sound-control" id="soundBtn" type="button" aria-label="Desligar som" title="Som ligado/desligado" aria-pressed="true">♪</button>
         </div>
         <button class="btn" id="exitTimerFullscreen" type="button">✕ Sair da tela cheia</button>
         <button class="transport-btn" id="backToScriptBtn" type="button" aria-label="Voltar" title="Voltar">←</button>
@@ -452,7 +456,7 @@
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
         const info=document.createElement('div');const nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap';const strong=document.createElement('strong');strong.textContent=[b.name,...(Array.isArray(b.extraExercises)?b.extraExercises:[])].join(' + ');const renameExercise=document.createElement('button');renameExercise.type='button';renameExercise.className='icon-btn';renameExercise.textContent='✎';renameExercise.title='Editar nome deste exercício';renameExercise.setAttribute('aria-label','Editar nome de '+b.name);renameExercise.addEventListener('click',()=>{if(running)return;const input=document.createElement('input');input.type='text';input.maxLength=90;input.value=b.name;input.setAttribute('aria-label','Nome do exercício');input.style.cssText='min-width:120px;max-width:100%;font:inherit;flex:1;padding:5px 8px';let saved=false;const finish=(save)=>{if(saved)return;saved=true;const value=input.value.trim();if(save&&value)b.name=value;render();};input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();finish(true);}else if(e.key==='Escape'){e.preventDefault();finish(false);}});input.addEventListener('blur',()=>finish(true));nameRow.replaceChild(input,strong);renameExercise.style.display='none';input.focus();input.select();});nameRow.append(strong,renameExercise);const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
         info.append(nameRow,small);
-        row.title='Clique para trocar o exercício pelo banco';
+        row.title='Clique para editar ou adicionar exercícios ao circuito';
         row.addEventListener('click',e=>{
           if(e.target.closest('select,input,button,label'))return;
           row.classList.toggle('show-bank');
@@ -480,25 +484,25 @@
             extrasList.replaceChildren();
             extras.forEach((name,extraIndex)=>{
               const line=document.createElement('div');line.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--text)';
-              const label=document.createElement('span');label.textContent='Também no circuito: '+name;
+              const label=document.createElement('span');label.textContent='No circuito: '+name;
               const remove=document.createElement('button');remove.type='button';remove.className='icon-btn';remove.textContent='×';remove.title='Remover '+name+' do circuito';remove.addEventListener('click',()=>{if(running)return;extras.splice(extraIndex,1);b.extraExercises=extras;render();});
               line.append(label,remove);extrasList.append(line);
             });
           };
           refreshExtras();editor.append(extrasList);
-          const addExtraBtn=document.createElement('button');addExtraBtn.type='button';addExtraBtn.textContent='＋ Adicionar exercício ao mesmo tempo';addExtraBtn.style.cssText='grid-column:1/-1;width:100%;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--lime);font-weight:700';
+          const addExtraBtn=document.createElement('button');addExtraBtn.type='button';addExtraBtn.textContent='＋ Adicionar exercício ao circuito';addExtraBtn.style.cssText='grid-column:1/-1;width:100%;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--lime);font-weight:700';
           addExtraBtn.addEventListener('click',()=>{
             if(running)return;
             let chooser=editor.querySelector('.extra-exercise-picker');
             if(chooser){chooser.remove();addExtraBtn.textContent='＋ Adicionar exercício ao mesmo tempo';return;}
-            chooser=document.createElement('div');chooser.className='extra-exercise-picker';chooser.style.cssText='grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:6px';
-            const cat=document.createElement('select');cat.setAttribute('aria-label','Grupamento muscular do exercício adicional');
+            chooser=document.createElement('div');chooser.className='extra-exercise-picker';chooser.style.cssText='grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)';
+            const cat=document.createElement('select');cat.setAttribute('aria-label','1. Escolha o grupamento muscular');cat.title='1. Escolha o grupamento muscular';
             const all=document.createElement('option');all.value='all';all.textContent='Todos os grupos';cat.append(all);
             [...new Set(exerciseBank.map(ex=>ex.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR')).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=categoryLabels[c]||c;cat.append(o);});
-            const exSelect=document.createElement('select');exSelect.setAttribute('aria-label','Exercício adicional do circuito');
+            const exSelect=document.createElement('select');exSelect.setAttribute('aria-label','2. Escolha o exercício para adicionar ao circuito');exSelect.title='2. Escolha o exercício para adicionar ao circuito';
             const fill=()=>{exSelect.replaceChildren();const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Escolher exercício…';exSelect.append(placeholder);exerciseBank.filter(ex=>(cat.value==='all'||ex.category===cat.value)&&ex.name!==b.name&&!extras.includes(ex.name)).forEach(ex=>{const o=document.createElement('option');o.value=ex.name;o.textContent=ex.name;exSelect.append(o);});};
             cat.addEventListener('change',fill);fill();
-            const add=document.createElement('button');add.type='button';add.textContent='Adicionar';add.style.cssText='grid-column:1/-1;padding:8px;border:0;border-radius:9px;background:var(--lime);color:#142015;font-weight:800';
+            const add=document.createElement('button');add.type='button';add.textContent='＋ Adicionar ao circuito';add.style.cssText='grid-column:1/-1;padding:10px;border:0;border-radius:9px;background:var(--lime);color:#142015;font-weight:800';
             add.addEventListener('click',()=>{if(!exSelect.value)return;extras.push(exSelect.value);b.extraExercises=extras;render();});
             chooser.append(cat,exSelect,add);editor.append(chooser);addExtraBtn.textContent='Cancelar';
           });
