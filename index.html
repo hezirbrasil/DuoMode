@@ -396,6 +396,16 @@
       if (active) active.scrollIntoView({block:'nearest',inline:'nearest',behavior:'smooth'});
     }
     function renderList() {
+      // Migra automaticamente aulas antigas: etapas de descanso viram descansoAfter
+      // no exercício anterior, evitando cartões separados de recuperação.
+      for(let i=blocks.length-1;i>=0;i--){
+        if(blocks[i].type==='rest'){
+          if(i>0) blocks[i-1].restAfter=Math.max(0,Number(blocks[i].duration)||0);
+          blocks.splice(i,1);
+          if(blockIndex>=i&&blockIndex>0) blockIndex--;
+        }
+      }
+      if(blockIndex>=blocks.length) blockIndex=Math.max(0,blocks.length-1);
       els.list.innerHTML='';
       const groupCounts = new Map();
       blocks.forEach(b=>{if(b.group)groupCounts.set(b.group,(groupCounts.get(b.group)||0)+1);});
@@ -632,7 +642,7 @@
       reset();
       const totalSeconds=blocks.reduce((sum,b)=>sum+b.duration,0);
       const totalMinutes=totalSeconds/60;
-      alert('Aula coletiva padrão carregada: '+totalMinutes+' minutos. Inclui aquecimento, 3 circuitos de 3 voltas, desafio final e volta à calma. As pausas já estão inseridas como etapas do timer.');
+      alert('Aula coletiva padrão carregada: '+totalMinutes+' minutos. Inclui aquecimento, 3 circuitos de 3 voltas, desafio final e volta à calma. Os descansos estão integrados nos exercícios.');
     }
     function save() {
       const title=prompt('Nome para salvar esta aula:', 'Minha aula coletiva');
