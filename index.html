@@ -204,7 +204,10 @@
     .exercise-item .index { display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--panel2);color:var(--sky);font-size:12px;font-weight:800; }
     .block-editor { display:grid;grid-column:2 / -1;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px 48px;gap:5px;margin-top:8px;width:100%;min-width:0; }
     .block-editor select,.block-editor input { padding:6px 7px;font-size:12px;min-width:0;width:100%; }
-    #app.mode-edit #scriptPanel .exercise-item .block-editor { display:grid !important;grid-column:2 / -1; }
+    #app.mode-edit #scriptPanel .exercise-item { grid-template-columns:20px 30px minmax(0,1fr) auto; }
+    #app.mode-edit #scriptPanel .exercise-item .block-editor { display:grid !important;grid-column:3 / -1;grid-row:auto;align-self:stretch; }
+    #app.mode-edit #scriptPanel .exercise-item .block-editor > * { min-width:0; }
+    #app.mode-edit #scriptPanel .exercise-item .block-editor > div { grid-column:1 / -1; }
     #app.mode-script #scriptPanel .exercise-item .block-editor { grid-column:2; }
     @media(max-width:470px) { .block-editor { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }.block-editor input { width:100%; } }
     .duration-edit { display:flex;gap:5px;align-items:center; }
@@ -235,7 +238,7 @@
       </div>
       <div class="header-actions">
         <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Play</button>
-        <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="true">☷ Modo Script</button>
+        <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="true">☷ Modo Construção</button>
         <button class="btn" id="saveBtn" type="button">Salvar aula</button>
       </div>
     </header>
@@ -297,7 +300,7 @@
         <div class="section-head" style="margin:16px 0 8px"><h2 style="font-size:16px;margin:0">Adicionar bloco</h2><span class="subtle">Inclua um exercício na sequência</span></div>
         <form class="add-form" id="addForm">
           <input id="newExercise" type="text" maxlength="90" placeholder="Nome do exercício ou bloco" aria-label="Nome do exercício" required>
-          <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos" required><span>seg</span></div>
+          <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos" required><span>seg</span></div>
           <button class="btn blue" type="submit">＋ Adicionar</button>
         </form>
         <div class="library-tools">
