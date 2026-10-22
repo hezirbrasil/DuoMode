@@ -56,7 +56,7 @@
     #app.mode-edit #scriptPanel > .section-head { display:flex; }
     #app.mode-edit #scriptPanel > .sequence-visual { display:none !important; }
     #app.mode-script { max-width:980px; }
-    #app.mode-script header { display:none; }
+    #app.mode-script header { display:flex;align-items:center;gap:12px;flex-wrap:wrap; }
     #app.mode-script .layout { display:block;min-height:0; }
     #app.mode-script #timerPanel { display:none !important; }
     #app.mode-script #scriptPanel { display:block !important;width:100%; }
@@ -88,7 +88,7 @@
     #app.mode-script #scriptPanel .exercise-item > .index { grid-column:1;grid-row:1;font-size:25px;font-weight:950;color:var(--lime);line-height:1.1; }
     #app.mode-script #scriptPanel .exercise-item > div:not(.block-editor):not(.item-actions) { grid-column:2;grid-row:1;min-width:0;width:100%; }
     #app.mode-script #scriptPanel .exercise-item strong { font-size:clamp(17px,2.2vw,22px); }
-    #app.mode-script #scriptPanel .script-back { display:inline-flex; }
+    #app.mode-script #scriptPanel .script-back { display:none; }
     .script-back { display:none;position:fixed;top:12px;left:12px;z-index:10002;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800; }
     @media(max-width:800px) {
       #app.mode-play #timerPanel { min-height:calc(100vh - 24px);min-height:calc(100dvh - 24px); }
@@ -238,7 +238,7 @@
       </div>
       <div class="header-actions">
         <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Play</button>
-        <button class="btn mode-btn" id="modeConstructBtn" type="button" aria-pressed="true">✎ Modo Construção</button>
+        <button class="btn mode-btn" id="modeConstructBtn" type="button" aria-pressed="true">🔧 Modo Construção</button>
         <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="false">☷ Modo Script</button>
         <button class="btn" id="saveBtn" type="button">Salvar aula</button>
       </div>
