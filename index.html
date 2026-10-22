@@ -351,13 +351,19 @@
           const exerciseSelect=document.createElement('select');exerciseSelect.setAttribute('aria-label','Trocar exercício do bloco '+(i+1));exerciseSelect.title='Escolha outro exercício do grupo';
           const populateExercises=()=>{
             exerciseSelect.innerHTML='';
-            const currentOpt=document.createElement('option');currentOpt.value=b.name;currentOpt.textContent='Atual: '+b.name;exerciseSelect.append(currentOpt);
+            const currentOpt=document.createElement('option');currentOpt.value='';currentOpt.textContent='Escolher exercício do banco…';exerciseSelect.append(currentOpt);
             exerciseBank.filter(ex=>(groupSelect.value==='all'||ex.category===groupSelect.value)&&ex.name.toLocaleLowerCase('pt-BR')!==b.name.toLocaleLowerCase('pt-BR')).forEach(ex=>{const opt=document.createElement('option');opt.value=ex.name;opt.textContent=ex.name;exerciseSelect.append(opt);});
           };
           populateExercises();
           groupSelect.addEventListener('change',populateExercises);
           exerciseSelect.addEventListener('change',()=>{if(running){alert('Pause o timer antes de trocar exercícios.');renderList();return;}if(exerciseSelect.value){b.name=exerciseSelect.value;render();}});
+          const customName=document.createElement('input');customName.type='text';customName.maxLength=90;customName.placeholder='✎ Nome personalizado (opcional)';customName.title='Digite qualquer nome para este bloco';customName.setAttribute('aria-label','Nome personalizado do bloco '+(i+1));customName.value=b.customName||'';
+          const applyCustom=document.createElement('button');applyCustom.type='button';applyCustom.className='icon-btn';applyCustom.textContent='✎';applyCustom.title='Aplicar nome personalizado';applyCustom.setAttribute('aria-label','Aplicar nome personalizado');
+          const saveCustom=()=>{if(running){alert('Pause o timer antes de editar o nome.');customName.value=b.customName||'';return;}const value=customName.value.trim();if(!value){delete b.customName;render();return;}b.customName=value;b.name=value;render();};
+          applyCustom.addEventListener('click',saveCustom);
+          customName.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveCustom();}});
           editor.append(groupSelect,exerciseSelect);
+          const customRow=document.createElement('div');customRow.style.cssText='display:flex;gap:5px;margin-top:5px;grid-column:1/-1';customName.style.flex='1';customRow.append(customName,applyCustom);editor.append(customRow);
         } else {
           const restLabel=document.createElement('span');restLabel.textContent='Etapa de descanso';restLabel.style.cssText='color:var(--muted);font-size:11px;grid-column:1/-1';editor.append(restLabel);
         }
