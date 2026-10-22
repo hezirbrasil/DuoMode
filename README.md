@@ -15,3 +15,8 @@ Abra `index.html` em um navegador. Não é necessário instalar dependências.
 - Salvamento local das aulas no navegador.
 
 O banco completo de exercícios do MMA Conditioning será integrado numa etapa seguinte, após mapear os arquivos e a estrutura do banco original.
+
+## Recursos atuais
+- Timer para aulas coletivas com exercícios, execução e descanso.
+- Agrupamento de exercícios com opção de minimizar e expandir cada grupo.
+- Modo de tela cheia exclusivo para o timer.
