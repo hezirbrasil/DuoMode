@@ -168,7 +168,7 @@
             <div class="clock-caption" id="clockCaption">Tempo restante</div>
           </div>
         </div>
-        <div class="current-name-row"><h2 class="current-name" id="currentName">Prepare sua aula</h2><button class="edit-current-name" id="editCurrentNameBtn" type="button" aria-label="Alterar nome temporariamente" title="Alterar nome só nesta sessão">✎</button></div>
+        <div class="current-name-row"><h2 class="current-name" id="currentName">Prepare sua aula</h2></div>
         <p class="round-label" id="roundLabel">Adicione os blocos e pressione iniciar</p>
         <div class="progress-bar" aria-label="Progresso da aula"><div class="progress-fill" id="overallProgress"></div></div>
         <div class="controls transport-controls" role="group" aria-label="Controles do cronômetro">
@@ -346,8 +346,8 @@
         const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'');
         const check=document.createElement('input');check.type='checkbox';check.checked=selectedBlocks.has(i);check.setAttribute('aria-label','Selecionar '+b.name);check.addEventListener('change',()=>{check.checked?selectedBlocks.add(i):selectedBlocks.delete(i);});
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
-        const info=document.createElement('div');const strong=document.createElement('strong');strong.textContent=b.name;const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
-        info.append(strong,small);
+        const info=document.createElement('div');const nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap';const strong=document.createElement('strong');strong.textContent=b.name;const renameExercise=document.createElement('button');renameExercise.type='button';renameExercise.className='icon-btn';renameExercise.textContent='✎';renameExercise.title='Editar nome deste exercício';renameExercise.setAttribute('aria-label','Editar nome de '+b.name);renameExercise.addEventListener('click',()=>{if(running){alert('Pause o timer antes de editar o nome.');return;}const next=prompt('Nome do exercício (vale apenas nesta aula):',b.name);if(!next?.trim())return;b.name=next.trim();render();});nameRow.append(strong,renameExercise);const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
+        info.append(nameRow,small);
         const editor=document.createElement('div');editor.className='block-editor';
         if(b.type!=='rest'){
           const currentExercise=exerciseBank.find(ex=>ex.name.toLocaleLowerCase('pt-BR')===b.name.toLocaleLowerCase('pt-BR'));
@@ -364,13 +364,7 @@
           populateExercises();
           groupSelect.addEventListener('change',populateExercises);
           exerciseSelect.addEventListener('change',()=>{if(running){alert('Pause o timer antes de trocar exercícios.');renderList();return;}if(exerciseSelect.value){b.name=exerciseSelect.value;render();}});
-          const customName=document.createElement('input');customName.type='text';customName.maxLength=90;customName.placeholder='✎ Nome personalizado (opcional)';customName.title='Digite qualquer nome para este bloco';customName.setAttribute('aria-label','Nome personalizado do bloco '+(i+1));customName.value=b.customName||'';
-          const applyCustom=document.createElement('button');applyCustom.type='button';applyCustom.className='icon-btn';applyCustom.textContent='✎';applyCustom.title='Aplicar nome personalizado';applyCustom.setAttribute('aria-label','Aplicar nome personalizado');
-          const saveCustom=()=>{if(running){alert('Pause o timer antes de editar o nome.');customName.value=b.customName||'';return;}const value=customName.value.trim();if(!value){delete b.customName;render();return;}b.customName=value;b.name=value;render();};
-          applyCustom.addEventListener('click',saveCustom);
-          customName.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveCustom();}});
           editor.append(groupSelect,exerciseSelect);
-          const customRow=document.createElement('div');customRow.style.cssText='display:flex;gap:5px;margin-top:5px;grid-column:1/-1';customName.style.flex='1';customRow.append(customName,applyCustom);editor.append(customRow);
         } else {
           const restLabel=document.createElement('span');restLabel.textContent='Etapa de descanso';restLabel.style.cssText='color:var(--muted);font-size:11px;grid-column:1/-1';editor.append(restLabel);
         }
