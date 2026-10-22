@@ -26,6 +26,7 @@
     .btn.danger { color:#ffaaa6; }
     .layout { display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);gap:18px;align-items:start; }
     .mode-btn[aria-pressed="true"] { border-color:var(--lime);background:#b6d90020;color:var(--lime); }
+    .mode-btn:focus-visible { outline:none;box-shadow:0 0 0 1px var(--lime); }
     /* Play mode uses a CSS full-screen fallback so it works on iOS Safari too. */
     #app.mode-play { position:fixed;inset:0;z-index:9999;width:100%;height:100vh;height:100dvh;max-width:none;margin:0;padding:12px clamp(10px,3vw,28px);overflow-y:auto;background:var(--bg); }
     #app.mode-play header { display:none; }
