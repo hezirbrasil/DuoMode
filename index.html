@@ -114,6 +114,11 @@
     .exercise-item { display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px;background:#0719207a;border:1px solid var(--line);border-radius:13px; }
     .exercise-item.active { border-color:var(--lime);box-shadow:inset 3px 0 var(--lime); }
     .exercise-item .index { display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--panel2);color:var(--sky);font-size:12px;font-weight:800; }
+    .block-editor { display:grid;grid-template-columns:minmax(0,1fr) 52px 52px;gap:5px;margin-top:8px; }
+    .block-editor select,.block-editor input { padding:6px 7px;font-size:12px;min-width:0; }
+    .duration-edit { display:flex;gap:5px;align-items:center; }
+    .duration-edit input { width:52px; }
+    .duration-edit span { color:var(--muted);font-size:10px; }
     .exercise-item strong { display:block;font-size:14px;overflow-wrap:anywhere; }
     .exercise-item small { display:block;color:var(--muted);font-size:12px;margin-top:3px; }
     .item-actions { display:flex;gap:4px; }
@@ -168,8 +173,10 @@
         </div>
         <button class="btn" id="exitTimerFullscreen" type="button">✕ Sair da tela cheia</button>
         <div class="settings">
-          <div><label for="exerciseSeconds">Exercício (seg.)</label><input id="exerciseSeconds" type="number" min="1" max="3600" value="40"></div>
-          <div><label for="restSeconds">Descanso (seg.)</label><input id="restSeconds" type="number" min="0" max="3600" value="0"></div>
+          <div><label for="exerciseMinutes">Exercício (min)</label><input id="exerciseMinutes" type="number" min="0" max="60" value="0"></div>
+          <div><label for="exerciseSeconds">Exercício (seg)</label><input id="exerciseSeconds" type="number" min="0" max="59" value="40"></div>
+          <div><label for="restMinutes">Descanso (min)</label><input id="restMinutes" type="number" min="0" max="60" value="0"></div>
+          <div><label for="restSeconds">Descanso (seg)</label><input id="restSeconds" type="number" min="0" max="59" value="0"></div>
           <div><label for="rounds">Rounds</label><input id="rounds" type="number" min="1" max="99" value="1"></div>
         </div>
       </section>
@@ -196,7 +203,7 @@
         </div>
         <form class="add-form" id="addForm">
           <input id="newExercise" type="text" maxlength="90" placeholder="Nome do exercício ou bloco" aria-label="Nome do exercício" required>
-          <input id="newDuration" type="number" min="1" max="3600" value="45" aria-label="Duração em segundos" title="Duração em segundos" required>
+          <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="1" max="59" value="45" aria-label="Segundos" title="Segundos" required><span>seg</span></div>
           <button class="btn blue" type="submit">＋ Adicionar</button>
         </form>
         <div class="library-tools">
@@ -217,7 +224,7 @@
       time: $('timeDisplay'), phaseText: $('phaseText'), phaseBadge: $('phaseBadge'), clockWrap: $('clockWrap'),
       progress: $('clockProgress'), caption: $('clockCaption'), name: $('currentName'), round: $('roundLabel'),
       overall: $('overallProgress'), list: $('exerciseList'), count: $('blockCount'), start: $('startBtn'),
-      exerciseSeconds: $('exerciseSeconds'), restSeconds: $('restSeconds'), rounds: $('rounds'), sound: $('soundBtn')
+      exerciseMinutes: $('exerciseMinutes'), exerciseSeconds: $('exerciseSeconds'), restMinutes: $('restMinutes'), restSeconds: $('restSeconds'), rounds: $('rounds'), sound: $('soundBtn')
     };
     const CIRC = 2 * Math.PI * 90;
     let blocks = (() => {
@@ -277,7 +284,7 @@
     let running = false, phase = 'exercise', blockIndex = 0, roundIndex = 1, remaining = 45, totalPhase = 45, lastSecond = null, timerId = null, soundEnabled = true, audioCtx = null, finished = false, startedAt = 0;
     const fmt = n => { n = Math.max(0, Math.ceil(n)); return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); };
     const intVal = (el, fallback, min=0, max=3600) => { const n=Number.parseInt(el.value,10); return Number.isFinite(n) ? Math.min(max,Math.max(min,n)) : fallback; };
-    const settings = () => ({ rest:intVal(els.restSeconds,15,0), rounds:intVal(els.rounds,3,1,99) });
+    const settings = () => ({ rest:intVal(els.restMinutes,0,0,60)*60+intVal(els.restSeconds,15,0,59), rounds:intVal(els.rounds,3,1,99) });
     function tone(freq=880,duration=.12) {
       if (!soundEnabled) return;
       try {
@@ -333,6 +340,21 @@
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
         const info=document.createElement('div');const strong=document.createElement('strong');strong.textContent=b.name;const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
         info.append(strong,small);
+        const editor=document.createElement('div');editor.className='block-editor';
+        if(b.type!=='rest'){
+          const exerciseSelect=document.createElement('select');exerciseSelect.setAttribute('aria-label','Trocar exercício do bloco '+(i+1));exerciseSelect.title='Escolha outro exercício do banco';
+          const currentOpt=document.createElement('option');currentOpt.value=b.name;currentOpt.textContent='Atual: '+b.name;exerciseSelect.append(currentOpt);
+          exerciseBank.forEach(ex=>{if(ex.name.toLocaleLowerCase('pt-BR')!==b.name.toLocaleLowerCase('pt-BR')){const opt=document.createElement('option');opt.value=ex.name;opt.textContent=ex.name;exerciseSelect.append(opt);}});
+          exerciseSelect.addEventListener('change',()=>{if(running){alert('Pause o timer antes de trocar exercícios.');renderList();return;}if(exerciseSelect.value){b.name=exerciseSelect.value;render();}});
+          editor.append(exerciseSelect);
+        } else {
+          const restLabel=document.createElement('span');restLabel.textContent='Etapa de descanso';restLabel.style.cssText='color:var(--muted);font-size:11px;grid-column:1/-1';editor.append(restLabel);
+        }
+        const minutes=document.createElement('input');minutes.type='number';minutes.min='0';minutes.max='60';minutes.value=String(Math.floor(b.duration/60));minutes.title='Minutos';minutes.setAttribute('aria-label','Minutos do bloco '+(i+1));
+        const seconds=document.createElement('input');seconds.type='number';seconds.min='0';seconds.max='59';seconds.value=String(b.duration%60);seconds.title='Segundos';seconds.setAttribute('aria-label','Segundos do bloco '+(i+1));
+        const updateDuration=()=>{if(running){alert('Pause o timer antes de alterar a duração.');renderList();return;}const total=intVal(minutes,0,0,60)*60+intVal(seconds,0,0,59);if(total<1){alert('A duração precisa ser de pelo menos 1 segundo.');renderList();return;}b.duration=total;if(i===blockIndex){remaining=total;totalPhase=total;}render();};
+        minutes.addEventListener('change',updateDuration);seconds.addEventListener('change',updateDuration);
+        editor.append(minutes,seconds);info.append(editor);
         const actions=document.createElement('div');actions.className='item-actions';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.addEventListener('click',fn);return btn;};
         actions.append(make('↑','Mover para cima',()=>moveBlock(i,-1),i===0),make('↓','Mover para baixo',()=>moveBlock(i,1),i===blocks.length-1),make('×','Remover bloco',()=>removeBlock(i)));
@@ -407,7 +429,7 @@
     }
     function reset() {
       stopInterval();running=false;finished=false;phase='exercise';blockIndex=0;roundIndex=1;
-      remaining=blocks[0]?.duration||intVal(els.exerciseSeconds,45,1);totalPhase=remaining;lastSecond=null;render();
+      remaining=blocks[0]?.duration||(intVal(els.exerciseMinutes,0,0,60)*60+intVal(els.exerciseSeconds,45,0,59))||45;totalPhase=remaining;lastSecond=null;render();
     }
     function jumpBlock(delta) {
       if(!blocks.length)return;
@@ -439,7 +461,7 @@
     }
     function loadExample() {
       if(running&&!confirm('A aula está em execução. Substituir os blocos?'))return;
-      blocks=[{name:'Agachamento livre',duration:intVal(els.exerciseSeconds,45,1)},{name:'Polichinelo',duration:intVal(els.exerciseSeconds,45,1)},{name:'Prancha',duration:intVal(els.exerciseSeconds,45,1)}];
+      const defaultDuration=intVal(els.exerciseMinutes,0,0,60)*60+intVal(els.exerciseSeconds,45,0,59)||45;blocks=[{name:'Agachamento Livre',duration:defaultDuration},{name:'Polichinelo',duration:defaultDuration},{name:'Prancha',duration:defaultDuration}];
       reset();
     }
     function loadClass50() {
@@ -493,7 +515,7 @@
 
       blocks=planned;
       selectedBlocks.clear();collapsedGroups.clear();
-      els.exerciseSeconds.value='40';els.restSeconds.value='0';els.rounds.value='1';
+      els.exerciseMinutes.value='0';els.exerciseSeconds.value='40';els.restMinutes.value='0';els.restSeconds.value='0';els.rounds.value='1';
       reset();
       const totalSeconds=blocks.reduce((sum,b)=>sum+b.duration,0);
       const totalMinutes=totalSeconds/60;
@@ -521,10 +543,10 @@
       reset();
     });
     $('addForm').addEventListener('submit',e=>{
-      e.preventDefault();const name=$('newExercise').value.trim();const duration=intVal($('newDuration'),45,1,3600);
-      if(!name)return;
+      e.preventDefault();const name=$('newExercise').value.trim();const duration=intVal($('newDurationMin'),0,0,60)*60+intVal($('newDuration'),45,0,59);
+      if(!name)return;if(duration<1){alert('Informe uma duração de pelo menos 1 segundo.');return;}
       if(running){alert('Pause o timer antes de alterar os blocos.');return;}
-      blocks.push({name,duration});$('newExercise').value='';reset();$('newDuration').value=els.exerciseSeconds.value;
+      blocks.push({name,duration});$('newExercise').value='';reset();$('newDurationMin').value=els.exerciseMinutes.value;$('newDuration').value=els.exerciseSeconds.value;
     });
     $('startBtn').addEventListener('click',start);
     $('resetBtn').addEventListener('click',reset);
@@ -573,7 +595,7 @@
     $('loadExampleBtn').addEventListener('click',loadExample);
     $('loadClass50Btn').addEventListener('click',loadClass50);
     $('clearBtn').addEventListener('click',()=>{if(running){alert('Pause o timer antes de limpar os blocos.');return;}if(confirm('Limpar todos os blocos da aula?')){blocks=[];reset();remaining=0;totalPhase=1;render();}});
-    [els.exerciseSeconds,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){alert('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
+    [els.exerciseMinutes,els.exerciseSeconds,els.restMinutes,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){alert('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){/* wall-clock interval continues */}});
     reset();
     loadExerciseBank();
