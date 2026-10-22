@@ -65,12 +65,15 @@
     #app.mode-script #scriptPanel > .group-tools,
     #app.mode-script #scriptPanel > p.subtle,
     #app.mode-script #scriptPanel > div:not(.exercise-list) { display:none !important; }
-    #app.mode-script #scriptPanel .exercise-item { display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px 10px;padding:16px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:8px 0;min-width:0; }
-    #app.mode-script #scriptPanel .exercise-item > input[type=checkbox] { grid-column:1;grid-row:1;width:16px;height:16px;margin-top:5px; }
-    #app.mode-script #scriptPanel .exercise-item > .index { grid-column:1;grid-row:2;font-size:25px;font-weight:950;color:var(--lime);line-height:1.1; }
-    #app.mode-script #scriptPanel .exercise-item > div:not(.block-editor):not(.item-actions) { grid-column:2;grid-row:1 / span 2;min-width:0;width:100%; }
-    #app.mode-script #scriptPanel .exercise-item .block-editor { display:none !important; }
-    #app.mode-script #scriptPanel .exercise-item .item-actions { grid-column:2;grid-row:3;display:flex;flex-wrap:wrap;gap:7px; }
+    #app.mode-script #scriptPanel .group-header-row { display:none !important; }
+    #app.mode-script #scriptPanel .exercise-item { display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto;align-items:center;gap:8px 12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);margin:7px 0;min-width:0; }
+    #app.mode-script #scriptPanel .exercise-item > input[type=checkbox],
+    #app.mode-script #scriptPanel .exercise-item .block-editor,
+    #app.mode-script #scriptPanel .exercise-item .item-actions,
+    #app.mode-script #scriptPanel .exercise-item small { display:none !important; }
+    #app.mode-script #scriptPanel .exercise-item > .index { grid-column:1;grid-row:1;font-size:25px;font-weight:950;color:var(--lime);line-height:1.1; }
+    #app.mode-script #scriptPanel .exercise-item > div:not(.block-editor):not(.item-actions) { grid-column:2;grid-row:1;min-width:0;width:100%; }
+    #app.mode-script #scriptPanel .exercise-item strong { font-size:clamp(17px,2.2vw,22px); }
     #app.mode-script #scriptPanel .script-back { display:inline-flex; }
     .script-back { display:none;position:fixed;top:12px;left:12px;z-index:10002;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800; }
     @media(max-width:800px) {
@@ -455,10 +458,11 @@
         const seconds=document.createElement('input');seconds.type='number';seconds.min='0';seconds.max='59';seconds.value=String(b.duration%60);seconds.title='Segundos';seconds.setAttribute('aria-label','Segundos do bloco '+(i+1));
         const updateDuration=()=>{if(running){alert('Pause o timer antes de alterar a duração.');renderList();return;}const total=intVal(minutes,0,0,60)*60+intVal(seconds,0,0,59);if(total<1){alert('A duração precisa ser de pelo menos 1 segundo.');renderList();return;}b.duration=total;if(i===blockIndex){remaining=total;totalPhase=total;}render();};
         minutes.addEventListener('change',updateDuration);seconds.addEventListener('change',updateDuration);
-        const restAfter=document.createElement('input');restAfter.type='number';restAfter.min='0';restAfter.max='3600';restAfter.value=String(b.restAfter??0);restAfter.title='Descanso após este bloco (segundos)';restAfter.setAttribute('aria-label','Descanso após '+b.name+' em segundos');restAfter.placeholder='Descanso após bloco (seg)';
-        restAfter.style.cssText='grid-column:1/-1;min-width:0;width:100%';
+        const restWrap=document.createElement('label');restWrap.textContent='Descanso após este bloco (segundos)';restWrap.style.cssText='grid-column:1/-1;display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--lime);font-weight:700';
+        const restAfter=document.createElement('input');restAfter.type='number';restAfter.min='0';restAfter.max='3600';restAfter.value=String(b.restAfter??0);restAfter.title='Tempo de descanso após este bloco';restAfter.setAttribute('aria-label','Descanso após '+b.name+' em segundos');restAfter.placeholder='0 = sem descanso';
+        restAfter.style.cssText='min-width:0;width:100%';
         restAfter.addEventListener('change',()=>{if(running){restAfter.value=String(b.restAfter??0);return;}b.restAfter=Math.max(0,Math.min(3600,Number(restAfter.value)||0));render();});
-        editor.append(minutes,seconds,restAfter);info.append(editor);
+        restWrap.append(restAfter);editor.append(minutes,seconds,restWrap);info.append(editor);
         const actions=document.createElement('div');actions.className='item-actions';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.addEventListener('click',fn);return btn;};
         actions.append(make('↑','Mover para cima',()=>moveBlock(i,-1),i===0),make('↓','Mover para baixo',()=>moveBlock(i,1),i===blocks.length-1),make('×','Remover bloco',()=>removeBlock(i)));
