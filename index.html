@@ -567,7 +567,7 @@
     function start() {
       if(finished){ reset(); return; }
       if(!blocks.length)return;
-      if(running){ running=false;stopInterval();els.start.textContent='▶ Continuar';render();return; }
+      if(running){ running=false;stopInterval();render();return; }
       if(phase==='exercise' && remaining===currentDuration()) { /* start at current phase */ }
       running=true; startedAt=Date.now(); lastSecond=null;
       tone(660,.12); stopInterval(); timerId=setInterval(tick,100); render();
