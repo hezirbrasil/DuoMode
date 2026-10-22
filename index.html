@@ -202,8 +202,10 @@
     .exercise-item { display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px;background:#0719207a;border:1px solid var(--line);border-radius:13px; }
     .exercise-item.active { border-color:var(--lime);box-shadow:inset 3px 0 var(--lime); }
     .exercise-item .index { display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--panel2);color:var(--sky);font-size:12px;font-weight:800; }
-    .block-editor { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px 48px;gap:5px;margin-top:8px; }
-    .block-editor select,.block-editor input { padding:6px 7px;font-size:12px;min-width:0; }
+    .block-editor { display:grid;grid-column:2 / -1;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px 48px;gap:5px;margin-top:8px;width:100%;min-width:0; }
+    .block-editor select,.block-editor input { padding:6px 7px;font-size:12px;min-width:0;width:100%; }
+    #app.mode-edit #scriptPanel .exercise-item .block-editor { display:grid !important;grid-column:2 / -1; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor { grid-column:2; }
     @media(max-width:470px) { .block-editor { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }.block-editor input { width:100%; } }
     .duration-edit { display:flex;gap:5px;align-items:center; }
     .duration-edit input { width:52px; }
@@ -556,11 +558,11 @@
         const restAfter=document.createElement('input');restAfter.type='number';restAfter.min='0';restAfter.max='3600';restAfter.value=String(b.restAfter??0);restAfter.title='Tempo de descanso após este bloco';restAfter.setAttribute('aria-label','Descanso após '+b.name+' em segundos');restAfter.placeholder='0 = sem descanso';
         restAfter.style.cssText='min-width:0;width:100%';
         restAfter.addEventListener('change',()=>{if(running){restAfter.value=String(b.restAfter??0);return;}b.restAfter=Math.max(0,Math.min(3600,Number(restAfter.value)||0));render();});
-        restWrap.append(restAfter);editor.append(minutes,seconds,restWrap);if(b.type!=='rest')editor.append(addExtraBtn);info.append(editor);
+        restWrap.append(restAfter);editor.append(minutes,seconds,restWrap);if(b.type!=='rest')editor.append(addExtraBtn);
         const actions=document.createElement('div');actions.className='item-actions';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.addEventListener('click',fn);return btn;};
         actions.append(make('↑','Mover para cima',()=>moveBlock(i,-1),i===0),make('↓','Mover para baixo',()=>moveBlock(i,1),i===blocks.length-1),make('×','Remover bloco',()=>removeBlock(i)));
-        row.append(check,idx,info,actions);els.list.append(row);
+        row.append(check,idx,info);row.append(editor);row.append(actions);els.list.append(row);
       });
       els.count.textContent=blocks.length+' '+(blocks.length===1?'bloco':'blocos')+(groupCounts.size?' · '+groupCounts.size+' grupos':'');
     }
