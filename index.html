@@ -70,8 +70,12 @@
     #app.mode-script #scriptPanel .exercise-item > input[type=checkbox],
     #app.mode-script #scriptPanel .exercise-item .item-actions,
     #app.mode-script #scriptPanel .exercise-item small { display:none !important; }
-    #app.mode-script #scriptPanel .exercise-item .block-editor { display:grid !important;grid-column:2;grid-row:2;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:6px;margin-top:8px;width:100%;min-width:0; }
-    #app.mode-script #scriptPanel .exercise-item .block-editor select { display:block;min-width:0;width:100%;font-size:12px;padding:8px 6px; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor { display:grid !important;visibility:visible !important;grid-column:2;grid-row:2;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:6px;margin-top:10px;width:100%;min-width:0; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor select { display:block !important;visibility:visible !important;min-width:0;width:100%;font-size:12px;padding:8px 6px; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor select:first-child { grid-column:1; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor select:nth-child(2) { grid-column:2; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor select option { background:var(--panel);color:var(--text); }
+    #app.mode-script #scriptPanel .exercise-item .edit-current-name { display:none !important; }
     #app.mode-script #scriptPanel .exercise-item .block-editor input,
     #app.mode-script #scriptPanel .exercise-item .block-editor label { display:none !important; }
     #app.mode-script #scriptPanel .exercise-item > .index { grid-column:1;grid-row:1;font-size:25px;font-weight:950;color:var(--lime);line-height:1.1; }
