@@ -579,8 +579,10 @@
       const planned=[];
       const add=(name,duration,group,type='exercise')=>planned.push({name,duration,group,type});
 
-      // Aula coletiva padrão: 50 minutos exatos, incluindo pausas e volta à calma.
-      // 5 min aquecimento + 36 min circuito principal + 7 min desafio + 2 min volta à calma.
+      // Aula coletiva de 50 minutos. O descanso fica integrado ao exercício anterior,
+      // sem criar cartões/etapas extras na lista do Modo Script.
+      // 5 min aquecimento + 36 min circuitos (40 s exercício + 20 s descanso)
+      // + 7 min desafio final (40 s + 20 s) + 2 min volta à calma.
       const warmup=[
         'Aquecimento',
         'Polichinelo + Desenvolvimento',
@@ -605,7 +607,7 @@
         for(let round=1;round<=3;round++){
           section.exercises.forEach(name=>{
             add(name,40,section.group);
-            add('Descanso — transição',20,section.group,'rest');
+            planned[planned.length-1].restAfter=20;
           });
         }
       });
@@ -617,7 +619,7 @@
       ];
       challenge.forEach(name=>{
         add(name,40,'5 · Desafio final');
-        add('Recuperação / transição',20,'5 · Desafio final','rest');
+        planned[planned.length-1].restAfter=20;
       });
 
       add('Caminhada leve e respiração',60,'6 · Volta à calma');
