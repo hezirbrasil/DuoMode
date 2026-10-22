@@ -423,16 +423,31 @@
       const indexes=[...selectedBlocks];if(!indexes.length){alert('Selecione os exercícios que deseja desagrupar.');return;}
       indexes.forEach(i=>{if(blocks[i])delete blocks[i].group;});selectedBlocks.clear();render();
     });
-    function setViewMode(mode) {
+    async function setViewMode(mode) {
       const play=mode==='play';
       $('app').classList.toggle('mode-play',play);
       $('app').classList.toggle('mode-script',!play);
       $('modePlayBtn').setAttribute('aria-pressed',String(play));
       $('modeScriptBtn').setAttribute('aria-pressed',String(!play));
-      if(play) render();
+      if(play) {
+        render();
+        try {
+          if(!document.fullscreenElement) await $('timerPanel').requestFullscreen();
+        } catch(e) { /* Some browsers require fullscreen permission or do not support it. */ }
+      } else if(document.fullscreenElement) {
+        try { await document.exitFullscreen(); } catch(e) {}
+      }
     }
     $('modePlayBtn').addEventListener('click',()=>setViewMode('play'));
     $('modeScriptBtn').addEventListener('click',()=>setViewMode('script'));
+    document.addEventListener('fullscreenchange',()=>{
+      if(!document.fullscreenElement && $('app').classList.contains('mode-play')) {
+        $('app').classList.remove('mode-play');
+        $('app').classList.add('mode-script');
+        $('modePlayBtn').setAttribute('aria-pressed','false');
+        $('modeScriptBtn').setAttribute('aria-pressed','true');
+      }
+    });
     $('saveBtn').addEventListener('click',save);
     $('loadExampleBtn').addEventListener('click',loadExample);
     $('clearBtn').addEventListener('click',()=>{if(running){alert('Pause o timer antes de limpar os blocos.');return;}if(confirm('Limpar todos os blocos da aula?')){blocks=[];reset();remaining=0;totalPhase=1;render();}});
