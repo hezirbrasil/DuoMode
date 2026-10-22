@@ -50,8 +50,23 @@
     #app.mode-play #exitTimerFullscreen { display:none !important; }
     #app.mode-play #soundBtn { display:none !important; }
     #app.mode-play #backToScriptBtn { display:grid; position:fixed;top:12px;left:12px;z-index:10001;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);font-size:26px;place-items:center; }
+    #app.mode-edit .layout { grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr); }
+    #app.mode-edit #scriptPanel { display:none; }
+    #app.mode-script { max-width:980px; }
+    #app.mode-script header { display:none; }
     #app.mode-script .layout { grid-template-columns:minmax(0,1fr); }
     #app.mode-script #timerPanel { display:none; }
+    #app.mode-script #scriptPanel { display:block !important; }
+    #app.mode-script #scriptPanel > .section-head,
+    #app.mode-script #scriptPanel > .sequence-visual,
+    #app.mode-script #scriptPanel > .group-tools,
+    #app.mode-script #scriptPanel > p.subtle,
+    #app.mode-script #scriptPanel > div:not(.exercise-list) { display:none !important; }
+    #app.mode-script #scriptPanel .exercise-item { grid-template-columns:24px minmax(0,1fr); }
+    #app.mode-script #scriptPanel .exercise-item .block-editor { display:none !important; }
+    #app.mode-script #scriptPanel .exercise-item .item-actions { grid-column:2;grid-row:3; }
+    #app.mode-script #scriptPanel .script-back { display:inline-flex; }
+    .script-back { display:none;position:fixed;top:12px;left:12px;z-index:10002;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800; }
     #app.mode-script #scriptPanel { display:block !important; }
     #app.mode-script #scriptPanel .exercise-item {
       display:grid;grid-template-columns:22px minmax(0,1fr);grid-template-rows:auto auto auto;
@@ -190,7 +205,7 @@
   </style>
 </head>
 <body>
-  <div class="app mode-script" id="app">
+  <div class="app mode-edit" id="app">
     <header>
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">A</div>
@@ -203,6 +218,7 @@
       </div>
     </header>
 
+    <button class="script-back" id="scriptBackBtn" type="button">← Voltar à edição</button>
     <main class="layout">
       <section class="panel timer-panel" id="timerPanel" aria-label="Cronômetro">
         <p class="eyebrow">Em movimento</p>
@@ -678,7 +694,8 @@
     function setViewMode(mode) {
       const play=mode==='play';
       $('app').classList.toggle('mode-play',play);
-      $('app').classList.toggle('mode-script',!play);
+      $('app').classList.toggle('mode-script',mode==='script');
+      $('app').classList.toggle('mode-edit',mode==='edit');
       $('modePlayBtn').setAttribute('aria-pressed',String(play));
       $('modeScriptBtn').setAttribute('aria-pressed',String(!play));
       if(play) {
@@ -690,6 +707,7 @@
     }
     $('modePlayBtn').addEventListener('click',()=>setViewMode('play'));
     $('modeScriptBtn').addEventListener('click',()=>setViewMode('script'));
+    $('scriptBackBtn').addEventListener('click',()=>setViewMode('edit'));
     document.addEventListener('fullscreenchange',()=>{
       if(!document.fullscreenElement && $('app').classList.contains('mode-play')) {
         $('app').classList.remove('mode-play');
