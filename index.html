@@ -53,17 +53,22 @@
     #app.mode-script .layout { grid-template-columns:minmax(0,1fr); }
     #app.mode-script #timerPanel { display:none; }
     #app.mode-script #scriptPanel { display:block !important; }
-    #app.mode-script #scriptPanel .exercise-item { display:grid;grid-template-columns:22px minmax(0,1fr);align-items:start;gap:8px 10px;padding:16px 12px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:8px 0;min-width:0; }
+    #app.mode-script #scriptPanel .exercise-item {
+      display:grid;grid-template-columns:22px minmax(0,1fr);grid-template-rows:auto auto auto;
+      align-items:start;gap:8px 10px;padding:16px 14px;border:1px solid var(--line);
+      border-radius:14px;background:var(--panel);margin:8px 0;min-width:0;
+    }
     #app.mode-script #scriptPanel .exercise-item > input[type=checkbox] { grid-column:1;grid-row:1;width:16px;height:16px;margin-top:5px; }
-    #app.mode-script #scriptPanel .exercise-item > .index { grid-column:1;grid-row:2;font-size:22px;font-weight:950;color:var(--lime);line-height:1.1; }
-    #app.mode-script #scriptPanel .exercise-item > div:not(.block-editor) { grid-column:2;grid-row:1 / span 2;min-width:0; }
-    #app.mode-script #scriptPanel .exercise-item .block-editor { grid-column:2;min-width:0;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:10px; }
+    #app.mode-script #scriptPanel .exercise-item > .index { grid-column:1;grid-row:2;font-size:25px;font-weight:950;color:var(--lime);line-height:1.1; }
+    #app.mode-script #scriptPanel .exercise-item > div:not(.block-editor):not(.item-actions) { grid-column:2;grid-row:1 / span 2;min-width:0;width:100%; }
+    #app.mode-script #scriptPanel .exercise-item .item-actions { grid-column:2;grid-row:3;display:flex;flex-wrap:wrap;gap:7px;min-width:0; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor { grid-column:1/-1;min-width:0;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:10px; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor select { min-width:0;width:100%;min-height:40px;font-size:13px; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor input { min-width:0;width:100%; }
     #app.mode-script #scriptPanel .exercise-item .duration-edit { grid-column:1/-1; }
     #app.mode-script #scriptPanel .exercise-item .duration-edit input { width:64px; }
-    #app.mode-script #scriptPanel .exercise-item strong { overflow-wrap:break-word;word-break:normal;white-space:normal; }
-    #app.mode-script #scriptPanel .exercise-item .icon-btn { width:34px;height:34px; }
-    #app.mode-script #scriptPanel .exercise-item .index { font-size:30px;font-weight:950;color:var(--lime);line-height:1.1; }
-    #app.mode-script #scriptPanel .exercise-item strong { font-size:clamp(17px,4vw,24px);line-height:1.25; }
+    #app.mode-script #scriptPanel .exercise-item strong { display:inline-block;max-width:100%;overflow-wrap:anywhere;word-break:normal;white-space:normal;font-size:clamp(17px,2vw,22px);line-height:1.25; }
+    #app.mode-script #scriptPanel .exercise-item .icon-btn { width:36px;height:36px;border-radius:10px; }
     #app.mode-script #scriptPanel .group-header { background:#b6d90012;color:var(--lime);border:1px solid var(--line);border-radius:14px 14px 0 0;padding:15px 14px;font-size:15px;letter-spacing:0;text-transform:none; }
     #app.mode-script #scriptPanel .group-summary { color:var(--sky);font-size:14px; }
     #app.mode-script #scriptPanel .group-header-row { margin-top:18px; }
