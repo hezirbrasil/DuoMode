@@ -429,33 +429,58 @@
       if(running&&!confirm('A aula está em execução. Substituir os blocos?'))return;
       const planned=[];
       const add=(name,duration,group,type='exercise')=>planned.push({name,duration,group,type});
-      const warmup=['Marcha acelerada','Polichinelo leve','Agachamento livre sem carga','Mobilidade de ombros e quadril','Corrida estacionária leve'];
-      warmup.forEach(name=>add(name,60,'Aquecimento'));
+
+      // Aula coletiva padrão: 50 minutos exatos, incluindo pausas e volta à calma.
+      // 5 min aquecimento + 36 min circuito principal + 7 min desafio + 2 min volta à calma.
+      const warmup=[
+        'Marcha acelerada com braços ativos',
+        'Polichinelo leve',
+        'Agachamento livre sem carga',
+        'Mobilidade dinâmica de ombros e quadril',
+        'Corrida estacionária leve'
+      ];
+      warmup.forEach(name=>add(name,60,'1 · Aquecimento'));
+
       const mainBlocks=[
-        {group:'Bloco 1 — Força',exercises:['Agachamento goblet','Remada curvada','Supino com halteres','Afundo alternado']},
-        {group:'Bloco 2 — Full Body',exercises:['Agachamento + desenvolvimento','Terra com halteres','Elevação lateral','Joelhada alternada']},
-        {group:'Bloco 3 — Condicionamento',exercises:['Polichinelo','Agachamento lateral','Escalador','Sprawl adaptado']}
+        {group:'2 · Circuito A — Força global',exercises:[
+          'Agachamento goblet','Remada curvada com halteres','Supino com halteres','Afundo alternado'
+        ]},
+        {group:'3 · Circuito B — Full Body',exercises:[
+          'Terra com halteres','Desenvolvimento com halteres','Agachamento + remada alta','Joelhada alternada'
+        ]},
+        {group:'4 · Circuito C — Condicionamento',exercises:[
+          'Polichinelo','Agachamento lateral alternado','Escalador','Sprawl adaptado'
+        ]}
       ];
       mainBlocks.forEach(section=>{
         for(let round=1;round<=3;round++){
           section.exercises.forEach(name=>{
             add(name,40,section.group);
-            add('Descanso — próximo exercício',20,section.group,'rest');
+            add('Descanso — transição',20,section.group,'rest');
           });
         }
       });
-      const challenge=['Polichinelo','Agachamento livre','Escalador','Socos alternados no ar','Joelhada alternada','Agachamento com rotação','Marcha acelerada'];
+
+      const challenge=[
+        'Polichinelo','Agachamento livre','Escalador',
+        'Socos alternados no ar','Joelhada alternada',
+        'Agachamento com rotação','Marcha acelerada'
+      ];
       challenge.forEach(name=>{
-        add(name,40,'Desafio final');
-        add('Recuperação / transição',20,'Desafio final','rest');
+        add(name,40,'5 · Desafio final');
+        add('Recuperação / transição',20,'5 · Desafio final','rest');
       });
-      add('Caminhada leve e respiração',60,'Volta à calma');
-      add('Mobilidade e alongamentos suaves',60,'Volta à calma');
+
+      add('Caminhada leve e respiração',60,'6 · Volta à calma');
+      add('Mobilidade e alongamentos suaves',60,'6 · Volta à calma');
+
       blocks=planned;
       selectedBlocks.clear();collapsedGroups.clear();
       els.exerciseSeconds.value='40';els.restSeconds.value='0';els.rounds.value='1';
       reset();
-      alert('Aula de 50 minutos carregada! O cronograma inclui aquecimento, 3 blocos principais, desafio final e volta à calma. Os descansos aparecem como intervalos próprios no timer.');
+      const totalSeconds=blocks.reduce((sum,b)=>sum+b.duration,0);
+      const totalMinutes=totalSeconds/60;
+      alert('Aula coletiva padrão carregada: '+totalMinutes+' minutos. Inclui aquecimento, 3 circuitos de 3 voltas, desafio final e volta à calma. As pausas já estão inseridas como etapas do timer.');
     }
     function save() {
       const title=prompt('Nome para salvar esta aula:', 'Minha aula coletiva');
