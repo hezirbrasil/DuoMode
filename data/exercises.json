@@ -73,14 +73,7 @@
       ]
     },
     {
-      "name": "Remada unilateral E",
-      "category": "costas",
-      "types": [
-        "fullbody"
-      ]
-    },
-    {
-      "name": "Remada unilateral D",
+      "name": "Remada unilateral E/D",
       "category": "costas",
       "types": [
         "fullbody"
@@ -122,7 +115,7 @@
       ]
     },
     {
-      "name": "Bíceps",
+      "name": "Bíceps Halter",
       "category": "bíceps",
       "types": [
         "fullbody"
@@ -144,14 +137,7 @@
       ]
     },
     {
-      "name": "Tríceps Coice E",
-      "category": "tríceps",
-      "types": [
-        "fullbody"
-      ]
-    },
-    {
-      "name": "Tríceps Coice D",
+      "name": "Tríceps Coice E/D",
       "category": "tríceps",
       "types": [
         "fullbody"
@@ -182,15 +168,7 @@
       ]
     },
     {
-      "name": "Búlgaro E",
-      "category": "pernas",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Búlgaro D",
+      "name": "Búlgaro E/D",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -286,15 +264,7 @@
       ]
     },
     {
-      "name": "Afundo E",
-      "category": "pernas",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Afundo D",
+      "name": "Afundo E/D",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -334,15 +304,7 @@
       ]
     },
     {
-      "name": "Stiff unilateral E",
-      "category": "posterior",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Stiff unilateral D",
+      "name": "Stiff unilateral E/D",
       "category": "posterior",
       "types": [
         "fullbody",
@@ -414,15 +376,7 @@
       ]
     },
     {
-      "name": "Abdominal Oblíquo E",
-      "category": "core",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Abdominal Oblíquo D",
+      "name": "Abdominal Oblíquo E/D",
       "category": "core",
       "types": [
         "fullbody",
@@ -510,15 +464,7 @@
       ]
     },
     {
-      "name": "Prancha 3 Apoios E",
-      "category": "core",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Prancha 3 Apoios D",
+      "name": "Prancha 3 Apoios E/D",
       "category": "core",
       "types": [
         "fullbody",
@@ -614,15 +560,7 @@
       ]
     },
     {
-      "name": "Joelhada no Step E",
-      "category": "cardio",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Joelhada no Step D",
+      "name": "Joelhada no Step E/D",
       "category": "cardio",
       "types": [
         "fullbody",
