@@ -42,7 +42,9 @@
     #app.mode-play #timerPanel .settings { width:min(650px,100%); }
     #app.mode-play #timerPanel .settings { display:none; }
     #app.mode-play #timerPanel .eyebrow { margin-bottom:6px; }
-    #app.mode-play #exitTimerFullscreen { display:inline-flex; }
+    #app.mode-play #exitTimerFullscreen { display:none !important; }
+    #app.mode-play #soundBtn { display:none !important; }
+    #app.mode-play #backToScriptBtn { display:grid; position:fixed;top:12px;left:12px;z-index:10001;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);font-size:26px;place-items:center; }
     #app.mode-script .layout { grid-template-columns:minmax(0,1fr); }
     #app.mode-script #timerPanel { display:none; }
     @media(max-width:800px) {
@@ -79,8 +81,11 @@
     #timerPanel:fullscreen .settings { width:min(620px,100%);margin-top:clamp(10px,2vh,24px); }
     #timerPanel:fullscreen .progress-bar { width:min(720px,100%); }
     #timerPanel:fullscreen .eyebrow { margin-bottom:12px; }
-    #timerPanel:fullscreen #exitTimerFullscreen { display:inline-flex; }
+    #timerPanel:fullscreen #exitTimerFullscreen { display:none !important; }
+    #timerPanel:fullscreen #soundBtn { display:none !important; }
+    #timerPanel:fullscreen #backToScriptBtn { display:grid; position:fixed;top:12px;left:12px;z-index:10001;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);font-size:26px;place-items:center; }
     #exitTimerFullscreen { display:none; margin-top:12px; }
+    #backToScriptBtn { display:none; }
     .timer-panel:before { content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--lime),var(--blue)); }
     .phase { display:inline-flex;align-items:center;gap:8px;border-radius:100px;padding:8px 14px;background:#b6d90016;color:var(--lime);border:1px solid #b6d95550;font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase; }
     .phase.rest { background:#079cc31a;color:var(--sky);border-color:#079cc366; }
@@ -180,6 +185,7 @@
           <button class="transport-btn sound-control" id="soundBtn" type="button" aria-label="Desligar som" title="Desligar som" aria-pressed="true">♫</button>
         </div>
         <button class="btn" id="exitTimerFullscreen" type="button">✕ Sair da tela cheia</button>
+        <button class="transport-btn" id="backToScriptBtn" type="button" aria-label="Voltar" title="Voltar">←</button>
         <div class="settings">
           <div><label for="exerciseMinutes">Exercício (min)</label><input id="exerciseMinutes" type="number" min="0" max="60" value="0"></div>
           <div><label for="exerciseSeconds">Exercício (seg)</label><input id="exerciseSeconds" type="number" min="0" max="59" value="40"></div>
@@ -577,6 +583,7 @@
     $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;els.sound.textContent=soundEnabled?'♫':'♩';els.sound.setAttribute('aria-label',soundEnabled?'Desligar som':'Ligar som');els.sound.title=soundEnabled?'Desligar som':'Ligar som';els.sound.setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)tone();});
     $('fullscreenBtn').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('timerPanel').requestFullscreen();}catch(e){alert('A tela cheia não está disponível neste navegador.');}});
     $('exitTimerFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{setViewMode('script');}});
+    $('backToScriptBtn').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}setViewMode('script');});
     $('groupSelectedBtn').addEventListener('click',()=>{
       if(running){alert('Pause o timer antes de agrupar blocos.');return;}
       const indexes=[...selectedBlocks].filter(i=>i>=0&&i<blocks.length).sort((a,b)=>a-b);
