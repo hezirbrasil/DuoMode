@@ -168,9 +168,9 @@
         </div>
         <button class="btn" id="exitTimerFullscreen" type="button">✕ Sair da tela cheia</button>
         <div class="settings">
-          <div><label for="exerciseSeconds">Exercício (seg.)</label><input id="exerciseSeconds" type="number" min="1" max="3600" value="45"></div>
-          <div><label for="restSeconds">Descanso (seg.)</label><input id="restSeconds" type="number" min="0" max="3600" value="15"></div>
-          <div><label for="rounds">Rounds</label><input id="rounds" type="number" min="1" max="99" value="3"></div>
+          <div><label for="exerciseSeconds">Exercício (seg.)</label><input id="exerciseSeconds" type="number" min="1" max="3600" value="40"></div>
+          <div><label for="restSeconds">Descanso (seg.)</label><input id="restSeconds" type="number" min="0" max="3600" value="0"></div>
+          <div><label for="rounds">Rounds</label><input id="rounds" type="number" min="1" max="99" value="1"></div>
         </div>
       </section>
 
@@ -220,11 +220,28 @@
       exerciseSeconds: $('exerciseSeconds'), restSeconds: $('restSeconds'), rounds: $('rounds'), sound: $('soundBtn')
     };
     const CIRC = 2 * Math.PI * 90;
-    let blocks = [
-      { name:'Agachamento livre', duration:45 },
-      { name:'Polichinelo', duration:45 },
-      { name:'Prancha', duration:45 }
-    ];
+    let blocks = (() => {
+      const planned = [];
+      const add = (name, duration, group, type='exercise') => planned.push({name,duration,group,type});
+      ['Marcha acelerada com braços ativos','Polichinelo leve','Agachamento livre sem carga','Mobilidade dinâmica de ombros e quadril','Corrida estacionária leve']
+        .forEach(name => add(name,60,'1 · Aquecimento'));
+      const circuits = [
+        {group:'2 · Circuito A — Força global', exercises:['Agachamento goblet','Remada curvada com halteres','Supino com halteres','Afundo alternado']},
+        {group:'3 · Circuito B — Full Body', exercises:['Terra com halteres','Desenvolvimento com halteres','Agachamento + remada alta','Joelhada alternada']},
+        {group:'4 · Circuito C — Condicionamento', exercises:['Polichinelo','Agachamento lateral alternado','Escalador','Sprawl adaptado']}
+      ];
+      circuits.forEach(section => {
+        for(let round=1;round<=3;round++) section.exercises.forEach(name => {
+          add(name,40,section.group);
+          add('Descanso — transição',20,section.group,'rest');
+        });
+      });
+      ['Polichinelo','Agachamento livre','Escalador','Socos alternados no ar','Joelhada alternada','Agachamento com rotação','Marcha acelerada']
+        .forEach(name => { add(name,40,'5 · Desafio final'); add('Recuperação / transição',20,'5 · Desafio final','rest'); });
+      add('Caminhada leve e respiração',60,'6 · Volta à calma');
+      add('Mobilidade e alongamentos suaves',60,'6 · Volta à calma');
+      return planned;
+    })();
     let exerciseBank = [];
     let selectedBlocks = new Set();
     let collapsedGroups = new Set();
