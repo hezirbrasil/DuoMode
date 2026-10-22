@@ -154,6 +154,17 @@
     .transport-main { width:58px;height:58px;background:var(--lime);color:#142000;font-size:24px;box-shadow:0 0 0 5px #b6d90018; }
     .transport-main:hover { background:#c9ed18;color:#142000; }
     .sound-control { color:var(--muted);font-size:21px;margin-left:4px; }
+    .transport-btn svg { width:22px;height:22px;fill:currentColor;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round; }
+    .transport-main svg { width:27px;height:27px;stroke:none; }
+    #app.mode-play .transport-main .pause-icon { display:none; }
+    #app.mode-play .transport-main.is-running .play-icon { display:none; }
+    #app.mode-play .transport-main.is-running .pause-icon { display:block; }
+    #app.mode-play .transport-main:not(.is-running) .pause-icon { display:none; }
+    #app.mode-play .transport-main:not(.is-running) .play-icon { display:block; }
+    #app.mode-play .transport-btn { border-radius:50%;background:transparent;box-shadow:none;color:var(--text); }
+    #app.mode-play .transport-main { background:var(--lime);color:#142000;box-shadow:0 0 0 5px #b6d90018; }
+    #app.mode-play .transport-btn:hover { background:var(--panel2);color:var(--lime); }
+    #app.mode-play .transport-main:hover { background:#c9ed18;color:#142000; }
     #app.mode-play .transport-btn { border-radius:12px;background:transparent;color:var(--text);font-family:Arial,sans-serif;font-weight:800;letter-spacing:-2px; }
     #app.mode-play .transport-btn:hover { background:var(--panel2);color:var(--lime); }
     #app.mode-play .transport-main { border-radius:50%;background:var(--lime);color:#142000;letter-spacing:0; }
@@ -232,11 +243,11 @@
         <p class="round-label" id="roundLabel">Adicione os blocos e pressione iniciar</p>
         <div class="progress-bar" aria-label="Progresso da aula"><div class="progress-fill" id="overallProgress"></div></div>
         <div class="controls transport-controls" role="group" aria-label="Controles do cronômetro">
-          <button class="transport-btn" id="previousBtn" type="button" aria-label="Exercício anterior" title="Exercício anterior">‹‹</button>
-          <button class="transport-btn transport-main" id="startBtn" type="button" aria-label="Iniciar" title="Iniciar">▶</button>
-          <button class="transport-btn" id="resetBtn" type="button" aria-label="Parar e voltar ao início" title="Parar e voltar ao início">■</button>
-          <button class="transport-btn" id="nextBtn" type="button" aria-label="Próximo exercício" title="Próximo exercício">››</button>
-          <button class="transport-btn sound-control" id="soundBtn" type="button" aria-label="Desligar som" title="Som ligado/desligado" aria-pressed="true">♪</button>
+          <button class="transport-btn" id="previousBtn" type="button" aria-label="Exercício anterior" title="Exercício anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5L10 12l9 7V5zM5 5v14"/></svg></button>
+          <button class="transport-btn transport-main" id="startBtn" type="button" aria-label="Iniciar" title="Iniciar"><svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg><svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM15 5h4v14h-4z"/></svg></button>
+          <button class="transport-btn" id="resetBtn" type="button" aria-label="Parar e voltar ao início" title="Parar e voltar ao início"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1"/></svg></button>
+          <button class="transport-btn" id="nextBtn" type="button" aria-label="Próximo exercício" title="Próximo exercício"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l9 7-9 7V5zM19 5v14"/></svg></button>
+          <button class="transport-btn sound-control" id="soundBtn" type="button" aria-label="Desligar som" title="Som ligado/desligado" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4zM16 9a5 5 0 010 6M18 6a9 9 0 010 12"/></svg></button>
         </div>
         <button class="btn" id="exitTimerFullscreen" type="button">✕ Sair da tela cheia</button>
         <button class="transport-btn" id="backToScriptBtn" type="button" aria-label="Voltar" title="Voltar">←</button>
@@ -545,7 +556,7 @@
       const doneBlocks=blocks.slice(0,blockIndex).reduce((s,b)=>s+b.duration,0)+Math.max(0,blockIndex)*settings().rest;
       const done=finished?segments:doneRounds+doneBlocks+(phase==='rest'?current?.duration||0:0)+(max-remaining);
       els.overall.style.width=(segments?Math.max(0,Math.min(100,done/segments*100)):0)+'%';
-      els.start.textContent=finished?'▶':running?'Ⅱ':'▶';
+      els.start.classList.toggle('is-running',running&&!finished);
       els.start.setAttribute('aria-label',finished?'Reiniciar aula':running?'Pausar':'Iniciar');
       els.start.title=finished?'Reiniciar aula':running?'Pausar':'Iniciar';
       els.start.disabled=noBlocks;
