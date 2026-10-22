@@ -45,6 +45,8 @@
     #app.mode-play #timerPanel .eyebrow { margin-bottom:6px; }
     #app.mode-play #timerPanel .eyebrow,
     #app.mode-play #timerPanel .phase { display:none !important; }
+    #app.mode-play #maximizeTimerBtn { display:grid;position:fixed;top:12px;right:12px;z-index:10001;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);font-size:23px;place-items:center; }
+    #app.mode-play #maximizeTimerBtn:focus-visible { outline:none;box-shadow:0 0 0 1px var(--lime); }
     #app.mode-play #exitTimerFullscreen { display:none !important; }
     #app.mode-play #soundBtn { display:none !important; }
     #app.mode-play #backToScriptBtn { display:grid; position:fixed;top:12px;left:12px;z-index:10001;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);font-size:26px;place-items:center; }
@@ -89,6 +91,7 @@
     #timerPanel:fullscreen #exitTimerFullscreen { display:none !important; }
     #timerPanel:fullscreen #soundBtn { display:none !important; }
     #timerPanel:fullscreen #backToScriptBtn { display:grid; position:fixed;top:12px;left:12px;z-index:10001;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);font-size:26px;place-items:center; }
+    #maximizeTimerBtn { display:none; }
     #exitTimerFullscreen { display:none; margin-top:12px; }
     #backToScriptBtn { display:none; }
     .timer-panel:before { content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--lime),var(--blue)); }
@@ -191,6 +194,7 @@
         </div>
         <button class="btn" id="exitTimerFullscreen" type="button">✕ Sair da tela cheia</button>
         <button class="transport-btn" id="backToScriptBtn" type="button" aria-label="Voltar" title="Voltar">←</button>
+        <button class="transport-btn" id="maximizeTimerBtn" type="button" aria-label="Maximizar timer" title="Maximizar timer">⛶</button>
         <div class="settings">
           <div><label for="exerciseMinutes">Exercício (min)</label><input id="exerciseMinutes" type="number" min="0" max="60" value="0"></div>
           <div><label for="exerciseSeconds">Exercício (seg)</label><input id="exerciseSeconds" type="number" min="0" max="59" value="40"></div>
@@ -587,6 +591,7 @@
     $('nextBtn').addEventListener('click',()=>jumpBlock(1));
     $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;els.sound.textContent=soundEnabled?'♫':'♩';els.sound.setAttribute('aria-label',soundEnabled?'Desligar som':'Ligar som');els.sound.title=soundEnabled?'Desligar som':'Ligar som';els.sound.setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)tone();});
     $('fullscreenBtn').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('timerPanel').requestFullscreen();}catch(e){alert('A tela cheia não está disponível neste navegador.');}});
+    $('maximizeTimerBtn').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await $('timerPanel').requestFullscreen();}catch(e){alert('A maximização não está disponível neste navegador.');}});
     $('exitTimerFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{setViewMode('script');}});
     $('backToScriptBtn').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}setViewMode('script');});
     $('groupSelectedBtn').addEventListener('click',()=>{
