@@ -517,7 +517,6 @@
             add.addEventListener('click',()=>{if(!exSelect.value)return;extras.push(exSelect.value);b.extraExercises=extras;render();});
             chooser.append(cat,exSelect,add);editor.append(chooser);addExtraBtn.textContent='Cancelar';
           });
-          editor.append(addExtraBtn);
         } else {
           const restLabel=document.createElement('span');restLabel.textContent='Etapa de descanso';restLabel.style.cssText='color:var(--muted);font-size:11px;grid-column:1/-1';editor.append(restLabel);
         }
@@ -529,7 +528,7 @@
         const restAfter=document.createElement('input');restAfter.type='number';restAfter.min='0';restAfter.max='3600';restAfter.value=String(b.restAfter??0);restAfter.title='Tempo de descanso após este bloco';restAfter.setAttribute('aria-label','Descanso após '+b.name+' em segundos');restAfter.placeholder='0 = sem descanso';
         restAfter.style.cssText='min-width:0;width:100%';
         restAfter.addEventListener('change',()=>{if(running){restAfter.value=String(b.restAfter??0);return;}b.restAfter=Math.max(0,Math.min(3600,Number(restAfter.value)||0));render();});
-        restWrap.append(restAfter);editor.append(minutes,seconds,restWrap);info.append(editor);
+        restWrap.append(restAfter);editor.append(minutes,seconds,restWrap);if(b.type!=='rest')editor.append(addExtraBtn);info.append(editor);
         const actions=document.createElement('div');actions.className='item-actions';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.addEventListener('click',fn);return btn;};
         actions.append(make('↑','Mover para cima',()=>moveBlock(i,-1),i===0),make('↓','Mover para baixo',()=>moveBlock(i,1),i===blocks.length-1),make('×','Remover bloco',()=>removeBlock(i)));
