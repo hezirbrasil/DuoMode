@@ -34,6 +34,10 @@
     .exercise-item input[type=checkbox] { width:17px;height:17px;accent-color:var(--lime);margin:0; }
     .exercise-item { grid-template-columns:20px 30px minmax(0,1fr) auto; }
     .group-label { grid-column:1/-1;color:var(--lime);font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;padding:2px 0 0; }
+    .group-header { display:flex;align-items:center;gap:9px;width:100%;grid-column:1/-1;border:0;background:#b6d90012;color:var(--lime);padding:10px 12px;border-radius:9px;text-align:left;font-size:12px;font-weight:850;letter-spacing:.08em;text-transform:uppercase; }
+    .group-header .group-chevron { margin-left:auto;transition:transform .15s; }
+    .group-header[aria-expanded="false"] .group-chevron { transform:rotate(-90deg); }
+    .group-summary { color:var(--muted);font-size:11px;font-weight:600;letter-spacing:0;text-transform:none; }
     #timerPanel:fullscreen { width:100vw;height:100vh;max-width:none;border:0;border-radius:0;margin:0;padding:clamp(14px,4vh,42px);display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at top right,#103644 0,transparent 44%),var(--bg); }
     #timerPanel:fullscreen .clock-wrap { width:min(48vh, min(70vw,440px));margin:clamp(8px,2vh,24px) auto; }
     #timerPanel:fullscreen .time { font-size:clamp(60px,12vh,110px); }
@@ -177,6 +181,7 @@
     ];
     let exerciseBank = [];
     let selectedBlocks = new Set();
+    let collapsedGroups = new Set();
     let nextGroupId = 1;
     let bankLoaded = false;
     const categoryLabels = { peito:'Peito', costas:'Costas', ombros:'Ombros', bíceps:'Bíceps', tríceps:'Tríceps', pernas:'Pernas', posterior:'Posterior', composto:'Compostos', core:'Core e abdômen', cardio:'Cardio e funcional' };
@@ -228,7 +233,27 @@
     }
     function renderList() {
       els.list.innerHTML='';
+      const groupCounts = new Map();
+      blocks.forEach(b=>{if(b.group)groupCounts.set(b.group,(groupCounts.get(b.group)||0)+1);});
+      const renderedGroupHeaders = new Set();
       blocks.forEach((b,i) => {
+        if(b.group && !renderedGroupHeaders.has(b.group)) {
+          renderedGroupHeaders.add(b.group);
+          const header=document.createElement('button');
+          header.type='button';header.className='group-header';
+          const expanded=!collapsedGroups.has(b.group);
+          header.setAttribute('aria-expanded',String(expanded));
+          header.innerHTML='<span class="group-chevron">▼</span>';
+          const title=document.createElement('span');title.textContent=b.group;
+          const summary=document.createElement('span');summary.className='group-summary';summary.textContent=groupCounts.get(b.group)+' exercícios';
+          header.replaceChildren(document.createTextNode(expanded?'▾ ':'▸ '),title,summary);
+          header.addEventListener('click',()=>{
+            if(collapsedGroups.has(b.group))collapsedGroups.delete(b.group);else collapsedGroups.add(b.group);
+            renderList();
+          });
+          els.list.append(header);
+        }
+        if(b.group && collapsedGroups.has(b.group)) return;
         const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'');
         const check=document.createElement('input');check.type='checkbox';check.checked=selectedBlocks.has(i);check.setAttribute('aria-label','Selecionar '+b.name);check.addEventListener('change',()=>{check.checked?selectedBlocks.add(i):selectedBlocks.delete(i);});
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
@@ -237,10 +262,9 @@
         const actions=document.createElement('div');actions.className='item-actions';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.addEventListener('click',fn);return btn;};
         actions.append(make('↑','Mover para cima',()=>moveBlock(i,-1),i===0),make('↓','Mover para baixo',()=>moveBlock(i,1),i===blocks.length-1),make('×','Remover bloco',()=>removeBlock(i)));
-        if(b.group && (i===0 || blocks[i-1]?.group!==b.group)){const label=document.createElement('div');label.className='group-label';label.textContent='▦ '+b.group;row.append(label);}
         row.append(check,idx,info,actions);els.list.append(row);
       });
-      els.count.textContent=blocks.length+' '+(blocks.length===1?'bloco':'blocos');
+      els.count.textContent=blocks.length+' '+(blocks.length===1?'bloco':'blocos')+(groupCounts.size?' · '+groupCounts.size+' grupos':'');
     }
     function render() {
       const noBlocks=!blocks.length;
