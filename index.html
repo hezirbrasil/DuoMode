@@ -450,7 +450,7 @@
         const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'');
         const check=document.createElement('input');check.type='checkbox';check.checked=selectedBlocks.has(i);check.setAttribute('aria-label','Selecionar '+b.name);check.addEventListener('change',()=>{check.checked?selectedBlocks.add(i):selectedBlocks.delete(i);});
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
-        const info=document.createElement('div');const nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap';const strong=document.createElement('strong');strong.textContent=b.name;const renameExercise=document.createElement('button');renameExercise.type='button';renameExercise.className='icon-btn';renameExercise.textContent='✎';renameExercise.title='Editar nome deste exercício';renameExercise.setAttribute('aria-label','Editar nome de '+b.name);renameExercise.addEventListener('click',()=>{if(running)return;const input=document.createElement('input');input.type='text';input.maxLength=90;input.value=b.name;input.setAttribute('aria-label','Nome do exercício');input.style.cssText='min-width:120px;max-width:100%;font:inherit;flex:1;padding:5px 8px';let saved=false;const finish=(save)=>{if(saved)return;saved=true;const value=input.value.trim();if(save&&value)b.name=value;render();};input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();finish(true);}else if(e.key==='Escape'){e.preventDefault();finish(false);}});input.addEventListener('blur',()=>finish(true));nameRow.replaceChild(input,strong);renameExercise.style.display='none';input.focus();input.select();});nameRow.append(strong,renameExercise);const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
+        const info=document.createElement('div');const nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap';const strong=document.createElement('strong');strong.textContent=[b.name,...(Array.isArray(b.extraExercises)?b.extraExercises:[])].join(' + ');const renameExercise=document.createElement('button');renameExercise.type='button';renameExercise.className='icon-btn';renameExercise.textContent='✎';renameExercise.title='Editar nome deste exercício';renameExercise.setAttribute('aria-label','Editar nome de '+b.name);renameExercise.addEventListener('click',()=>{if(running)return;const input=document.createElement('input');input.type='text';input.maxLength=90;input.value=b.name;input.setAttribute('aria-label','Nome do exercício');input.style.cssText='min-width:120px;max-width:100%;font:inherit;flex:1;padding:5px 8px';let saved=false;const finish=(save)=>{if(saved)return;saved=true;const value=input.value.trim();if(save&&value)b.name=value;render();};input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();finish(true);}else if(e.key==='Escape'){e.preventDefault();finish(false);}});input.addEventListener('blur',()=>finish(true));nameRow.replaceChild(input,strong);renameExercise.style.display='none';input.focus();input.select();});nameRow.append(strong,renameExercise);const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
         info.append(nameRow,small);
         row.title='Clique para trocar o exercício pelo banco';
         row.addEventListener('click',e=>{
@@ -474,6 +474,35 @@
           groupSelect.addEventListener('change',populateExercises);
           exerciseSelect.addEventListener('change',()=>{if(running){alert('Pause o timer antes de trocar exercícios.');renderList();return;}if(exerciseSelect.value){b.name=exerciseSelect.value;render();}});
           editor.append(groupSelect,exerciseSelect);
+          const extras=Array.isArray(b.extraExercises)?b.extraExercises:[];
+          const extrasList=document.createElement('div');extrasList.style.cssText='grid-column:1/-1;display:flex;flex-direction:column;gap:5px';
+          const refreshExtras=()=>{
+            extrasList.replaceChildren();
+            extras.forEach((name,extraIndex)=>{
+              const line=document.createElement('div');line.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--text)';
+              const label=document.createElement('span');label.textContent='Também no circuito: '+name;
+              const remove=document.createElement('button');remove.type='button';remove.className='icon-btn';remove.textContent='×';remove.title='Remover '+name+' do circuito';remove.addEventListener('click',()=>{if(running)return;extras.splice(extraIndex,1);b.extraExercises=extras;render();});
+              line.append(label,remove);extrasList.append(line);
+            });
+          };
+          refreshExtras();editor.append(extrasList);
+          const addExtraBtn=document.createElement('button');addExtraBtn.type='button';addExtraBtn.textContent='＋ Adicionar exercício ao mesmo tempo';addExtraBtn.style.cssText='grid-column:1/-1;width:100%;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--lime);font-weight:700';
+          addExtraBtn.addEventListener('click',()=>{
+            if(running)return;
+            let chooser=editor.querySelector('.extra-exercise-picker');
+            if(chooser){chooser.remove();addExtraBtn.textContent='＋ Adicionar exercício ao mesmo tempo';return;}
+            chooser=document.createElement('div');chooser.className='extra-exercise-picker';chooser.style.cssText='grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:6px';
+            const cat=document.createElement('select');cat.setAttribute('aria-label','Grupamento muscular do exercício adicional');
+            const all=document.createElement('option');all.value='all';all.textContent='Todos os grupos';cat.append(all);
+            [...new Set(exerciseBank.map(ex=>ex.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR')).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=categoryLabels[c]||c;cat.append(o);});
+            const exSelect=document.createElement('select');exSelect.setAttribute('aria-label','Exercício adicional do circuito');
+            const fill=()=>{exSelect.replaceChildren();const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Escolher exercício…';exSelect.append(placeholder);exerciseBank.filter(ex=>(cat.value==='all'||ex.category===cat.value)&&ex.name!==b.name&&!extras.includes(ex.name)).forEach(ex=>{const o=document.createElement('option');o.value=ex.name;o.textContent=ex.name;exSelect.append(o);});};
+            cat.addEventListener('change',fill);fill();
+            const add=document.createElement('button');add.type='button';add.textContent='Adicionar';add.style.cssText='grid-column:1/-1;padding:8px;border:0;border-radius:9px;background:var(--lime);color:#142015;font-weight:800';
+            add.addEventListener('click',()=>{if(!exSelect.value)return;extras.push(exSelect.value);b.extraExercises=extras;render();});
+            chooser.append(cat,exSelect,add);editor.append(chooser);addExtraBtn.textContent='Cancelar';
+          });
+          editor.append(addExtraBtn);
         } else {
           const restLabel=document.createElement('span');restLabel.textContent='Etapa de descanso';restLabel.style.cssText='color:var(--muted);font-size:11px;grid-column:1/-1';editor.append(restLabel);
         }
@@ -505,7 +534,7 @@
       els.caption.textContent=finished?'Tempo total concluído':isRecovery?'Tempo de recuperação':'Tempo restante';
       els.progress.style.strokeDasharray=CIRC;
       els.progress.style.strokeDashoffset=CIRC*(1-Math.max(0,Math.min(1,remaining/max)));
-      els.name.textContent=finished?'Parabéns! Aula finalizada':current?(temporaryNames.get(current)||current.name):'Nenhum bloco adicionado';
+      els.name.textContent=finished?'Parabéns! Aula finalizada':current?(temporaryNames.get(current)||[current.name,...(Array.isArray(current.extraExercises)?current.extraExercises:[])].join(' + ')):'Nenhum bloco adicionado';
       els.round.textContent=finished?'Você completou todos os rounds.':noBlocks?'Adicione exercícios para montar a aula.':'Round '+roundIndex+' de '+settings().rounds+' · Bloco '+(blockIndex+1)+' de '+blocks.length;
       const segments=blocks.reduce((s,b)=>s+b.duration,0)*settings().rounds+(blocks.length*Math.max(0,blocks.length-1))*settings().rest*settings().rounds;
       const doneRounds=(roundIndex-1)*(blocks.reduce((s,b)=>s+b.duration,0)+Math.max(0,blocks.length-1)*settings().rest);
