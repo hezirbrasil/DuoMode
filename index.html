@@ -116,6 +116,18 @@
           <span class="subtle" id="blockCount">3 blocos</span>
         </div>
         <div class="exercise-list" id="exerciseList"></div>
+        <div style="border:1px solid var(--line);border-radius:13px;padding:13px;background:#0719207a;margin-bottom:12px">
+          <div class="section-head" style="margin-bottom:10px"><div><p class="eyebrow">Banco importado</p><h2 style="font-size:15px;margin:0">Exercícios do MMA Conditioning</h2></div><span class="subtle" id="bankCount">Carregando…</span></div>
+          <div class="settings" style="margin-top:0;grid-template-columns:1fr 1fr">
+            <div><label for="bankCategory">Categoria</label><select id="bankCategory"><option value="all">Todas</option></select></div>
+            <div><label for="bankSearch">Buscar exercício</label><input id="bankSearch" type="search" placeholder="Ex.: agachamento"></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <select id="bankExercise" aria-label="Selecionar exercício do banco" style="flex:1"><option value="">Carregando banco…</option></select>
+            <button class="btn blue" id="addBankExercise" type="button">＋ Adicionar</button>
+          </div>
+          <p class="subtle" id="bankStatus" style="margin:8px 0 0">Banco de exercícios importado do aplicativo original.</p>
+        </div>
         <form class="add-form" id="addForm">
           <input id="newExercise" type="text" maxlength="90" placeholder="Nome do exercício ou bloco" aria-label="Nome do exercício" required>
           <input id="newDuration" type="number" min="1" max="3600" value="45" aria-label="Duração em segundos" title="Duração em segundos" required>
@@ -146,6 +158,35 @@
       { name:'Polichinelo', duration:45 },
       { name:'Prancha', duration:45 }
     ];
+    let exerciseBank = [];
+    let bankLoaded = false;
+    const categoryLabels = { peito:'Peito', costas:'Costas', ombros:'Ombros', bíceps:'Bíceps', tríceps:'Tríceps', pernas:'Pernas', posterior:'Posterior', composto:'Compostos', core:'Core e abdômen', cardio:'Cardio e funcional' };
+    function renderBankPicker() {
+      const category = $('bankCategory').value || 'all';
+      const query = ($('bankSearch').value || '').trim().toLocaleLowerCase('pt-BR');
+      const filtered = exerciseBank.filter(x => (category === 'all' || x.category === category) && x.name.toLocaleLowerCase('pt-BR').includes(query));
+      const select = $('bankExercise');
+      select.innerHTML = '';
+      filtered.forEach(ex => { const opt=document.createElement('option'); opt.value=ex.name; opt.textContent=ex.name+' · '+(categoryLabels[ex.category]||ex.category); select.append(opt); });
+      $('bankCount').textContent = exerciseBank.length+' exercícios';
+      $('bankStatus').textContent = filtered.length ? filtered.length+' exercício(s) disponível(is) para adicionar à aula.' : 'Nenhum exercício encontrado para esse filtro.';
+      if (!filtered.length) { const opt=document.createElement('option');opt.value='';opt.textContent='Nenhum resultado';select.append(opt); }
+    }
+    async function loadExerciseBank() {
+      try {
+        const response = await fetch('./data/exercises.json');
+        if (!response.ok) throw new Error('HTTP '+response.status);
+        const data = await response.json();
+        exerciseBank = Array.isArray(data.exercises) ? data.exercises : [];
+        const categories = [...new Set(exerciseBank.map(x=>x.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR'));
+        categories.forEach(cat=>{const opt=document.createElement('option');opt.value=cat;opt.textContent=categoryLabels[cat]||cat;$('bankCategory').append(opt);});
+        bankLoaded=true;renderBankPicker();
+      } catch (error) {
+        $('bankCount').textContent='Indisponível';
+        $('bankExercise').innerHTML='<option value="">Abra via GitHub Pages para carregar o banco</option>';
+        $('bankStatus').textContent='Não foi possível carregar o JSON. O seletor funciona quando o site é servido por HTTP/HTTPS.';
+      }
+    }
     let running = false, phase = 'exercise', blockIndex = 0, roundIndex = 1, remaining = 45, totalPhase = 45, lastSecond = null, timerId = null, soundEnabled = true, audioCtx = null, finished = false, startedAt = 0;
     const fmt = n => { n = Math.max(0, Math.ceil(n)); return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); };
     const intVal = (el, fallback, min=0, max=3600) => { const n=Number.parseInt(el.value,10); return Number.isFinite(n) ? Math.min(max,Math.max(min,n)) : fallback; };
@@ -271,6 +312,17 @@
         alert('Aula salva neste navegador. No próximo passo podemos montar uma biblioteca visual de aulas salvas.');
       } catch(e) { alert('Não foi possível salvar. Verifique o espaço disponível no navegador.'); }
     }
+    $('bankCategory').addEventListener('change',renderBankPicker);
+    $('bankSearch').addEventListener('input',renderBankPicker);
+    $('addBankExercise').addEventListener('click',()=>{
+      if(running){alert('Pause o timer antes de alterar os blocos.');return;}
+      const name=$('bankExercise').value;
+      if(!name){alert('Selecione um exercício do banco.');return;}
+      const already=blocks.some(b=>b.name.toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR'));
+      if(already && !confirm('Esse exercício já está na aula. Adicionar outra vez?')) return;
+      blocks.push({name,duration:intVal(els.exerciseSeconds,45,1,3600)});
+      reset();
+    });
     $('addForm').addEventListener('submit',e=>{
       e.preventDefault();const name=$('newExercise').value.trim();const duration=intVal($('newDuration'),45,1,3600);
       if(!name)return;
@@ -287,6 +339,7 @@
     [els.exerciseSeconds,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){alert('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){/* wall-clock interval continues */}});
     reset();
+    loadExerciseBank();
   })();
   </script>
 </body>
