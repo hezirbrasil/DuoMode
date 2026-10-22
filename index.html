@@ -255,6 +255,7 @@
           </div>
           <p class="subtle" id="bankStatus" style="margin:8px 0 0">Banco de exercícios importado do aplicativo original.</p>
         </div>
+        <div class="section-head" style="margin:16px 0 8px"><h2 style="font-size:16px;margin:0">Adicionar bloco</h2><span class="subtle">Inclua um exercício na sequência</span></div>
         <form class="add-form" id="addForm">
           <input id="newExercise" type="text" maxlength="90" placeholder="Nome do exercício ou bloco" aria-label="Nome do exercício" required>
           <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos" required><span>seg</span></div>
@@ -454,7 +455,10 @@
         const seconds=document.createElement('input');seconds.type='number';seconds.min='0';seconds.max='59';seconds.value=String(b.duration%60);seconds.title='Segundos';seconds.setAttribute('aria-label','Segundos do bloco '+(i+1));
         const updateDuration=()=>{if(running){alert('Pause o timer antes de alterar a duração.');renderList();return;}const total=intVal(minutes,0,0,60)*60+intVal(seconds,0,0,59);if(total<1){alert('A duração precisa ser de pelo menos 1 segundo.');renderList();return;}b.duration=total;if(i===blockIndex){remaining=total;totalPhase=total;}render();};
         minutes.addEventListener('change',updateDuration);seconds.addEventListener('change',updateDuration);
-        editor.append(minutes,seconds);info.append(editor);
+        const restAfter=document.createElement('input');restAfter.type='number';restAfter.min='0';restAfter.max='3600';restAfter.value=String(b.restAfter??0);restAfter.title='Descanso após este bloco (segundos)';restAfter.setAttribute('aria-label','Descanso após '+b.name+' em segundos');restAfter.placeholder='Descanso após bloco (seg)';
+        restAfter.style.cssText='grid-column:1/-1;min-width:0;width:100%';
+        restAfter.addEventListener('change',()=>{if(running){restAfter.value=String(b.restAfter??0);return;}b.restAfter=Math.max(0,Math.min(3600,Number(restAfter.value)||0));render();});
+        editor.append(minutes,seconds,restAfter);info.append(editor);
         const actions=document.createElement('div');actions.className='item-actions';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.addEventListener('click',fn);return btn;};
         actions.append(make('↑','Mover para cima',()=>moveBlock(i,-1),i===0),make('↓','Mover para baixo',()=>moveBlock(i,1),i===blocks.length-1),make('×','Remover bloco',()=>removeBlock(i)));
@@ -510,8 +514,8 @@
     function advance() {
       tone(phase==='exercise'?520:900,.2);
       if(phase==='exercise') {
-        const rest=settings().rest;
-        if(rest>0 && blockIndex<blocks.length-1){phase='rest';remaining=rest;totalPhase=rest;}
+        const rest=Math.max(0,Number(blocks[blockIndex]?.restAfter??settings().rest)||0);
+        if(rest>0 && (blockIndex<blocks.length-1||roundIndex<settings().rounds)){phase='rest';remaining=rest;totalPhase=rest;}
         else nextBlock();
       } else nextBlock();
       if(!blocks.length){finish();return;}
