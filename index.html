@@ -34,7 +34,8 @@
     #app.mode-play #timerPanel { width:100%;min-height:calc(100vh - 24px);min-height:calc(100dvh - 24px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(12px,3vh,28px); }
     #app.mode-play #timerPanel .clock-wrap { width:min(48vh, min(76vw,500px));width:min(48dvh, min(76vw,500px));margin:clamp(6px,1.5vh,18px) auto;flex-shrink:0; }
     #app.mode-play #timerPanel .time { font-size:clamp(64px,13vh,124px);font-size:clamp(64px,13dvh,124px); }
-    #app.mode-play #timerPanel .current-name { font-size:clamp(24px,4vh,40px);font-size:clamp(24px,4dvh,40px); }
+    #app.mode-play #timerPanel .current-name { font-size:clamp(18px,3.2vh,28px);font-size:clamp(18px,3.2dvh,28px); }
+    #app.mode-play #timerPanel .current-name-row { max-width:min(90vw,900px); }
     #app.mode-play #timerPanel .round-label { font-size:clamp(14px,2vh,19px); }
     #app.mode-play #timerPanel .progress-bar { width:min(760px,100%); }
     #app.mode-play #timerPanel .settings { width:min(650px,100%); }
@@ -90,7 +91,11 @@
     .clock-content { position:relative; }
     .time { font-variant-numeric:tabular-nums;font-weight:850;font-size:clamp(48px,8vw,76px);letter-spacing:-.055em;line-height:1.1; }
     .clock-caption { color:var(--muted);font-size:12px;letter-spacing:.16em;margin-top:8px;text-transform:uppercase; }
-    .current-name { font-size:clamp(18px,3vw,24px);font-weight:750;margin:4px 0 0;min-height:32px; }
+    .current-name-row { display:flex;align-items:center;justify-content:center;gap:8px;max-width:100%;margin:4px auto 0; }
+    .current-name { font-size:clamp(16px,2.4vw,21px);font-weight:700;margin:0;min-height:0;line-height:1.25;overflow-wrap:anywhere; }
+    .edit-current-name { flex:0 0 auto;width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font-size:14px;padding:0; }
+    .edit-current-name:hover { color:var(--lime);border-color:var(--lime); }
+    .edit-current-name:disabled { display:none; }
     .round-label { color:var(--muted);font-size:13px;margin:8px 0 0; }
     .progress-bar { height:5px;background:#1a3944;border-radius:10px;overflow:hidden;margin:20px 0 17px; }
     .progress-fill { height:100%;width:0;background:linear-gradient(90deg,var(--lime),var(--blue));transition:width .2s; }
@@ -162,7 +167,7 @@
             <div class="clock-caption" id="clockCaption">Tempo restante</div>
           </div>
         </div>
-        <h2 class="current-name" id="currentName">Prepare sua aula</h2>
+        <div class="current-name-row"><h2 class="current-name" id="currentName">Prepare sua aula</h2><button class="edit-current-name" id="editCurrentNameBtn" type="button" aria-label="Alterar nome temporariamente" title="Alterar nome só nesta sessão">✎</button></div>
         <p class="round-label" id="roundLabel">Adicione os blocos e pressione iniciar</p>
         <div class="progress-bar" aria-label="Progresso da aula"><div class="progress-fill" id="overallProgress"></div></div>
         <div class="controls transport-controls" role="group" aria-label="Controles do cronômetro">
@@ -283,6 +288,7 @@
       }
     }
     let running = false, phase = 'exercise', blockIndex = 0, roundIndex = 1, remaining = 45, totalPhase = 45, lastSecond = null, timerId = null, soundEnabled = true, audioCtx = null, finished = false, startedAt = 0;
+    const temporaryNames = new Map();
     const fmt = n => { n = Math.max(0, Math.ceil(n)); return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); };
     const intVal = (el, fallback, min=0, max=3600) => { const n=Number.parseInt(el.value,10); return Number.isFinite(n) ? Math.min(max,Math.max(min,n)) : fallback; };
     const settings = () => ({ rest:intVal(els.restMinutes,0,0,60)*60+intVal(els.restSeconds,15,0,59), rounds:intVal(els.rounds,3,1,99) });
@@ -391,7 +397,9 @@
       els.caption.textContent=finished?'Tempo total concluído':isRecovery?'Tempo de recuperação':'Tempo restante';
       els.progress.style.strokeDasharray=CIRC;
       els.progress.style.strokeDashoffset=CIRC*(1-Math.max(0,Math.min(1,remaining/max)));
-      els.name.textContent=finished?'Parabéns! Aula finalizada':current?current.name:'Nenhum bloco adicionado';
+      els.name.textContent=finished?'Parabéns! Aula finalizada':current?(temporaryNames.get(current)||current.name):'Nenhum bloco adicionado';
+      $('editCurrentNameBtn').disabled=finished||!current||current.type==='rest';
+      $('editCurrentNameBtn').title='Alterar nome só nesta sessão';
       els.round.textContent=finished?'Você completou todos os rounds.':noBlocks?'Adicione exercícios para montar a aula.':'Round '+roundIndex+' de '+settings().rounds+' · Bloco '+(blockIndex+1)+' de '+blocks.length;
       const segments=blocks.reduce((s,b)=>s+b.duration,0)*settings().rounds+(blocks.length*Math.max(0,blocks.length-1))*settings().rest*settings().rounds;
       const doneRounds=(roundIndex-1)*(blocks.reduce((s,b)=>s+b.duration,0)+Math.max(0,blocks.length-1)*settings().rest);
@@ -479,6 +487,7 @@
     function loadExample() {
       if(running&&!confirm('A aula está em execução. Substituir os blocos?'))return;
       const defaultDuration=intVal(els.exerciseMinutes,0,0,60)*60+intVal(els.exerciseSeconds,45,0,59)||45;blocks=[{name:'Agachamento Livre',duration:defaultDuration},{name:'Polichinelo',duration:defaultDuration},{name:'Prancha',duration:defaultDuration}];
+      temporaryNames.clear();
       reset();
     }
     function loadClass50() {
@@ -531,6 +540,7 @@
       add('Mobilidade e alongamentos suaves',60,'6 · Volta à calma');
 
       blocks=planned;
+      temporaryNames.clear();
       selectedBlocks.clear();collapsedGroups.clear();
       els.exerciseMinutes.value='0';els.exerciseSeconds.value='40';els.restMinutes.value='0';els.restSeconds.value='0';els.rounds.value='1';
       reset();
@@ -564,6 +574,18 @@
       if(!name)return;if(duration<1){alert('Informe uma duração de pelo menos 1 segundo.');return;}
       if(running){alert('Pause o timer antes de alterar os blocos.');return;}
       blocks.push({name,duration});$('newExercise').value='';reset();$('newDurationMin').value=els.exerciseMinutes.value;$('newDuration').value=els.exerciseSeconds.value;
+    });
+    $('editCurrentNameBtn').addEventListener('click',()=>{
+      const current=blocks[blockIndex];
+      if(!current||current.type==='rest'||finished)return;
+      const original=current.name;
+      const currentName=temporaryNames.get(current)||original;
+      const edited=prompt('Nome temporário para este exercício (não altera o banco nem a aula salva):',currentName);
+      if(edited===null)return;
+      const trimmed=edited.trim();
+      if(!trimmed){alert('O nome não pode ficar vazio.');return;}
+      if(trimmed===original)temporaryNames.delete(current);else temporaryNames.set(current,trimmed);
+      render();
     });
     $('startBtn').addEventListener('click',start);
     $('resetBtn').addEventListener('click',reset);
