@@ -321,28 +321,8 @@
       exerciseMinutes: $('exerciseMinutes'), exerciseSeconds: $('exerciseSeconds'), restMinutes: $('restMinutes'), restSeconds: $('restSeconds'), rounds: $('rounds'), sound: $('soundBtn')
     };
     const CIRC = 2 * Math.PI * 90;
-    let blocks = (() => {
-      const planned = [];
-      const add = (name, duration, group, type='exercise') => planned.push({name,duration,group,type});
-      ['Aquecimento','Polichinelo + Desenvolvimento','Agachamento Livre','Elevação Lateral','Agachamento + Troca de Base']
-        .forEach(name => add(name,60,'1 · Aquecimento'));
-      const circuits = [
-        {group:'2 · Circuito A — Força global', exercises:['Agachamento goblet','Remada Aberta','Supino','Avanço']},
-        {group:'3 · Circuito B — Full Body', exercises:['Terra','Desenvolvimento','Agachamento + remada alta','Joelhada no Step Alternada']},
-        {group:'4 · Circuito C — Condicionamento', exercises:['Polichinelo','Agachamento Lateral','Escalador','Sprawl']}
-      ];
-      circuits.forEach(section => {
-        for(let round=1;round<=3;round++) section.exercises.forEach(name => {
-          add(name,40,section.group);
-          add('Descanso — transição',20,section.group,'rest');
-        });
-      });
-      ['Polichinelo','Agachamento livre','Escalador','Flexão + Feet Touch','Joelhada no Step Alternada','Agachamento + Rotação','Corrida Lateral + Touch Down']
-        .forEach(name => { add(name,40,'5 · Desafio final'); add('Recuperação / transição',20,'5 · Desafio final','rest'); });
-      add('Caminhada leve e respiração',60,'6 · Volta à calma');
-      add('Mobilidade e alongamentos suaves',60,'6 · Volta à calma');
-      return planned;
-    })();
+    // A aula inicia vazia para o usuário montar os próprios blocos.
+    let blocks = [];
     let exerciseBank = [];
     let selectedBlocks = new Set();
     let collapsedGroups = new Set();
