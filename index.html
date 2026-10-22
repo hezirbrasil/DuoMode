@@ -465,7 +465,7 @@
           });
           headerRow.append(header,rename);els.list.append(headerRow);
         }
-        if(b.group && collapsedGroups.has(b.group)) return;
+        // Mantém todos os cartões visíveis; o cabeçalho do grupo organiza a lista sem ocultar exercícios.
         const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'');
         const check=document.createElement('input');check.type='checkbox';check.checked=selectedBlocks.has(i);check.setAttribute('aria-label','Selecionar '+b.name);check.addEventListener('change',()=>{check.checked?selectedBlocks.add(i):selectedBlocks.delete(i);});
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
