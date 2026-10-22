@@ -203,7 +203,7 @@
         </div>
         <form class="add-form" id="addForm">
           <input id="newExercise" type="text" maxlength="90" placeholder="Nome do exercício ou bloco" aria-label="Nome do exercício" required>
-          <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="1" max="59" value="45" aria-label="Segundos" title="Segundos" required><span>seg</span></div>
+          <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos" required><span>seg</span></div>
           <button class="btn blue" type="submit">＋ Adicionar</button>
         </form>
         <div class="library-tools">
@@ -243,7 +243,7 @@
           add('Descanso — transição',20,section.group,'rest');
         });
       });
-      ['Polichinelo','Agachamento livre','Escalador','Flexão + Feet Touch','Joelhada no Step Alternada','Agachamento + Rotação','Marcha acelerada']
+      ['Polichinelo','Agachamento livre','Escalador','Flexão + Feet Touch','Joelhada no Step Alternada','Agachamento + Rotação','Corrida Lateral + Touch Down']
         .forEach(name => { add(name,40,'5 · Desafio final'); add('Recuperação / transição',20,'5 · Desafio final','rest'); });
       add('Caminhada leve e respiração',60,'6 · Volta à calma');
       add('Mobilidade e alongamentos suaves',60,'6 · Volta à calma');
