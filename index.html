@@ -114,8 +114,9 @@
     .exercise-item { display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px;background:#0719207a;border:1px solid var(--line);border-radius:13px; }
     .exercise-item.active { border-color:var(--lime);box-shadow:inset 3px 0 var(--lime); }
     .exercise-item .index { display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--panel2);color:var(--sky);font-size:12px;font-weight:800; }
-    .block-editor { display:grid;grid-template-columns:minmax(0,1fr) 52px 52px;gap:5px;margin-top:8px; }
+    .block-editor { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px 48px;gap:5px;margin-top:8px; }
     .block-editor select,.block-editor input { padding:6px 7px;font-size:12px;min-width:0; }
+    @media(max-width:470px) { .block-editor { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }.block-editor input { width:100%; } }
     .duration-edit { display:flex;gap:5px;align-items:center; }
     .duration-edit input { width:52px; }
     .duration-edit span { color:var(--muted);font-size:10px; }
@@ -342,11 +343,21 @@
         info.append(strong,small);
         const editor=document.createElement('div');editor.className='block-editor';
         if(b.type!=='rest'){
-          const exerciseSelect=document.createElement('select');exerciseSelect.setAttribute('aria-label','Trocar exercício do bloco '+(i+1));exerciseSelect.title='Escolha outro exercício do banco';
-          const currentOpt=document.createElement('option');currentOpt.value=b.name;currentOpt.textContent='Atual: '+b.name;exerciseSelect.append(currentOpt);
-          exerciseBank.forEach(ex=>{if(ex.name.toLocaleLowerCase('pt-BR')!==b.name.toLocaleLowerCase('pt-BR')){const opt=document.createElement('option');opt.value=ex.name;opt.textContent=ex.name;exerciseSelect.append(opt);}});
+          const currentExercise=exerciseBank.find(ex=>ex.name.toLocaleLowerCase('pt-BR')===b.name.toLocaleLowerCase('pt-BR'));
+          const groupSelect=document.createElement('select');groupSelect.setAttribute('aria-label','Grupamento muscular do bloco '+(i+1));groupSelect.title='Filtrar por grupamento muscular';
+          const allGroups=document.createElement('option');allGroups.value='all';allGroups.textContent='Todos os grupos';groupSelect.append(allGroups);
+          [...new Set(exerciseBank.map(ex=>ex.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR')).forEach(cat=>{const opt=document.createElement('option');opt.value=cat;opt.textContent=categoryLabels[cat]||cat;groupSelect.append(opt);});
+          groupSelect.value=currentExercise?.category||'all';
+          const exerciseSelect=document.createElement('select');exerciseSelect.setAttribute('aria-label','Trocar exercício do bloco '+(i+1));exerciseSelect.title='Escolha outro exercício do grupo';
+          const populateExercises=()=>{
+            exerciseSelect.innerHTML='';
+            const currentOpt=document.createElement('option');currentOpt.value=b.name;currentOpt.textContent='Atual: '+b.name;exerciseSelect.append(currentOpt);
+            exerciseBank.filter(ex=>(groupSelect.value==='all'||ex.category===groupSelect.value)&&ex.name.toLocaleLowerCase('pt-BR')!==b.name.toLocaleLowerCase('pt-BR')).forEach(ex=>{const opt=document.createElement('option');opt.value=ex.name;opt.textContent=ex.name;exerciseSelect.append(opt);});
+          };
+          populateExercises();
+          groupSelect.addEventListener('change',populateExercises);
           exerciseSelect.addEventListener('change',()=>{if(running){alert('Pause o timer antes de trocar exercícios.');renderList();return;}if(exerciseSelect.value){b.name=exerciseSelect.value;render();}});
-          editor.append(exerciseSelect);
+          editor.append(groupSelect,exerciseSelect);
         } else {
           const restLabel=document.createElement('span');restLabel.textContent='Etapa de descanso';restLabel.style.cssText='color:var(--muted);font-size:11px;grid-column:1/-1';editor.append(restLabel);
         }
