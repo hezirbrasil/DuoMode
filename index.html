@@ -238,7 +238,8 @@
       </div>
       <div class="header-actions">
         <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Play</button>
-        <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="true">☷ Modo Construção</button>
+        <button class="btn mode-btn" id="modeConstructBtn" type="button" aria-pressed="true">✎ Modo Construção</button>
+        <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="false">☷ Modo Script</button>
         <button class="btn" id="saveBtn" type="button">Salvar aula</button>
       </div>
     </header>
@@ -772,7 +773,8 @@
       $('app').classList.toggle('mode-script',mode==='script');
       $('app').classList.toggle('mode-edit',mode==='edit');
       $('modePlayBtn').setAttribute('aria-pressed',String(play));
-      $('modeScriptBtn').setAttribute('aria-pressed',String(!play));
+      $('modeConstructBtn').setAttribute('aria-pressed',String(mode==='edit'));
+      $('modeScriptBtn').setAttribute('aria-pressed',String(mode==='script'));
       if(play) {
         render();
         window.scrollTo(0,0);
@@ -781,6 +783,7 @@
       }
     }
     $('modePlayBtn').addEventListener('click',()=>setViewMode('play'));
+    $('modeConstructBtn').addEventListener('click',()=>setViewMode('edit'));
     $('modeScriptBtn').addEventListener('click',()=>setViewMode('script'));
     $('scriptBackBtn').addEventListener('click',()=>setViewMode('edit'));
     document.addEventListener('fullscreenchange',()=>{
@@ -788,6 +791,7 @@
         $('app').classList.remove('mode-play');
         $('app').classList.add('mode-script');
         $('modePlayBtn').setAttribute('aria-pressed','false');
+        $('modeConstructBtn').setAttribute('aria-pressed','false');
         $('modeScriptBtn').setAttribute('aria-pressed','true');
       }
     });
