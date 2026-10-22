@@ -68,9 +68,12 @@
     #app.mode-script #scriptPanel .group-header-row { display:none !important; }
     #app.mode-script #scriptPanel .exercise-item { display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto;align-items:center;gap:8px 12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);margin:7px 0;min-width:0; }
     #app.mode-script #scriptPanel .exercise-item > input[type=checkbox],
-    #app.mode-script #scriptPanel .exercise-item .block-editor,
     #app.mode-script #scriptPanel .exercise-item .item-actions,
     #app.mode-script #scriptPanel .exercise-item small { display:none !important; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor { display:grid !important;grid-column:2;grid-row:2;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:6px;margin-top:8px;width:100%;min-width:0; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor select { display:block;min-width:0;width:100%;font-size:12px;padding:8px 6px; }
+    #app.mode-script #scriptPanel .exercise-item .block-editor input,
+    #app.mode-script #scriptPanel .exercise-item .block-editor label { display:none !important; }
     #app.mode-script #scriptPanel .exercise-item > .index { grid-column:1;grid-row:1;font-size:25px;font-weight:950;color:var(--lime);line-height:1.1; }
     #app.mode-script #scriptPanel .exercise-item > div:not(.block-editor):not(.item-actions) { grid-column:2;grid-row:1;min-width:0;width:100%; }
     #app.mode-script #scriptPanel .exercise-item strong { font-size:clamp(17px,2.2vw,22px); }
