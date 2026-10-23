@@ -204,10 +204,15 @@
               placeholder.value = '';
               placeholder.textContent = 'Escolha outro exercício…';
               picker.append(placeholder);
-              exerciseBank.forEach(ex => {
+              const orderedCategories = [...new Set(exerciseBank.map(ex => ex.category))].sort((a, b) => (categoryLabels[a] || a).localeCompare(categoryLabels[b] || b, 'pt-BR'));
+              const categoryIndex = new Map(orderedCategories.map((category, index) => [category, index + 1]));
+              exerciseBank.slice().sort((a, b) => {
+                const order = (categoryIndex.get(a.category) || 0) - (categoryIndex.get(b.category) || 0);
+                return order || a.name.localeCompare(b.name, 'pt-BR');
+              }).forEach(ex => {
                 const option = document.createElement('option');
                 option.value = ex.name;
-                option.textContent = ex.name;
+                option.textContent = String(categoryIndex.get(ex.category) || 0).padStart(2, '0') + ' · ' + (categoryLabels[ex.category] || ex.category) + ' — ' + ex.name;
                 picker.append(option);
               });
               picker.addEventListener('change', () => {
@@ -302,13 +307,13 @@
           const currentExercise=exerciseBank.find(ex=>ex.name.toLocaleLowerCase('pt-BR')===b.name.toLocaleLowerCase('pt-BR'));
           const groupSelect=document.createElement('select');groupSelect.setAttribute('aria-label','Grupamento muscular do bloco '+(i+1));groupSelect.title='Filtrar por grupamento muscular';
           const allGroups=document.createElement('option');allGroups.value='all';allGroups.textContent='Todos os grupos';groupSelect.append(allGroups);
-          [...new Set(exerciseBank.map(ex=>ex.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR')).forEach(cat=>{const opt=document.createElement('option');opt.value=cat;opt.textContent=categoryLabels[cat]||cat;groupSelect.append(opt);});
+          [...new Set(exerciseBank.map(ex=>ex.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR')).forEach((cat,index)=>{const opt=document.createElement('option');opt.value=cat;opt.textContent=String(index+1).padStart(2,'0')+' · '+(categoryLabels[cat]||cat);groupSelect.append(opt);});
           groupSelect.value=currentExercise?.category||'all';
           const exerciseSelect=document.createElement('select');exerciseSelect.setAttribute('aria-label','Trocar exercício do bloco '+(i+1));exerciseSelect.title='Escolha outro exercício do grupo';
           const populateExercises=()=>{
             exerciseSelect.innerHTML='';
             const currentOpt=document.createElement('option');currentOpt.value='';currentOpt.textContent='Escolher exercício do banco…';exerciseSelect.append(currentOpt);
-            exerciseBank.filter(ex=>(groupSelect.value==='all'||ex.category===groupSelect.value)&&ex.name.toLocaleLowerCase('pt-BR')!==b.name.toLocaleLowerCase('pt-BR')).forEach(ex=>{const opt=document.createElement('option');opt.value=ex.name;opt.textContent=ex.name;exerciseSelect.append(opt);});
+            exerciseBank.filter(ex=>(groupSelect.value==='all'||ex.category===groupSelect.value)&&ex.name.toLocaleLowerCase('pt-BR')!==b.name.toLocaleLowerCase('pt-BR')).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')).forEach(ex=>{const opt=document.createElement('option');opt.value=ex.name;const categoryIndex=[...new Set(exerciseBank.map(item=>item.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR')).indexOf(ex.category)+1;opt.textContent=String(categoryIndex).padStart(2,'0')+' · '+(categoryLabels[ex.category]||ex.category)+' — '+ex.name;exerciseSelect.append(opt);});
           };
           populateExercises();
           groupSelect.addEventListener('change',populateExercises);
@@ -366,11 +371,18 @@
         const seconds=document.createElement('input');seconds.type='number';seconds.min='0';seconds.max='59';seconds.value=String(b.duration%60);seconds.title='Segundos';seconds.setAttribute('aria-label','Segundos do bloco '+(i+1));
         const updateDuration=()=>{if(running){showNotice('Pause o timer antes de alterar a duração.');renderList();return;}const total=intVal(minutes,0,0,60)*60+intVal(seconds,0,0,59);if(total<1){showNotice('A duração precisa ser de pelo menos 1 segundo.');renderList();return;}b.duration=total;if(i===blockIndex){remaining=total;totalPhase=total;}render();};
         minutes.addEventListener('change',updateDuration);seconds.addEventListener('change',updateDuration);
-        const restWrap=document.createElement('label');restWrap.textContent='Descanso após este bloco (segundos)';restWrap.style.cssText='grid-column:1/-1;display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--lime);font-weight:700';
-        const restAfter=document.createElement('input');restAfter.type='number';restAfter.min='0';restAfter.max='3600';restAfter.value=String(b.restAfter??0);restAfter.title='Tempo de descanso após este bloco';restAfter.setAttribute('aria-label','Descanso após '+b.name+' em segundos');restAfter.placeholder='0 = sem descanso';
-        restAfter.style.cssText='min-width:0;width:100%';
-        restAfter.addEventListener('change',()=>{if(running){restAfter.value=String(b.restAfter??0);return;}b.restAfter=Math.max(0,Math.min(3600,Number(restAfter.value)||0));render();});
-        restWrap.append(restAfter);editor.append(minutes,seconds,restWrap);if(b.type!=='rest')editor.append(addExtraBtn);
+        const restTotal=Math.max(0,Math.min(3600,Number(b.restAfter)||0));
+         const restWrap=document.createElement('div');restWrap.style.cssText='grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--panel2)';
+         const restHeading=document.createElement('strong');restHeading.textContent='Descanso após este bloco';restHeading.style.cssText='grid-column:1/-1;font-size:12px;color:var(--lime)';
+         const restMinutesLabel=document.createElement('label');restMinutesLabel.textContent='Minutos';restMinutesLabel.style.cssText='display:flex;flex-direction:column;gap:5px;margin:0';
+         const restMinutes=document.createElement('input');restMinutes.type='number';restMinutes.min='0';restMinutes.max='60';restMinutes.step='1';restMinutes.inputMode='numeric';restMinutes.value=String(Math.floor(restTotal/60));restMinutes.setAttribute('aria-label','Minutos de descanso após '+b.name);
+         const restSecondsLabel=document.createElement('label');restSecondsLabel.textContent='Segundos';restSecondsLabel.style.cssText='display:flex;flex-direction:column;gap:5px;margin:0';
+         const restSeconds=document.createElement('input');restSeconds.type='number';restSeconds.min='0';restSeconds.max='59';restSeconds.step='1';restSeconds.inputMode='numeric';restSeconds.value=String(restTotal%60);restSeconds.setAttribute('aria-label','Segundos de descanso após '+b.name);
+         const updateRest=()=>{if(running){showNotice('Pause o timer antes de alterar o descanso.');restMinutes.value=String(Math.floor((Number(b.restAfter)||0)/60));restSeconds.value=String((Number(b.restAfter)||0)%60);return;}b.restAfter=intVal(restMinutes,0,0,60)*60+intVal(restSeconds,0,0,59);render();};
+         restMinutes.addEventListener('change',updateRest);restSeconds.addEventListener('change',updateRest);
+         restMinutesLabel.append(restMinutes);restSecondsLabel.append(restSeconds);
+         restWrap.append(restHeading,restMinutesLabel,restSecondsLabel);
+         editor.append(minutes,seconds,restWrap);
         const actions=document.createElement('div');actions.className='item-actions';actions.style.cssText='display:flex;flex-wrap:wrap;grid-column:1/-1;grid-row:3;gap:6px;visibility:visible;opacity:1;width:100%;min-width:0';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.style.cssText='display:inline-flex!important;align-items:center;justify-content:center;gap:4px;width:auto;min-width:40px;height:34px;padding:0 9px;white-space:nowrap;visibility:visible!important;opacity:1';btn.addEventListener('click',fn);return btn;};
         actions.append(
