@@ -703,8 +703,16 @@
         $('modeScriptBtn').setAttribute('aria-pressed','true');
       }
     });
-    $('saveBtn').addEventListener('click',save);
+    $('saveBtn').addEventListener('click',()=>{
+      const menu=$('saveMenu');const open=menu.hidden;
+      menu.hidden=!open;$('saveBtn').setAttribute('aria-expanded',String(open));
+    });
+    $('saveLocalBtn').addEventListener('click',()=>{$('saveMenu').hidden=true;$('saveBtn').setAttribute('aria-expanded','false');save();});
+    document.addEventListener('click',event=>{
+      if(!event.target.closest('.save-menu-wrap')){$('saveMenu').hidden=true;$('saveBtn').setAttribute('aria-expanded','false');}
+    });
     $('exportClassBtn').addEventListener('click',()=>{
+      $('saveMenu').hidden=true;$('saveBtn').setAttribute('aria-expanded','false');
       if(!blocks.length){showNotice('Adicione pelo menos um bloco antes de exportar a aula.');return;}
       const title=prompt('Nome do arquivo da aula:','Minha aula coletiva');
       if(!title?.trim())return;
