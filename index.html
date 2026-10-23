@@ -325,6 +325,20 @@
   (() => {
     'use strict';
     const $ = (id) => document.getElementById(id);
+    function showNotice(message) {
+      let notice = $('appNotice');
+      if (!notice) {
+        notice = document.createElement('div');
+        notice.id = 'appNotice';
+        notice.setAttribute('role','status');
+        notice.setAttribute('aria-live','polite');
+        notice.style.cssText = 'display:none;position:sticky;top:8px;z-index:1000;padding:10px 14px;margin:8px 0;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--text);font-size:14px;box-shadow:0 4px 16px #0003';
+        const app = $('app');
+        app.prepend(notice);
+      }
+      notice.textContent = String(message);
+      notice.style.display = 'block';
+    }
     const els = {
       time: $('timeDisplay'), phaseText: $('phaseText'), phaseBadge: $('phaseBadge'), clockWrap: $('clockWrap'),
       progress: $('clockProgress'), caption: $('clockCaption'), name: $('currentName'), round: $('roundLabel'),
@@ -456,7 +470,7 @@
           });
           const rename=document.createElement('button');rename.type='button';rename.className='group-rename';rename.textContent='✎';rename.title='Renomear grupo '+groupName;rename.setAttribute('aria-label','Renomear grupo '+groupName);
           rename.addEventListener('click',()=>{
-            if(running){alert('Pause o timer antes de renomear grupos.');return;}
+            if(running){showNotice('Pause o timer antes de renomear grupos.');return;}
             const nextName=prompt('Novo nome para o grupo:',groupName);
             if(!nextName?.trim())return;
             const trimmed=nextName.trim();
@@ -493,7 +507,7 @@
           };
           populateExercises();
           groupSelect.addEventListener('change',populateExercises);
-          exerciseSelect.addEventListener('change',()=>{if(running){alert('Pause o timer antes de trocar exercícios.');renderList();return;}if(exerciseSelect.value){b.name=exerciseSelect.value;render();}});
+          exerciseSelect.addEventListener('change',()=>{if(running){showNotice('Pause o timer antes de trocar exercícios.');renderList();return;}if(exerciseSelect.value){b.name=exerciseSelect.value;render();}});
           editor.append(groupSelect,exerciseSelect);
           const extras=Array.isArray(b.extraExercises)?b.extraExercises:[];
           const extrasList=document.createElement('div');extrasList.style.cssText='grid-column:1/-1;display:flex;flex-direction:column;gap:5px';
@@ -545,7 +559,7 @@
         }
         const minutes=document.createElement('input');minutes.type='number';minutes.min='0';minutes.max='60';minutes.value=String(Math.floor(b.duration/60));minutes.title='Minutos';minutes.setAttribute('aria-label','Minutos do bloco '+(i+1));
         const seconds=document.createElement('input');seconds.type='number';seconds.min='0';seconds.max='59';seconds.value=String(b.duration%60);seconds.title='Segundos';seconds.setAttribute('aria-label','Segundos do bloco '+(i+1));
-        const updateDuration=()=>{if(running){alert('Pause o timer antes de alterar a duração.');renderList();return;}const total=intVal(minutes,0,0,60)*60+intVal(seconds,0,0,59);if(total<1){alert('A duração precisa ser de pelo menos 1 segundo.');renderList();return;}b.duration=total;if(i===blockIndex){remaining=total;totalPhase=total;}render();};
+        const updateDuration=()=>{if(running){showNotice('Pause o timer antes de alterar a duração.');renderList();return;}const total=intVal(minutes,0,0,60)*60+intVal(seconds,0,0,59);if(total<1){showNotice('A duração precisa ser de pelo menos 1 segundo.');renderList();return;}b.duration=total;if(i===blockIndex){remaining=total;totalPhase=total;}render();};
         minutes.addEventListener('change',updateDuration);seconds.addEventListener('change',updateDuration);
         const restWrap=document.createElement('label');restWrap.textContent='Descanso após este bloco (segundos)';restWrap.style.cssText='grid-column:1/-1;display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--lime);font-weight:700';
         const restAfter=document.createElement('input');restAfter.type='number';restAfter.min='0';restAfter.max='3600';restAfter.value=String(b.restAfter??0);restAfter.title='Tempo de descanso após este bloco';restAfter.setAttribute('aria-label','Descanso após '+b.name+' em segundos');restAfter.placeholder='0 = sem descanso';
@@ -681,8 +695,8 @@
         const saved=JSON.parse(localStorage.getItem('acuas-saved-classes')||'[]');
         saved.push({title:title.trim(),blocks:blocks.map(b=>({...b})),settings:settings(),savedAt:new Date().toISOString()});
         localStorage.setItem('acuas-saved-classes',JSON.stringify(saved));
-        alert('Aula salva neste navegador. No próximo passo podemos montar uma biblioteca visual de aulas salvas.');
-      } catch(e) { alert('Não foi possível salvar. Verifique o espaço disponível no navegador.'); }
+        showNotice('Aula salva neste navegador. No próximo passo podemos montar uma biblioteca visual de aulas salvas.');
+      } catch(e) { showNotice('Não foi possível salvar. Verifique o espaço disponível no navegador.'); }
     }
     $('bankCategory').addEventListener('change',renderBankPicker);
     $('bankSearch').addEventListener('input',renderBankPicker);
@@ -757,20 +771,20 @@
     $('previousBtn').addEventListener('click',()=>jumpBlock(-1));
     $('nextBtn').addEventListener('click',()=>jumpBlock(1));
     $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;els.sound.textContent=soundEnabled?'♫':'♩';els.sound.setAttribute('aria-label',soundEnabled?'Desligar som':'Ligar som');els.sound.title=soundEnabled?'Desligar som':'Ligar som';els.sound.setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)tone();});
-    $('maximizeTimerBtn').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await $('timerPanel').requestFullscreen();}catch(e){alert('A maximização não está disponível neste navegador.');}});
+    $('maximizeTimerBtn').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await $('timerPanel').requestFullscreen();}catch(e){showNotice('A maximização não está disponível neste navegador.');}});
     $('exitTimerFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{setViewMode('script');}});
     $('backToScriptBtn').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}setViewMode('script');});
     $('groupSelectedBtn').addEventListener('click',()=>{
-      if(running){alert('Pause o timer antes de agrupar blocos.');return;}
+      if(running){showNotice('Pause o timer antes de agrupar blocos.');return;}
       const indexes=[...selectedBlocks].filter(i=>i>=0&&i<blocks.length).sort((a,b)=>a-b);
-      if(indexes.length<2){alert('Selecione pelo menos dois exercícios para agrupar.');return;}
+      if(indexes.length<2){showNotice('Selecione pelo menos dois exercícios para agrupar.');return;}
       const name=prompt('Nome do grupo:', 'Grupo '+nextGroupId);
       if(!name?.trim())return;
       const group=name.trim();indexes.forEach(i=>blocks[i].group=group);nextGroupId++;selectedBlocks.clear();render();
     });
     $('ungroupSelectedBtn').addEventListener('click',()=>{
-      if(running){alert('Pause o timer antes de desagrupar blocos.');return;}
-      const indexes=[...selectedBlocks];if(!indexes.length){alert('Selecione os exercícios que deseja desagrupar.');return;}
+      if(running){showNotice('Pause o timer antes de desagrupar blocos.');return;}
+      const indexes=[...selectedBlocks];if(!indexes.length){showNotice('Selecione os exercícios que deseja desagrupar.');return;}
       indexes.forEach(i=>{if(blocks[i])delete blocks[i].group;});selectedBlocks.clear();render();
     });
     function setViewMode(mode) {
@@ -803,8 +817,8 @@
     });
     $('saveBtn').addEventListener('click',save);
     $('loadExampleBtn').addEventListener('click',loadExample);
-    $('clearBtn').addEventListener('click',()=>{if(running){alert('Pause o timer antes de limpar os blocos.');return;}if(confirm('Limpar todos os blocos da aula?')){blocks=[];reset();remaining=0;totalPhase=1;render();}});
-    [els.exerciseMinutes,els.exerciseSeconds,els.restMinutes,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){alert('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
+    $('clearBtn').addEventListener('click',()=>{if(running){showNotice('Pause o timer antes de limpar os blocos.');return;}if(confirm('Limpar todos os blocos da aula?')){blocks=[];reset();remaining=0;totalPhase=1;render();}});
+    [els.exerciseMinutes,els.exerciseSeconds,els.restMinutes,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){showNotice('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){/* wall-clock interval continues */}});
     reset();
     loadExerciseBank();
