@@ -27,6 +27,22 @@ test('define minutos e segundos ao adicionar um exercício do banco', async ({ p
   await expect(page.locator('#exerciseList .exercise-item').first()).toContainText('01:05');
 });
 
+test('padroniza o tempo dos exercícios selecionados sem juntá-los', async ({ page }) => {
+  await loadExample(page);
+
+  await page.getByRole('checkbox', { name: /Selecionar Agachamento Livre/i }).check();
+  await page.getByRole('checkbox', { name: /Selecionar Polichinelo/i }).check();
+  await page.getByRole('button', { name: /Padronizar tempos/i }).click();
+
+  await page.getByRole('spinbutton', { name: 'Minutos do tempo padronizado' }).fill('1');
+  await page.getByRole('spinbutton', { name: 'Segundos do tempo padronizado' }).fill('10');
+  await page.getByRole('button', { name: 'Aplicar aos selecionados' }).click();
+
+  await expect(page.locator('#exerciseList .exercise-item').nth(0)).toContainText('01:10');
+  await expect(page.locator('#exerciseList .exercise-item').nth(1)).toContainText('01:10');
+  await expect(page.locator('#exerciseList .exercise-item')).toHaveCount(3);
+});
+
 test('adiciona o exemplo e mantém os três exercícios visíveis', async ({ page }) => {
   await loadExample(page);
   await expect(page.locator('#blockCount')).toContainText('3');
@@ -75,7 +91,9 @@ test('modo Script mostra os nomes e não mostra controles de edição', async ({
   await expect(page.locator('#exerciseList')).toContainText('Polichinelo');
   await expect(page.locator('#exerciseList')).toContainText('Prancha');
   await expect(page.locator('#app')).toHaveClass(/mode-script/);
-  await expect(page.locator('#exerciseList .item-actions')).toBeHidden();
+  await expect(page.locator('#exerciseList .item-actions').first()).toBeHidden();
+  await expect(page.locator('#exerciseList .item-actions').nth(1)).toBeHidden();
+  await expect(page.locator('#exerciseList .item-actions').nth(2)).toBeHidden();
 });
 
 test('cria um grupo, recolhe-o e continua vendo os exercícios no modo Script', async ({ page }) => {
