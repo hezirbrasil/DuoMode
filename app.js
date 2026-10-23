@@ -713,6 +713,65 @@
       indexes.forEach(i=>{if(blocks[i])delete blocks[i].group;});selectedBlocks.clear();render();
       showNotice(indexes.length+' bloco(s) desagrupado(s).');
     });
+    $('standardizeTimesBtn').addEventListener('click',()=>{
+      if(running)return;
+      const indexes=getCheckedBlockIndexes();
+      const tools=$('standardizeTimesBtn').closest('.group-tools');
+      let editor=tools.querySelector('.standardize-times-inline');
+      if(editor){editor.remove();return;}
+      tools.querySelector('.standardize-times-status')?.remove();
+      if(!indexes.length){
+        const status=document.createElement('p');
+        status.className='standardize-times-status subtle';
+        status.textContent='Marque as caixas dos exercícios que deseja padronizar.';
+        status.style.cssText='flex:1 1 100%;margin:0;padding:4px 0';
+        tools.append(status);
+        return;
+      }
+      editor=document.createElement('div');
+      editor.className='standardize-times-inline';
+      editor.style.cssText='display:flex;flex:1 1 100%;gap:8px;align-items:end;flex-wrap:wrap;padding:8px 0';
+      const firstDuration=Math.max(1,Number(blocks[indexes[0]]?.duration)||45);
+      const label=document.createElement('label');
+      label.textContent='Novo tempo para '+indexes.length+' exercício(s)';
+      label.style.cssText='flex:1 1 100%;margin:0';
+      const duration=document.createElement('div');
+      duration.className='duration-edit';
+      const minutes=document.createElement('input');
+      minutes.type='number';minutes.min='0';minutes.max='60';minutes.step='1';
+      minutes.value=String(Math.floor(firstDuration/60));
+      minutes.setAttribute('aria-label','Minutos do tempo padronizado');
+      const minuteLabel=document.createElement('span');minuteLabel.textContent='min';
+      const seconds=document.createElement('input');
+      seconds.type='number';seconds.min='0';seconds.max='59';seconds.step='1';
+      seconds.value=String(firstDuration%60);
+      seconds.setAttribute('aria-label','Segundos do tempo padronizado');
+      const secondLabel=document.createElement('span');secondLabel.textContent='seg';
+      duration.append(minutes,minuteLabel,seconds,secondLabel);
+      const apply=document.createElement('button');
+      apply.type='button';apply.className='btn blue';apply.textContent='Aplicar aos selecionados';
+      const cancel=document.createElement('button');
+      cancel.type='button';cancel.className='btn';cancel.textContent='Cancelar';
+      const status=document.createElement('span');
+      status.className='standardize-times-status subtle';
+      status.style.cssText='flex:1 1 100%;margin:0';
+      apply.addEventListener('click',()=>{
+        const mins=Number.parseInt(minutes.value,10);
+        const secs=Number.parseInt(seconds.value,10);
+        if(!Number.isInteger(mins)||mins<0||mins>60||!Number.isInteger(secs)||secs<0||secs>59||mins*60+secs<1){
+          status.textContent='Informe um tempo válido de pelo menos 1 segundo (máximo 60:59).';
+          return;
+        }
+        const newDuration=mins*60+secs;
+        indexes.forEach(index=>{if(blocks[index]&&blocks[index].type!=='rest')blocks[index].duration=newDuration;});
+        selectedBlocks.clear();
+        editor.remove();
+        render();
+      });
+      cancel.addEventListener('click',()=>editor.remove());
+      editor.append(label,duration,apply,cancel,status);
+      tools.append(editor);
+    });
     function setViewMode(mode) {
       const play=mode==='play';
       $('app').classList.toggle('mode-play',play);
