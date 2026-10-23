@@ -214,6 +214,8 @@
     #app.mode-edit #scriptPanel .exercise-item .block-editor > * { min-width:0; }
     #app.mode-edit #scriptPanel .exercise-item .block-editor > div { grid-column:1 / -1; }
     #app.mode-edit #scriptPanel .exercise-item .item-actions { grid-column:4;grid-row:1; }
+    #app.mode-edit #scriptPanel #exerciseList .item-actions { display:flex !important;visibility:visible !important;opacity:1 !important;grid-column:1 / -1 !important;grid-row:auto !important;position:relative !important;z-index:1; }
+    #app.mode-edit #scriptPanel #exerciseList .item-actions .icon-btn { display:inline-flex !important;visibility:visible !important;opacity:1 !important; }
     #app.mode-script #scriptPanel .exercise-item .block-editor { grid-column:2; }
     @media(max-width:470px) { .block-editor { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }.block-editor input { width:100%; } }
     .duration-edit { display:flex;gap:5px;align-items:center; }
@@ -436,7 +438,103 @@
       const active = container.querySelector('.sequence-step.active');
       if (active) active.scrollIntoView({block:'nearest',inline:'nearest',behavior:'smooth'});
     }
+    // Safe wrapper: if a complex editor control fails while drawing one item,
+    // rebuild the whole visible list with reliable basic controls.
     function renderList() {
+      try {
+        renderListDetailed();
+        return;
+      } catch (error) {
+        console.error('Falha no renderizador detalhado da lista:', error);
+        const list = $('exerciseList');
+        if (!list) {
+          showNotice('A lista de exercícios não foi encontrada na página.');
+          return;
+        }
+        if (!Array.isArray(blocks)) blocks = [];
+        const fragment = document.createDocumentFragment();
+        const renderedGroups = new Set();
+        list.style.cssText = 'display:flex!important;flex-direction:column;gap:9px;min-height:40px;visibility:visible!important;opacity:1;overflow:visible';
+
+        blocks.forEach((rawBlock, index) => {
+          const block = rawBlock && typeof rawBlock === 'object' ? rawBlock : {};
+          if (block !== rawBlock) blocks[index] = block;
+          block.name = String(block.name ?? ('Exercício ' + (index + 1))).trim() || ('Exercício ' + (index + 1));
+          const rawDuration = Number(block.duration);
+          block.duration = Number.isFinite(rawDuration) && rawDuration > 0 ? Math.floor(rawDuration) : 45;
+          if (!Array.isArray(block.extraExercises)) block.extraExercises = [];
+
+          if (block.group && !renderedGroups.has(block.group)) {
+            renderedGroups.add(block.group);
+            const heading = document.createElement('div');
+            heading.className = 'group-header';
+            heading.style.cssText = 'display:block!important;padding:8px 10px;color:var(--lime);font-weight:800';
+            heading.textContent = String(block.group);
+            fragment.append(heading);
+          }
+
+          const row = document.createElement('div');
+          row.className = 'exercise-item render-recovery-item';
+          row.style.cssText = 'display:grid!important;grid-template-columns:20px 30px minmax(0,1fr);gap:8px 10px;align-items:center;width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);visibility:visible!important;opacity:1;overflow:visible';
+          const check = document.createElement('input');
+          check.type = 'checkbox';
+          check.checked = selectedBlocks.has(index);
+          check.setAttribute('aria-label', 'Selecionar ' + block.name);
+          check.addEventListener('change', () => {
+            if (check.checked) selectedBlocks.add(index);
+            else selectedBlocks.delete(index);
+          });
+          const number = document.createElement('span');
+          number.className = 'index';
+          number.textContent = String(index + 1).padStart(2, '0');
+          number.style.cssText = 'display:block!important;color:var(--lime);font-weight:900';
+          const info = document.createElement('div');
+          info.style.cssText = 'display:block!important;min-width:0;overflow-wrap:anywhere;color:var(--text)';
+          const title = document.createElement('strong');
+          title.textContent = [block.name, ...block.extraExercises].join(' + ');
+          title.style.cssText = 'display:block!important;visibility:visible!important;color:var(--text);overflow-wrap:anywhere';
+          const details = document.createElement('div');
+          details.textContent = fmt(block.duration) + (block.restAfter ? ' · Descanso após: ' + fmt(block.restAfter) : '');
+          details.style.cssText = 'margin-top:5px;color:var(--muted);font-size:12px';
+          if (block.collapsed) details.style.display = 'none';
+          info.append(title, details);
+
+          const actions = document.createElement('div');
+          actions.className = 'item-actions';
+          actions.style.cssText = 'display:flex!important;flex-wrap:wrap;grid-column:1/-1;gap:6px;width:100%;visibility:visible!important;opacity:1';
+          const makeAction = (label, description, callback, disabled = false) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'icon-btn';
+            button.textContent = label;
+            button.title = description;
+            button.setAttribute('aria-label', description);
+            button.disabled = disabled;
+            button.style.cssText = 'display:inline-flex!important;align-items:center;justify-content:center;width:auto;min-width:40px;min-height:34px;padding:5px 9px;white-space:nowrap;visibility:visible!important;opacity:1';
+            button.addEventListener('click', callback);
+            return button;
+          };
+          actions.append(
+            makeAction(block.collapsed ? '＋ Expandir' : '− Minimizar', 'Minimizar ou expandir bloco', () => {
+              block.collapsed = !block.collapsed;
+              renderList();
+            }),
+            makeAction('↑ Subir', 'Mover bloco para cima', () => moveBlock(index, -1), index === 0),
+            makeAction('↓ Descer', 'Mover bloco para baixo', () => moveBlock(index, 1), index === blocks.length - 1),
+            makeAction('× Remover', 'Remover bloco', () => removeBlock(index))
+          );
+          row.append(check, number, info, actions);
+          fragment.append(row);
+        });
+        list.replaceChildren(fragment);
+        els.count.textContent = blocks.length + ' ' + (blocks.length === 1 ? 'bloco' : 'blocos') +
+          (renderedGroups.size ? ' · ' + renderedGroups.size + ' grupos' : '');
+        const message = String(error && error.message ? error.message : error).slice(0, 140);
+        showNotice('A lista foi reconstruída para manter todos os exercícios e controles visíveis. Detalhe técnico: ' + message);
+      }
+    }
+
+    function renderListDetailed() {
       // Migra automaticamente aulas antigas: etapas de descanso viram descansoAfter
       // no exercício anterior, evitando cartões separados de recuperação.
       for(let i=blocks.length-1;i>=0;i--){
