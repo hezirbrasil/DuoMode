@@ -182,7 +182,7 @@
 
           const actions = document.createElement('div');
           actions.className = 'item-actions';
-          actions.style.cssText = 'display:flex!important;flex-wrap:wrap;grid-column:1/-1;gap:6px;width:100%;visibility:visible!important;opacity:1';
+          actions.style.cssText = 'display:flex;flex-wrap:wrap;grid-column:1/-1;gap:6px;width:100%;visibility:visible;opacity:1';
           const makeAction = (label, description, callback, disabled = false) => {
             const button = document.createElement('button');
             button.type = 'button';
@@ -351,7 +351,7 @@
         restAfter.style.cssText='min-width:0;width:100%';
         restAfter.addEventListener('change',()=>{if(running){restAfter.value=String(b.restAfter??0);return;}b.restAfter=Math.max(0,Math.min(3600,Number(restAfter.value)||0));render();});
         restWrap.append(restAfter);editor.append(minutes,seconds,restWrap);if(b.type!=='rest')editor.append(addExtraBtn);
-        const actions=document.createElement('div');actions.className='item-actions';actions.style.cssText='display:flex !important;flex-wrap:wrap;grid-column:1/-1;grid-row:3;gap:6px;visibility:visible!important;opacity:1;width:100%;min-width:0';
+        const actions=document.createElement('div');actions.className='item-actions';actions.style.cssText='display:flex;flex-wrap:wrap;grid-column:1/-1;grid-row:3;gap:6px;visibility:visible;opacity:1;width:100%;min-width:0';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.style.cssText='display:inline-flex!important;align-items:center;justify-content:center;gap:4px;width:auto;min-width:40px;height:34px;padding:0 9px;white-space:nowrap;visibility:visible!important;opacity:1';btn.addEventListener('click',fn);return btn;};
         actions.append(
           make(b.collapsed?'＋ Expandir':'− Minimizar',b.collapsed?'Expandir bloco':'Minimizar bloco',()=>{
