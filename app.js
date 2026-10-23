@@ -400,23 +400,19 @@
          restMinutesLabel.append(restMinutes);restSecondsLabel.append(restSeconds);
          restWrap.append(restHeading,restMinutesLabel,restSecondsLabel);
          editor.append(durationWrap,restWrap);
-        const actions=document.createElement('div');actions.className='item-actions';actions.style.cssText='display:flex;flex-wrap:wrap;grid-column:1/-1;grid-row:3;gap:6px;visibility:visible;opacity:1;width:100%;min-width:0';
-        const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.style.cssText='display:inline-flex!important;align-items:center;justify-content:center;gap:4px;width:auto;min-width:40px;height:34px;padding:0 9px;white-space:nowrap;visibility:visible!important;opacity:1';btn.addEventListener('click',fn);return btn;};
+        const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.style.cssText='display:inline-flex!important;align-items:center;justify-content:center;gap:4px;width:auto;min-width:30px;height:30px;padding:0 7px;white-space:nowrap;visibility:visible!important;opacity:1';btn.addEventListener('click',e=>{e.stopPropagation();fn();});return btn;};
         const dragHandle=make('⠿','Arraste para organizar este bloco',()=>{});
-        dragHandle.classList.add('drag-handle');
-        dragHandle.draggable=true;
+        dragHandle.classList.add('drag-handle');dragHandle.draggable=true;
         dragHandle.addEventListener('dragstart',e=>{if(running){e.preventDefault();showNotice('Pause o timer antes de reorganizar os blocos.');return;}draggedBlockIndex=i;row.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(i));});
-        actions.append(
+        nameRow.append(
           dragHandle,
-          make('↔ Trocar exercício','Abrir opções para trocar ou editar exercícios',()=>{
-            row.classList.add('show-bank');
-            editor.style.display='grid';
-            editor.scrollIntoView({block:'nearest',behavior:'smooth'});
-          }),
-          make('↑ Subir','Mover para cima',()=>moveBlock(i,-1),i===0),
-          make('↓ Descer','Mover para baixo',()=>moveBlock(i,1),i===blocks.length-1),
-          make('× Remover','Remover bloco',()=>removeBlock(i))
+          make('↑','Subir exercício',()=>moveBlock(i,-1),i===0),
+          make('↓','Descer exercício',()=>moveBlock(i,1),i===blocks.length-1),
+          make('↔','Trocar exercício',()=>{row.classList.add('show-bank');editor.style.setProperty('display','grid','important');editor.scrollIntoView({block:'nearest',behavior:'smooth'});}),
+          make('×','Remover exercício',()=>removeBlock(i)),
+          minimizeBtn
         );
+        const actions=document.createElement('div');actions.className='item-actions';actions.style.cssText='display:none;grid-column:1/-1;grid-row:3;gap:6px;visibility:visible;opacity:1;width:100%;min-width:0';
         row.append(check,idx,info);row.append(editor);row.append(actions);els.list.append(row);
       });
       els.count.textContent=blocks.length+' '+(blocks.length===1?'bloco':'blocos')+(groupCounts.size?' · '+groupCounts.size+' grupos':'');
