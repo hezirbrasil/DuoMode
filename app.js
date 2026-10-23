@@ -591,13 +591,16 @@
       firstBlock.extraExercises = uniqueNames;
       firstBlock.restAfter = selected[selected.length - 1].restAfter ?? firstBlock.restAfter ?? 0;
 
-      const removedBeforeFirst = indexes.filter(index => index < indexes[0]).length;
+      const mergedIndex = indexes[0];
       const indexSet = new Set(indexes.slice(1));
       blocks = blocks.filter((block, index) => !indexSet.has(index));
       selectedBlocks.clear();
-      blockIndex = Math.max(0, indexes[0] - removedBeforeFirst);
-      roundIndex = 1;
       reset();
+      blockIndex = Math.min(mergedIndex, blocks.length - 1);
+      roundIndex = 1;
+      remaining = blocks[blockIndex]?.duration || firstBlock.duration;
+      totalPhase = remaining;
+      render();
       showNotice('Exercícios unidos em um único bloco. Todos compartilham o tempo de ' + fmt(firstBlock.duration) + '.');
     });
 
