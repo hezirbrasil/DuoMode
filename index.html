@@ -70,7 +70,7 @@
           <span class="subtle" id="blockCount">3 blocos</span>
         </div>
         <div class="sequence-visual" id="visualSequence" aria-label="Sequência visual da aula" hidden></div>
-        <div class="group-tools"><button class="btn blue" id="mergeSelectedBtn" type="button">⏱ Juntar no mesmo tempo</button><button class="btn" id="standardizeTimesBtn" type="button">◷ Padronizar tempos</button><button class="btn" id="groupSelectedBtn" type="button">▦ Organizar em grupo</button><button class="btn" id="ungroupSelectedBtn" type="button">Desagrupar selecionados</button></div>
+        <div class="group-tools"><button class="btn blue" id="mergeSelectedBtn" type="button">⏱ Juntar exercícios no mesmo tempo</button><button class="btn" id="standardizeTimesBtn" type="button">◷ Padronizar tempos</button><button class="btn" id="groupSelectedBtn" type="button">▦ Organizar em grupo</button><button class="btn" id="ungroupSelectedBtn" type="button">Desagrupar selecionados</button></div>
         <p class="subtle editor-help">Marque os exercícios que deseja reunir no mesmo grupo. A sequência do timer permanece igual.</p>
         <div class="exercise-list" id="exerciseList"></div>
         <div class="exercise-bank-panel">
@@ -93,6 +93,13 @@
               <input id="bankDurationSec" type="number" min="0" max="59" step="1" inputmode="numeric" value="45" aria-label="Segundos do exercício selecionado" title="Segundos">
               <span>seg</span>
             </div>
+            <div class="duration-edit bank-rest-edit" aria-label="Descanso após o exercício selecionado">
+              <label class="bank-duration-label" for="bankRestMin">Descanso</label>
+              <input id="bankRestMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos de descanso do exercício selecionado" title="Minutos de descanso">
+              <span>min</span>
+              <input id="bankRestSec" type="number" min="0" max="59" step="1" inputmode="numeric" value="0" aria-label="Segundos de descanso do exercício selecionado" title="Segundos de descanso">
+              <span>seg</span>
+            </div>
             <button class="btn blue" id="addBankExercise" type="button">＋ Adicionar</button>
           </div>
           <p class="subtle bank-status" id="bankStatus">Banco de exercícios importado do aplicativo original.</p>
@@ -100,7 +107,8 @@
         <div class="section-head create-exercise-heading"><h2 class="create-exercise-title">Criar exercício</h2><span class="subtle">Inclua um exercício na sequência</span></div>
         <div class="add-form" id="addForm">
           <input id="newExercise" type="text" maxlength="90" placeholder="Digite o nome do exercício" aria-label="Nome do exercício">
-          <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos"><span>seg</span></div>
+          <div class="duration-edit" aria-label="Duração do novo bloco"><label class="bank-duration-label" for="newDurationMin">Tempo</label><input id="newDurationMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos"><span>seg</span></div>
+          <div class="duration-edit" aria-label="Descanso após o novo exercício"><label class="bank-duration-label" for="newRestMin">Descanso</label><input id="newRestMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos de descanso" title="Minutos de descanso"><span>min</span><input id="newRestSec" type="number" min="0" max="59" value="0" aria-label="Segundos de descanso" title="Segundos de descanso"><span>seg</span></div>
           <button class="btn blue" id="addExerciseBtn" type="button">＋ Adicionar exercício</button>
         </div>
         <p id="addExerciseStatus" role="status" aria-live="polite" class="subtle add-exercise-status">Digite um exercício e clique em Adicionar exercício.</p>
