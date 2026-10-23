@@ -732,22 +732,25 @@
       editor.className='standardize-times-inline';
       editor.style.cssText='display:flex;flex:1 1 100%;gap:8px;align-items:end;flex-wrap:wrap;padding:8px 0';
       const firstDuration=Math.max(1,Number(blocks[indexes[0]]?.duration)||45);
+      const firstRest=Math.max(0,Number(blocks[indexes[0]]?.restAfter)||0);
       const label=document.createElement('label');
-      label.textContent='Novo tempo para '+indexes.length+' exercício(s)';
+      label.textContent='Novo tempo de exercício para '+indexes.length+' selecionado(s)';
       label.style.cssText='flex:1 1 100%;margin:0';
-      const duration=document.createElement('div');
-      duration.className='duration-edit';
-      const minutes=document.createElement('input');
-      minutes.type='number';minutes.min='0';minutes.max='60';minutes.step='1';
-      minutes.value=String(Math.floor(firstDuration/60));
-      minutes.setAttribute('aria-label','Minutos do tempo padronizado');
-      const minuteLabel=document.createElement('span');minuteLabel.textContent='min';
-      const seconds=document.createElement('input');
-      seconds.type='number';seconds.min='0';seconds.max='59';seconds.step='1';
-      seconds.value=String(firstDuration%60);
-      seconds.setAttribute('aria-label','Segundos do tempo padronizado');
-      const secondLabel=document.createElement('span');secondLabel.textContent='seg';
-      duration.append(minutes,minuteLabel,seconds,secondLabel);
+      const makeDurationFields=(prefix,initial,labelText)=>{
+        const group=document.createElement('div');
+        group.style.cssText='display:flex;flex:1 1 220px;flex-direction:column;gap:5px';
+        const heading=document.createElement('label');
+        heading.textContent=labelText;heading.style.margin='0';
+        const row=document.createElement('div');row.className='duration-edit';
+        const mins=document.createElement('input');mins.type='number';mins.min='0';mins.max='60';mins.step='1';mins.value=String(Math.floor(initial/60));mins.setAttribute('aria-label','Minutos '+prefix);
+        const minLabel=document.createElement('span');minLabel.textContent='min';
+        const secs=document.createElement('input');secs.type='number';secs.min='0';secs.max='59';secs.step='1';secs.value=String(initial%60);secs.setAttribute('aria-label','Segundos '+prefix);
+        const secLabel=document.createElement('span');secLabel.textContent='seg';
+        row.append(mins,minLabel,secs,secLabel);group.append(heading,row);
+        return {group,mins,secs};
+      };
+      const durationFields=makeDurationFields('do tempo padronizado',firstDuration,'Tempo do exercício');
+      const restFields=makeDurationFields('do descanso padronizado',firstRest,'Descanso após o exercício');
       const apply=document.createElement('button');
       apply.type='button';apply.className='btn blue';apply.textContent='Aplicar aos selecionados';
       const cancel=document.createElement('button');
@@ -756,20 +759,32 @@
       status.className='standardize-times-status subtle';
       status.style.cssText='flex:1 1 100%;margin:0';
       apply.addEventListener('click',()=>{
-        const mins=Number.parseInt(minutes.value,10);
-        const secs=Number.parseInt(seconds.value,10);
+        const mins=Number.parseInt(durationFields.mins.value,10);
+        const secs=Number.parseInt(durationFields.secs.value,10);
+        const restMins=Number.parseInt(restFields.mins.value,10);
+        const restSecs=Number.parseInt(restFields.secs.value,10);
         if(!Number.isInteger(mins)||mins<0||mins>60||!Number.isInteger(secs)||secs<0||secs>59||mins*60+secs<1){
-          status.textContent='Informe um tempo válido de pelo menos 1 segundo (máximo 60:59).';
+          status.textContent='O tempo do exercício deve ser de pelo menos 1 segundo (máximo 60:59).';
+          return;
+        }
+        if(!Number.isInteger(restMins)||restMins<0||restMins>60||!Number.isInteger(restSecs)||restSecs<0||restSecs>59){
+          status.textContent='Informe um tempo de descanso válido entre 0:00 e 60:59.';
           return;
         }
         const newDuration=mins*60+secs;
-        indexes.forEach(index=>{if(blocks[index]&&blocks[index].type!=='rest')blocks[index].duration=newDuration;});
+        const newRest=restMins*60+restSecs;
+        indexes.forEach(index=>{
+          if(blocks[index]&&blocks[index].type!=='rest'){
+            blocks[index].duration=newDuration;
+            blocks[index].restAfter=newRest;
+          }
+        });
         selectedBlocks.clear();
         editor.remove();
         render();
       });
       cancel.addEventListener('click',()=>editor.remove());
-      editor.append(label,duration,apply,cancel,status);
+      editor.append(label,durationFields.group,restFields.group,apply,cancel,status);
       tools.append(editor);
     });
     function setViewMode(mode) {
