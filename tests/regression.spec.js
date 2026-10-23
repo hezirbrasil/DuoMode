@@ -23,7 +23,7 @@ test('define minutos e segundos ao adicionar um exercício do banco', async ({ p
   await select.selectOption({ index: 0 });
   await page.locator('#bankDurationMin').fill('1');
   await page.locator('#bankDurationSec').fill('5');
-  await page.getByRole('button', { name: /Adicionar/i }).filter({ hasText: 'Adicionar' }).click();
+  await page.locator('#addBankExercise').click();
   await expect(page.locator('#exerciseList .exercise-item').first()).toContainText('01:05');
 });
 
