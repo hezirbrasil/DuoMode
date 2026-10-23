@@ -440,3 +440,23 @@
 .create-exercise-title { font-size: 16px; }
 .exercise-bank-select { flex: 1; }
 .saved-classes-note { margin: 14px 0 0; }
+
+
+/* Correção definitiva: estilos de modo não podem anular recolher grupo/bloco. */
+#app.mode-edit #scriptPanel #exerciseList > .exercise-item.group-collapsed,
+#app.mode-play #scriptPanel #exerciseList > .exercise-item.group-collapsed {
+  display: none !important;
+}
+#app.mode-script #scriptPanel #exerciseList > .exercise-item.group-collapsed {
+  display: grid !important;
+}
+#app.mode-edit #scriptPanel #exerciseList > .exercise-item.block-minimized > .block-editor,
+#app.mode-edit #scriptPanel #exerciseList > .exercise-item.block-minimized > .item-actions,
+#app.mode-edit #scriptPanel #exerciseList > .exercise-item.block-minimized .exercise-info > small,
+#app.mode-edit #scriptPanel #exerciseList > .exercise-item.block-minimized .edit-block-btn {
+  display: none !important;
+}
+#app.mode-edit #scriptPanel #exerciseList > .exercise-item.block-minimized {
+  grid-template-rows: auto !important;
+  min-height: 0 !important;
+}
