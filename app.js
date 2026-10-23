@@ -565,9 +565,14 @@
         return;
       }
 
-      const indexes = [...selectedBlocks]
-        .filter(index => Number.isInteger(index) && index >= 0 && index < blocks.length)
-        .sort((a, b) => a - b);
+      // Lê as caixas marcadas na tela para evitar seleção desatualizada.
+      const checkedIndexes = [...$('exerciseList').querySelectorAll('.exercise-item > input[type="checkbox"]')]
+        .map((checkbox, index) => checkbox.checked ? index : -1)
+        .filter(index => index >= 0);
+      const indexes = checkedIndexes.length
+        ? checkedIndexes
+        : [...selectedBlocks].filter(index => Number.isInteger(index) && index >= 0 && index < blocks.length).sort((a, b) => a - b);
+      selectedBlocks = new Set(indexes);
 
       if (indexes.length < 2) {
         showNotice('Selecione pelo menos dois exercícios para usar o mesmo tempo.');
@@ -587,11 +592,16 @@
       ]);
       const uniqueNames = [...new Set(exerciseNames.map(name => String(name).trim()).filter(Boolean))];
 
-      firstBlock.name = uniqueNames.shift() || firstBlock.name;
-      firstBlock.extraExercises = uniqueNames;
-      firstBlock.restAfter = selected[selected.length - 1].restAfter ?? firstBlock.restAfter ?? 0;
+      const mergedBlock = {
+        ...firstBlock,
+        name: uniqueNames.shift() || firstBlock.name,
+        extraExercises: uniqueNames,
+        // O bloco unido usa um só tempo e conserva o descanso do último selecionado.
+        restAfter: selected[selected.length - 1].restAfter ?? firstBlock.restAfter ?? 0
+      };
 
       const mergedIndex = indexes[0];
+      blocks[mergedIndex] = mergedBlock;
       const indexSet = new Set(indexes.slice(1));
       blocks = blocks.filter((block, index) => !indexSet.has(index));
       selectedBlocks.clear();
