@@ -23,8 +23,11 @@ test('define minutos e segundos ao adicionar um exercício do banco', async ({ p
   await select.selectOption({ index: 0 });
   await page.locator('#bankDurationMin').fill('1');
   await page.locator('#bankDurationSec').fill('5');
+  await page.getByRole('spinbutton', { name: 'Minutos de descanso do exercício selecionado' }).fill('0');
+  await page.getByRole('spinbutton', { name: 'Segundos de descanso do exercício selecionado' }).fill('25');
   await page.locator('#addBankExercise').click();
   await expect(page.locator('#exerciseList .exercise-item').first()).toContainText('01:05');
+  await expect(page.locator('#exerciseList .exercise-item').first()).toContainText('Descanso após: 00:25');
 });
 
 test('padroniza o tempo dos exercícios selecionados sem juntá-los', async ({ page }) => {
@@ -45,6 +48,22 @@ test('padroniza o tempo dos exercícios selecionados sem juntá-los', async ({ p
   await expect(page.locator('#exerciseList .exercise-item').nth(1)).toContainText('01:10');
   await expect(page.locator('#exerciseList .exercise-item').nth(1)).toContainText('Descanso após: 00:20');
   await expect(page.locator('#exerciseList .exercise-item')).toHaveCount(3);
+});
+
+
+test('cria um exercício personalizado com descanso definido', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#newExercise').fill('Meu exercício');
+  await page.locator('#newDurationMin').fill('0');
+  await page.locator('#newDuration').fill('50');
+  await page.getByRole('spinbutton', { name: 'Minutos de descanso' }).fill('0');
+  await page.getByRole('spinbutton', { name: 'Segundos de descanso' }).fill('15');
+  await page.getByRole('button', { name: /Adicionar exercício/i }).click();
+
+  const row = page.locator('#exerciseList .exercise-item').first();
+  await expect(row).toContainText('Meu exercício');
+  await expect(row).toContainText('00:50');
+  await expect(row).toContainText('Descanso após: 00:15');
 });
 
 test('adiciona o exemplo e mantém os três exercícios visíveis', async ({ page }) => {
