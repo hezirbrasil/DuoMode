@@ -440,7 +440,7 @@
         const names=[current.name,...(Array.isArray(current.extraExercises)?current.extraExercises:[])];
         if(names.length>1){
           const panel=document.createElement('div');panel.className='current-exercise-stack';
-          names.forEach((name,index)=>{const item=document.createElement('div');item.className='current-exercise-item'+(index===0?' primary':'');const number=document.createElement('span');number.className='current-exercise-number';number.textContent=String(index+1).padStart(2,'0');const label=document.createElement('span');label.className='current-exercise-label';label.textContent=name;item.append(number,label);panel.append(item);});
+          names.forEach((name,index)=>{const item=document.createElement('div');item.className='current-exercise-item';const number=document.createElement('span');number.className='current-exercise-number';number.textContent=String(index+1).padStart(2,'0');const label=document.createElement('span');label.className='current-exercise-label';label.textContent=name;item.append(number,label);panel.append(item);});
           els.name.append(panel);
         } else els.name.textContent=names[0]||'Exercício';
       }
