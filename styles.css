@@ -423,8 +423,20 @@
 }
 .exercise-bank-add-row {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 10px;
+}
+.bank-duration-edit { flex: 0 0 auto; gap: 4px; }
+.bank-duration-edit input { width: 48px; min-width: 0; padding: 9px 5px; }
+.bank-duration-label { color: var(--muted); font-size: 12px; }
+.exercise-bank-select { min-width: 180px; }
+@media(max-width:600px) {
+  .exercise-bank-add-row { display:grid; grid-template-columns:minmax(0,1fr) auto; }
+  .exercise-bank-select { grid-column:1/-1; width:100%; min-width:0; }
+  .bank-duration-edit { grid-column:1; }
+  .exercise-bank-add-row #addBankExercise { grid-column:2; }
 }
 .bank-status { margin: 8px 0 0; }
 .create-exercise-heading { margin: 16px 0 8px; }
