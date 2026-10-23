@@ -15,7 +15,7 @@ module.exports = defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile-chromium', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' } }
+    { name: 'mobile-chromium', use: { ...devices['Pixel 7'] } }
   ],
   webServer: {
     command: 'npx http-server . -p 4173 -c-1',
