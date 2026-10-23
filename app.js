@@ -408,7 +408,6 @@
           dragHandle,
           make('↑','Subir exercício',()=>moveBlock(i,-1),i===0),
           make('↓','Descer exercício',()=>moveBlock(i,1),i===blocks.length-1),
-          make('↔','Trocar exercício',()=>{row.classList.add('show-bank');editor.style.setProperty('display','grid','important');editor.scrollIntoView({block:'nearest',behavior:'smooth'});}),
           make('×','Remover exercício',()=>removeBlock(i)),
           minimizeBtn
         );
