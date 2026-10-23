@@ -1,0 +1,14 @@
+{
+  "name": "acuas-fitness-regression-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Testes automatizados de regressão para o ACUAS Fitness",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "http-server": "^14.1.1"
+  }
+}
