@@ -86,6 +86,13 @@
           </div>
           <div class="exercise-bank-add-row">
             <select id="bankExercise" aria-label="Selecionar exercício do banco" class="exercise-bank-select"><option value="">Carregando banco…</option></select>
+            <div class="duration-edit bank-duration-edit" aria-label="Duração do exercício selecionado">
+              <label class="bank-duration-label" for="bankDurationMin">Tempo</label>
+              <input id="bankDurationMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos do exercício selecionado" title="Minutos">
+              <span>min</span>
+              <input id="bankDurationSec" type="number" min="0" max="59" step="1" inputmode="numeric" value="45" aria-label="Segundos do exercício selecionado" title="Segundos">
+              <span>seg</span>
+            </div>
             <button class="btn blue" id="addBankExercise" type="button">＋ Adicionar</button>
           </div>
           <p class="subtle bank-status" id="bankStatus">Banco de exercícios importado do aplicativo original.</p>
