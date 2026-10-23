@@ -15,6 +15,18 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.clear());
 });
 
+test('define minutos e segundos ao adicionar um exercício do banco', async ({ page }) => {
+  await page.goto('/');
+  const select = page.locator('#bankExercise');
+  await expect(select.locator('option')).not.toHaveCount(1, { timeout: 10000 });
+  await expect.poll(async () => select.locator('option').count()).toBeGreaterThan(1);
+  await select.selectOption({ index: 0 });
+  await page.locator('#bankDurationMin').fill('1');
+  await page.locator('#bankDurationSec').fill('5');
+  await page.getByRole('button', { name: /Adicionar/i }).filter({ hasText: 'Adicionar' }).click();
+  await expect(page.locator('#exerciseList .exercise-item').first()).toContainText('01:05');
+});
+
 test('adiciona o exemplo e mantém os três exercícios visíveis', async ({ page }) => {
   await loadExample(page);
   await expect(page.locator('#blockCount')).toContainText('3');
