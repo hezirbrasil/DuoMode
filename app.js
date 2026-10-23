@@ -161,6 +161,7 @@
           const row = document.createElement('div');
           row.className = 'exercise-item render-recovery-item' + (block.group && collapsedGroups.has(block.group) ? ' group-collapsed' : '');
           row.style.cssText = 'display:grid!important;grid-template-columns:20px 30px minmax(0,1fr);gap:8px 10px;align-items:center;width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);visibility:visible!important;opacity:1;overflow:visible';
+          if (block.group && collapsedGroups.has(block.group) && !$('app').classList.contains('mode-script')) row.style.setProperty('display','none','important');
           const check = document.createElement('input');
           check.type = 'checkbox';
           check.checked = selectedBlocks.has(index);
@@ -297,7 +298,7 @@
         }
         // Grupos recolhidos escondem os cartões no editor sem alterar a sequência do timer.
         const isGroupCollapsed = Boolean(b.group && collapsedGroups.has(b.group));
-        const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'')+(isGroupCollapsed?' group-collapsed':'')+(b.collapsed?' block-minimized':'');row.style.cssText='display:grid;grid-template-columns:20px 30px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:start;gap:8px 10px;min-height:76px;visibility:visible;opacity:1;overflow:visible';
+        const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'')+(isGroupCollapsed?' group-collapsed':'')+(b.collapsed?' block-minimized':'');row.style.cssText='display:grid;grid-template-columns:20px 30px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:start;gap:8px 10px;min-height:76px;visibility:visible;opacity:1;overflow:visible';if(isGroupCollapsed && !$('app').classList.contains('mode-script'))row.style.setProperty('display','none','important');
         row.dataset.blockIndex=String(i);
         row.addEventListener('dragover',e=>{if(!running&&draggedBlockIndex!==null&&draggedBlockIndex!==i){e.preventDefault();row.classList.add('drag-over');}});
         row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));
@@ -312,7 +313,7 @@
           if(e.target.closest('select,input,button,label'))return;
           row.classList.toggle('show-bank');
         });
-        const editor=document.createElement('div');editor.className='block-editor';editor.style.cssText=(b.collapsed?'display:none;':'display:grid;')+'grid-column:3 / -1;grid-row:2;align-self:stretch;min-width:0;width:100%;visibility:visible;opacity:1';
+        const editor=document.createElement('div');editor.className='block-editor';editor.style.cssText=(b.collapsed?'display:none !important;':'display:grid !important;')+'grid-column:3 / -1;grid-row:2;align-self:stretch;min-width:0;width:100%;visibility:visible;opacity:1';
         if(b.collapsed) row.classList.add('collapsed');
         if(b.type!=='rest'){
           const currentExercise=exerciseBank.find(ex=>ex.name.toLocaleLowerCase('pt-BR')===b.name.toLocaleLowerCase('pt-BR'));
@@ -683,11 +684,31 @@
       return [...selectedBlocks].filter(i=>Number.isInteger(i)&&i>=0&&i<blocks.length).sort((a,b)=>a-b);
     }
     $('groupSelectedBtn').addEventListener('click',()=>{
-      if(running){showNotice('Pause o timer antes de agrupar blocos.');return;}
+      if(running)return;
       const indexes=getCheckedBlockIndexes();
-      if(indexes.length<2){showNotice('Marque a caixa à esquerda de pelo menos dois blocos — inclusive blocos que já reúnem vários exercícios — e tente novamente.');return;}
-      const group='Grupo '+nextGroupId;
-      indexes.forEach(i=>blocks[i].group=group);nextGroupId++;selectedBlocks.clear();render();
+      if(indexes.length<2)return;
+      const tools=$('groupSelectedBtn').closest('.group-tools');
+      let editor=tools.querySelector('.group-create-inline');
+      if(editor){editor.remove();return;}
+      editor=document.createElement('div');
+      editor.className='group-create-inline';
+      editor.style.cssText='display:flex;flex:1 1 100%;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0';
+      const input=document.createElement('input');
+      input.type='text';input.maxLength=50;input.placeholder='Digite o nome do grupo';input.value='Grupo '+nextGroupId;
+      input.setAttribute('aria-label','Nome do novo grupo');
+      input.style.cssText='flex:1 1 180px;min-width:0;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text)';
+      const save=document.createElement('button');save.type='button';save.className='btn blue';save.textContent='Criar grupo';
+      const cancel=document.createElement('button');cancel.type='button';cancel.className='btn';cancel.textContent='Cancelar';
+      const finish=()=>{
+        const name=input.value.trim();
+        if(!name){input.focus();return;}
+        indexes.forEach(i=>{if(blocks[i])blocks[i].group=name;});
+        nextGroupId++;selectedBlocks.clear();editor.remove();render();
+      };
+      save.addEventListener('click',finish);
+      cancel.addEventListener('click',()=>editor.remove());
+      input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();finish();}if(e.key==='Escape')editor.remove();});
+      editor.append(input,save,cancel);tools.append(editor);input.focus();input.select();
     });
     $('ungroupSelectedBtn').addEventListener('click',()=>{
       if(running){showNotice('Pause o timer antes de desagrupar blocos.');return;}
