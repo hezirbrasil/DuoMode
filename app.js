@@ -196,9 +196,29 @@
             return button;
           };
           actions.append(
-            makeAction(block.collapsed ? '＋ Expandir' : '− Minimizar', 'Minimizar ou expandir bloco', () => {
-              block.collapsed = !block.collapsed;
-              renderList();
+            makeAction('↔ Trocar exercício', 'Escolher outro exercício para este bloco', () => {
+              const picker = document.createElement('select');
+              picker.setAttribute('aria-label', 'Trocar exercício');
+              picker.style.cssText = 'grid-column:1/-1;width:100%;min-width:0;padding:8px';
+              const placeholder = document.createElement('option');
+              placeholder.value = '';
+              placeholder.textContent = 'Escolha outro exercício…';
+              picker.append(placeholder);
+              exerciseBank.forEach(ex => {
+                const option = document.createElement('option');
+                option.value = ex.name;
+                option.textContent = ex.name;
+                picker.append(option);
+              });
+              picker.addEventListener('change', () => {
+                if (picker.value) {
+                  block.name = picker.value;
+                  block.extraExercises = [];
+                  renderList();
+                }
+              });
+              actions.insertBefore(picker, actions.firstChild);
+              picker.focus();
             }),
             makeAction('↑ Subir', 'Mover bloco para cima', () => moveBlock(index, -1), index === 0),
             makeAction('↓ Descer', 'Mover bloco para baixo', () => moveBlock(index, 1), index === blocks.length - 1),
@@ -354,9 +374,10 @@
         const actions=document.createElement('div');actions.className='item-actions';actions.style.cssText='display:flex;flex-wrap:wrap;grid-column:1/-1;grid-row:3;gap:6px;visibility:visible;opacity:1;width:100%;min-width:0';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.style.cssText='display:inline-flex!important;align-items:center;justify-content:center;gap:4px;width:auto;min-width:40px;height:34px;padding:0 9px;white-space:nowrap;visibility:visible!important;opacity:1';btn.addEventListener('click',fn);return btn;};
         actions.append(
-          make(b.collapsed?'＋ Expandir':'− Minimizar',b.collapsed?'Expandir bloco':'Minimizar bloco',()=>{
-            b.collapsed=!b.collapsed;
-            renderList();
+          make('↔ Trocar exercício','Abrir opções para trocar ou editar exercícios',()=>{
+            row.classList.add('show-bank');
+            editor.style.display='grid';
+            editor.scrollIntoView({block:'nearest',behavior:'smooth'});
           }),
           make('↑ Subir','Mover para cima',()=>moveBlock(i,-1),i===0),
           make('↓ Descer','Mover para baixo',()=>moveBlock(i,1),i===blocks.length-1),
@@ -490,8 +511,6 @@
       const name=($('bankExercise').value||'').trim();
       if(running){status.textContent='Pause o timer antes de alterar os blocos.';return;}
       if(!name){status.textContent='Selecione um exercício no campo acima.';return;}
-      const already=blocks.some(b=>b.name.toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR'));
-      if(already){status.textContent='Esse exercício já está na aula. Não foi adicionado novamente.';showNotice('Esse exercício já está na aula.');return;}
       const block={name,duration:intVal(els.exerciseSeconds,45,1,3600)};
       blocks.push(block);
       status.textContent='Adicionando '+name+'…';
