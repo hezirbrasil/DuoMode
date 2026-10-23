@@ -35,9 +35,31 @@
       const category = $('bankCategory').value || 'all';
       const query = ($('bankSearch').value || '').trim().toLocaleLowerCase('pt-BR');
       const filtered = exerciseBank.filter(x => (category === 'all' || x.category === category) && x.name.toLocaleLowerCase('pt-BR').includes(query));
+      const index = $('bankMuscleIndex');
+      if (index) {
+        index.replaceChildren();
+        const counts = new Map();
+        exerciseBank.forEach(ex => counts.set(ex.category, (counts.get(ex.category) || 0) + 1));
+        const options = [{ key: 'all', label: 'Todos', count: exerciseBank.length },
+          ...[...counts.keys()].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR'))
+            .map(key => ({ key, label: categoryLabels[key] || key, count: counts.get(key) }))];
+        options.forEach(item => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'muscle-index-btn' + (category === item.key ? ' active' : '');
+          button.setAttribute('aria-pressed', String(category === item.key));
+          button.innerHTML = '<span></span>';
+          button.textContent = item.label + ' · ' + item.count;
+          button.addEventListener('click', () => {
+            $('bankCategory').value = item.key;
+            renderBankPicker();
+          });
+          index.append(button);
+        });
+      }
       const select = $('bankExercise');
       select.innerHTML = '';
-      filtered.forEach(ex => { const opt=document.createElement('option'); opt.value=ex.name; opt.textContent=ex.name+' · '+(categoryLabels[ex.category]||ex.category); select.append(opt); });
+      filtered.forEach(ex => { const opt=document.createElement('option'); opt.value=ex.name; opt.textContent=ex.name; select.append(opt); });
       $('bankCount').textContent = exerciseBank.length+' exercícios';
       $('bankStatus').textContent = filtered.length ? filtered.length+' exercício(s) disponível(is) para adicionar à aula.' : 'Nenhum exercício encontrado para esse filtro.';
       if (!filtered.length) { const opt=document.createElement('option');opt.value='';opt.textContent='Nenhum resultado';select.append(opt); }
