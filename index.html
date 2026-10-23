@@ -711,25 +711,16 @@
       blocks.push(block);
       status.textContent='Adicionando '+name+'…';
       status.style.color='var(--lime)';
-      try { reset(); } catch(error) { console.error('Erro ao atualizar timer:',error); }
-      try { renderList(); } catch(error) { console.error('Erro ao desenhar lista:',error); }
-      const list=$('exerciseList');
-      const visible=[...list.querySelectorAll('strong')].some(el=>el.textContent.trim()===name);
-      if(!visible){
-        const row=document.createElement('div');
-        row.className='exercise-item';
-        row.style.cssText='display:flex!important;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);visibility:visible!important;opacity:1!important';
-        const label=document.createElement('strong');
-        label.textContent=name;
-        label.style.cssText='display:block!important;visibility:visible!important;color:var(--text);flex:1;overflow-wrap:anywhere';
-        const durationLabel=document.createElement('span');
-        durationLabel.textContent=fmt(block.duration);
-        durationLabel.style.cssText='color:var(--muted);font-size:12px';
-        row.append(label,durationLabel);
-        list.append(row);
+      try {
+        reset();
+        renderList();
+        status.textContent='✓ '+name+' adicionado à aula. Total: '+blocks.length+' bloco(s).';
+        status.style.color='var(--lime)';
+      } catch(error) {
+        console.error('Erro ao atualizar a lista de exercícios:',error);
+        status.textContent='O exercício foi registrado, mas a lista falhou ao atualizar. Tente novamente.';
+        showNotice('Erro ao atualizar a lista. Recarregue a página e tente novamente.');
       }
-      $('blockCount').textContent=blocks.length+' bloco(s)';
-      status.textContent='✓ '+name+' adicionado à aula. Total: '+blocks.length+' bloco(s).';
     });;
     $('addExerciseBtn').addEventListener('click',()=>{
       const status=$('addExerciseStatus');
@@ -745,18 +736,8 @@
         $('newExercise').value='';
         $('newDurationMin').value=els.exerciseMinutes.value;
         $('newDuration').value=els.exerciseSeconds.value;
-        try { reset(); } catch(error) { console.error('Erro ao atualizar o timer:',error); }
-        try { renderList(); } catch(error) { console.error('Erro ao desenhar a lista:',error); }
-        // Garantia visual independente do renderizador completo: o item adicionado aparece na lista.
-        const list=$('exerciseList');
-        if(list && ![...list.querySelectorAll('strong')].some(el=>el.textContent.trim()===name)) {
-          const row=document.createElement('div');
-          row.className='exercise-item';
-          row.style.cssText='display:flex!important;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);visibility:visible!important;opacity:1!important';
-          const label=document.createElement('strong');label.textContent=name;label.style.cssText='display:block!important;visibility:visible!important;color:var(--text);flex:1;overflow-wrap:anywhere';
-          const durationLabel=document.createElement('span');durationLabel.textContent=fmt(duration);durationLabel.style.cssText='color:var(--muted);font-size:12px';
-          row.append(label,durationLabel);list.append(row);
-        }
+        reset();
+        renderList();
         status.textContent='✓ "'+name+'" foi adicionado à aula. Total: '+blocks.length+' exercício(s).';
         status.style.color='var(--lime)';
       } catch(error) {
