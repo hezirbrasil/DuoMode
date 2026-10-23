@@ -139,8 +139,10 @@
     .time { font-variant-numeric:tabular-nums;font-weight:850;font-size:clamp(48px,8vw,76px);letter-spacing:-.055em;line-height:1.1; }
     .clock-caption { color:var(--muted);font-size:12px;letter-spacing:.16em;margin-top:8px;text-transform:uppercase; }
     .clock-caption { display:none; }
-    .current-name-row { display:flex;align-items:center;justify-content:center;gap:8px;max-width:100%;margin:4px auto 0; }
-    .current-name { font-size:clamp(24px,3.5vw,32px);font-weight:750;margin:0;min-height:0;line-height:1.2;overflow-wrap:anywhere; }
+    .current-name-row { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:min(94vw,1100px);min-width:0;margin:4px auto 0; }
+    .current-name { display:block;flex:1 1 auto;min-width:0;width:100%;font-size:clamp(16px,2.5vw,32px);font-weight:750;margin:0;min-height:0;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;word-break:normal;text-align:center; }
+    #app.mode-play #timerPanel .current-name-row { width:100%;max-width:min(94vw,1100px); }
+    #app.mode-play #timerPanel .current-name { font-size:clamp(16px,2.5vw,32px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
     .edit-current-name { flex:0 0 auto;width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font-size:14px;padding:0; }
     .edit-current-name:hover { color:var(--lime);border-color:var(--lime); }
     .edit-current-name:disabled { display:none; }
