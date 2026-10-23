@@ -95,7 +95,7 @@
     }
 
 
-    .muscle-index-wrap { margin: 0 0 14px; }
+    .muscle-index-wrap { display:none !important; }
     .muscle-index-title { margin: 0 0 4px; font-size: 14px; color: var(--lime); }
     .muscle-index-help { margin: 0 0 10px; font-size: 12px; }
     .muscle-index { display: grid; grid-template-columns: repeat(auto-fit,minmax(135px,1fr)); gap: 7px; }
