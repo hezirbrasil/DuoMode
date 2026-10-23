@@ -559,6 +559,48 @@
     $('maximizeTimerBtn').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await $('timerPanel').requestFullscreen();}catch(e){showNotice('A maximização não está disponível neste navegador.');}});
     $('exitTimerFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{setViewMode('script');}});
     $('backToScriptBtn').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}setViewMode('script');});
+    $('mergeSelectedBtn').addEventListener('click', () => {
+      if (running) {
+        showNotice('Pause o timer antes de juntar exercícios.');
+        return;
+      }
+
+      const indexes = [...selectedBlocks]
+        .filter(index => Number.isInteger(index) && index >= 0 && index < blocks.length)
+        .sort((a, b) => a - b);
+
+      if (indexes.length < 2) {
+        showNotice('Selecione pelo menos dois exercícios para usar o mesmo tempo.');
+        return;
+      }
+
+      const selected = indexes.map(index => blocks[index]);
+      if (selected.some(block => block.type === 'rest')) {
+        showNotice('Etapas de descanso não podem ser juntadas como exercícios.');
+        return;
+      }
+
+      const firstBlock = selected[0];
+      const exerciseNames = selected.flatMap(block => [
+        block.name,
+        ...(Array.isArray(block.extraExercises) ? block.extraExercises : [])
+      ]);
+      const uniqueNames = [...new Set(exerciseNames.map(name => String(name).trim()).filter(Boolean))];
+
+      firstBlock.name = uniqueNames.shift() || firstBlock.name;
+      firstBlock.extraExercises = uniqueNames;
+      firstBlock.restAfter = selected[selected.length - 1].restAfter ?? firstBlock.restAfter ?? 0;
+
+      const removedBeforeFirst = indexes.filter(index => index < indexes[0]).length;
+      const indexSet = new Set(indexes.slice(1));
+      blocks = blocks.filter((block, index) => !indexSet.has(index));
+      selectedBlocks.clear();
+      blockIndex = Math.max(0, indexes[0] - removedBeforeFirst);
+      roundIndex = 1;
+      reset();
+      showNotice('Exercícios unidos em um único bloco. Todos compartilham o tempo de ' + fmt(firstBlock.duration) + '.');
+    });
+
     $('groupSelectedBtn').addEventListener('click',()=>{
       if(running){showNotice('Pause o timer antes de agrupar blocos.');return;}
       const indexes=[...selectedBlocks].filter(i=>i>=0&&i<blocks.length).sort((a,b)=>a-b);
