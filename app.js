@@ -704,6 +704,38 @@
       }
     });
     $('saveBtn').addEventListener('click',save);
+    $('exportClassBtn').addEventListener('click',()=>{
+      if(!blocks.length){showNotice('Adicione pelo menos um bloco antes de exportar a aula.');return;}
+      const title=prompt('Nome do arquivo da aula:','Minha aula coletiva');
+      if(!title?.trim())return;
+      const payload={format:'acuas-fitness-class',version:1,title:title.trim(),blocks:blocks.map(b=>({...b})),exportedAt:new Date().toISOString()};
+      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const link=document.createElement('a');
+      link.href=url;
+      link.download=title.trim().replace(/[^a-z0-9-_ ]/gi,'').trim().replace(/\s+/g,'-')+'.acuas.json';
+      document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);
+      showNotice('Arquivo da aula exportado. Envie esse arquivo para outra pessoa que usa o ACUAS Fitness.');
+    });
+    $('importClassBtn').addEventListener('click',()=>{
+      if(running){showNotice('Pause o timer antes de importar uma aula.');return;}
+      $('importClassFile').click();
+    });
+    $('importClassFile').addEventListener('change',async event=>{
+      const file=event.target.files?.[0];if(!file)return;
+      try{
+        const data=JSON.parse(await file.text());
+        if(data.format!=='acuas-fitness-class'||!Array.isArray(data.blocks))throw new Error('Formato inválido');
+        const imported=data.blocks;
+        if(imported.some(b=>!b||typeof b.name!=='string'||!Number.isFinite(Number(b.duration))||Number(b.duration)<1))throw new Error('Blocos inválidos');
+        if(!confirm('Importar "'+(String(data.title||file.name))+'" e substituir a aula atual?'))return;
+        blocks=imported.map(b=>({...b,collapsed:true,duration:Number(b.duration),extraExercises:Array.isArray(b.extraExercises)?b.extraExercises:[]}));
+        selectedBlocks.clear();collapsedGroups.clear();blockIndex=0;phase='exercise';finished=false;running=false;
+        reset();render();showNotice('Aula "'+(String(data.title||file.name))+'" importada com '+blocks.length+' bloco(s).');
+      }catch(error){showNotice('Não foi possível importar esse arquivo. Confira se ele foi exportado pelo ACUAS Fitness.');}
+      finally{event.target.value='';}
+    });
+
     $('loadExampleBtn').addEventListener('click',loadExample);
     $('clearBtn').addEventListener('click',()=>{if(running){showNotice('Pause o timer antes de limpar os blocos.');return;}blocks=[];reset();remaining=0;totalPhase=1;render();showNotice('Todos os blocos foram removidos.');});
     [els.exerciseMinutes,els.exerciseSeconds,els.restMinutes,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){showNotice('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
