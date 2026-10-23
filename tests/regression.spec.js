@@ -36,10 +36,14 @@ test('padroniza o tempo dos exercícios selecionados sem juntá-los', async ({ p
 
   await page.getByRole('spinbutton', { name: 'Minutos do tempo padronizado' }).fill('1');
   await page.getByRole('spinbutton', { name: 'Segundos do tempo padronizado' }).fill('10');
+  await page.getByRole('spinbutton', { name: 'Minutos do descanso padronizado' }).fill('0');
+  await page.getByRole('spinbutton', { name: 'Segundos do descanso padronizado' }).fill('20');
   await page.getByRole('button', { name: 'Aplicar aos selecionados' }).click();
 
   await expect(page.locator('#exerciseList .exercise-item').nth(0)).toContainText('01:10');
+  await expect(page.locator('#exerciseList .exercise-item').nth(0)).toContainText('Descanso após: 00:20');
   await expect(page.locator('#exerciseList .exercise-item').nth(1)).toContainText('01:10');
+  await expect(page.locator('#exerciseList .exercise-item').nth(1)).toContainText('Descanso após: 00:20');
   await expect(page.locator('#exerciseList .exercise-item')).toHaveCount(3);
 });
 
