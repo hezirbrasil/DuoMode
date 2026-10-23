@@ -391,3 +391,29 @@
 .save-menu { position:absolute;top:calc(100% + 8px);right:0;z-index:10010;min-width:230px;padding:8px;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:0 12px 32px #0005; }
 .save-menu[hidden] { display:none !important; }
 .save-menu .btn { width:100%;text-align:left;white-space:normal; }
+
+
+/* Estrutura e espaçamento dos controles no HTML */
+.brand-accent { color: var(--blue); }
+.editor-help { margin: 0 0 10px; }
+.exercise-bank-panel {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 13px;
+  background: #0719207a;
+  margin-bottom: 12px;
+}
+.exercise-bank-heading { margin-bottom: 10px; }
+.exercise-bank-settings {
+  margin-top: 0;
+  grid-template-columns: 1fr 1fr;
+}
+.exercise-bank-add-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.bank-status { margin: 8px 0 0; }
+.create-exercise-heading { margin: 16px 0 8px; }
+.add-exercise-status { margin: 8px 0 12px; min-height: 20px; }
+.timer-settings { /* Configurações do cronômetro */ }
