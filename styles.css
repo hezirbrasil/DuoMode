@@ -214,6 +214,18 @@
     #app.mode-edit #scriptPanel #exerciseList .item-actions { display:flex !important;visibility:visible !important;opacity:1 !important;grid-column:1 / -1 !important;grid-row:auto !important;position:relative !important;z-index:1; }
     #app.mode-edit #scriptPanel #exerciseList .item-actions .icon-btn { display:inline-flex !important;visibility:visible !important;opacity:1 !important; }
     #app.mode-script #scriptPanel .exercise-item .block-editor { grid-column:2; }
+    /* Modo Script: somente numeração e nome do exercício. */
+    #app.mode-script #scriptPanel .exercise-item .block-editor,
+    #app.mode-script #scriptPanel .exercise-item .edit-block-btn,
+    #app.mode-script #scriptPanel .exercise-item .edit-current-name,
+    #app.mode-script #scriptPanel .exercise-item .item-actions,
+    #app.mode-script #scriptPanel .exercise-item small,
+    #app.mode-script #scriptPanel .exercise-item .render-recovery-details { display:none !important; }
+    #app.mode-script #scriptPanel .exercise-item { grid-template-columns:38px minmax(0,1fr) !important;grid-template-rows:auto !important;align-items:center !important; }
+    #app.mode-script #scriptPanel .exercise-item > .index { grid-column:1 !important;grid-row:1 !important; }
+    #app.mode-script #scriptPanel .exercise-item > div:not(.block-editor):not(.item-actions) { grid-column:2 !important;grid-row:1 !important; }
+    #app.mode-script #scriptPanel .exercise-item > div:not(.block-editor):not(.item-actions) strong { display:block !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;overflow-wrap:normal !important;word-break:normal !important; }
+
     @media(max-width:470px) { .block-editor { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }.block-editor input { width:100%; } }
     .duration-edit { display:flex;gap:5px;align-items:center; }
     .duration-edit input { width:52px; }
