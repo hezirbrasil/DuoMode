@@ -2,8 +2,16 @@ const { test, expect } = require('@playwright/test');
 
 async function loadExample(page) {
   await page.goto('/');
-  await page.getByRole('button', { name: /Carregar exemplo/i }).click();
-  await expect(page.locator('#exerciseList .exercise-item')).toHaveCount(3);
+  const select = page.locator('#bankExercise');
+  await expect.poll(async () => select.locator('option').count()).toBeGreaterThan(1);
+  for (const [index, name] of ['Agachamento Livre', 'Polichinelo', 'Prancha'].entries()) {
+    const option = select.locator('option').filter({ hasText: name }).first();
+    const value = await option.getAttribute('value');
+    if (!value) throw new Error('Não foi encontrado no banco o exercício: ' + name);
+    await select.selectOption(value);
+    await page.locator('#addBankExercise').click();
+    await expect(page.locator('#exerciseList .exercise-item')).toHaveCount(index + 1);
+  }
   await expect(page.locator('#exerciseList')).toContainText('Agachamento Livre');
 }
 
