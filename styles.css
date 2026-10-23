@@ -417,3 +417,13 @@
 .create-exercise-heading { margin: 16px 0 8px; }
 .add-exercise-status { margin: 8px 0 12px; min-height: 20px; }
 .timer-settings { /* Configurações do cronômetro */ }
+
+/* Tipografia e controles da biblioteca de exercícios */
+.bank-title,
+.create-exercise-title {
+  margin: 0;
+}
+.bank-title { font-size: 15px; }
+.create-exercise-title { font-size: 16px; }
+.exercise-bank-select { flex: 1; }
+.saved-classes-note { margin: 14px 0 0; }
