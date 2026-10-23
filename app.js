@@ -367,10 +367,15 @@
         } else {
           const restLabel=document.createElement('span');restLabel.textContent='Etapa de descanso';restLabel.style.cssText='color:var(--muted);font-size:11px;grid-column:1/-1';editor.append(restLabel);
         }
-        const minutes=document.createElement('input');minutes.type='number';minutes.min='0';minutes.max='60';minutes.value=String(Math.floor(b.duration/60));minutes.title='Minutos';minutes.setAttribute('aria-label','Minutos do bloco '+(i+1));
-        const seconds=document.createElement('input');seconds.type='number';seconds.min='0';seconds.max='59';seconds.value=String(b.duration%60);seconds.title='Segundos';seconds.setAttribute('aria-label','Segundos do bloco '+(i+1));
+        const durationWrap=document.createElement('div');durationWrap.style.cssText='grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--panel2)';
+        const durationHeading=document.createElement('strong');durationHeading.textContent='Duração do exercício';durationHeading.style.cssText='grid-column:1/-1;font-size:12px;color:var(--lime)';
+        const minutesLabel=document.createElement('label');minutesLabel.textContent='Minutos';minutesLabel.style.cssText='display:flex;flex-direction:column;gap:5px;margin:0';
+        const minutes=document.createElement('input');minutes.type='number';minutes.min='0';minutes.max='60';minutes.step='1';minutes.inputMode='numeric';minutes.value=String(Math.floor(b.duration/60));minutes.title='Minutos';minutes.setAttribute('aria-label','Minutos da duração do exercício '+(i+1));
+        const secondsLabel=document.createElement('label');secondsLabel.textContent='Segundos';secondsLabel.style.cssText='display:flex;flex-direction:column;gap:5px;margin:0';
+        const seconds=document.createElement('input');seconds.type='number';seconds.min='0';seconds.max='59';seconds.step='1';seconds.inputMode='numeric';seconds.value=String(b.duration%60);seconds.title='Segundos';seconds.setAttribute('aria-label','Segundos da duração do exercício '+(i+1));
         const updateDuration=()=>{if(running){showNotice('Pause o timer antes de alterar a duração.');renderList();return;}const total=intVal(minutes,0,0,60)*60+intVal(seconds,0,0,59);if(total<1){showNotice('A duração precisa ser de pelo menos 1 segundo.');renderList();return;}b.duration=total;if(i===blockIndex){remaining=total;totalPhase=total;}render();};
         minutes.addEventListener('change',updateDuration);seconds.addEventListener('change',updateDuration);
+        minutesLabel.append(minutes);secondsLabel.append(seconds);durationWrap.append(durationHeading,minutesLabel,secondsLabel);
         const restTotal=Math.max(0,Math.min(3600,Number(b.restAfter)||0));
          const restWrap=document.createElement('div');restWrap.style.cssText='grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--panel2)';
          const restHeading=document.createElement('strong');restHeading.textContent='Descanso após este bloco';restHeading.style.cssText='grid-column:1/-1;font-size:12px;color:var(--lime)';
@@ -382,7 +387,7 @@
          restMinutes.addEventListener('change',updateRest);restSeconds.addEventListener('change',updateRest);
          restMinutesLabel.append(restMinutes);restSecondsLabel.append(restSeconds);
          restWrap.append(restHeading,restMinutesLabel,restSecondsLabel);
-         editor.append(minutes,seconds,restWrap);
+         editor.append(durationWrap,restWrap);
         const actions=document.createElement('div');actions.className='item-actions';actions.style.cssText='display:flex;flex-wrap:wrap;grid-column:1/-1;grid-row:3;gap:6px;visibility:visible;opacity:1;width:100%;min-width:0';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.style.cssText='display:inline-flex!important;align-items:center;justify-content:center;gap:4px;width:auto;min-width:40px;height:34px;padding:0 9px;white-space:nowrap;visibility:visible!important;opacity:1';btn.addEventListener('click',fn);return btn;};
         actions.append(
