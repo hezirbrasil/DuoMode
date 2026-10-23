@@ -75,8 +75,13 @@
         <div class="exercise-list" id="exerciseList"></div>
         <div class="exercise-bank-panel">
           <div class="section-head exercise-bank-heading"><div><h2 class="bank-title">Exercícios</h2></div></div>
+          <div class="muscle-index-wrap">
+            <h3 class="muscle-index-title">Índice de grupamentos musculares</h3>
+            <p class="subtle muscle-index-help">Escolha um grupamento antes de selecionar o exercício.</p>
+            <div class="muscle-index" id="bankMuscleIndex" aria-label="Grupamentos musculares"></div>
+          </div>
           <div class="settings exercise-bank-settings">
-            <div><label for="bankCategory">Categoria</label><select id="bankCategory"><option value="all">Todas</option></select></div>
+            <div><label for="bankCategory">Grupamento selecionado</label><select id="bankCategory"><option value="all">Todos os grupamentos</option></select></div>
             <div><label for="bankSearch">Buscar exercício</label><input id="bankSearch" type="search" placeholder="Ex.: agachamento"></div>
           </div>
           <div class="exercise-bank-add-row">
