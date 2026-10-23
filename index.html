@@ -74,18 +74,18 @@
         <p class="subtle editor-help">Marque os exercícios que deseja reunir no mesmo grupo. A sequência do timer permanece igual.</p>
         <div class="exercise-list" id="exerciseList"></div>
         <div class="exercise-bank-panel">
-          <div class="section-head exercise-bank-heading"><div><h2 style="font-size:15px;margin:0">Exercícios</h2></div></div>
+          <div class="section-head exercise-bank-heading"><div><h2 class="bank-title">Exercícios</h2></div></div>
           <div class="settings exercise-bank-settings">
             <div><label for="bankCategory">Categoria</label><select id="bankCategory"><option value="all">Todas</option></select></div>
             <div><label for="bankSearch">Buscar exercício</label><input id="bankSearch" type="search" placeholder="Ex.: agachamento"></div>
           </div>
           <div class="exercise-bank-add-row">
-            <select id="bankExercise" aria-label="Selecionar exercício do banco" style="flex:1"><option value="">Carregando banco…</option></select>
+            <select id="bankExercise" aria-label="Selecionar exercício do banco" class="exercise-bank-select"><option value="">Carregando banco…</option></select>
             <button class="btn blue" id="addBankExercise" type="button">＋ Adicionar</button>
           </div>
           <p class="subtle bank-status" id="bankStatus">Banco de exercícios importado do aplicativo original.</p>
         </div>
-        <div class="section-head create-exercise-heading"><h2 style="font-size:16px;margin:0">Criar exercício</h2><span class="subtle">Inclua um exercício na sequência</span></div>
+        <div class="section-head create-exercise-heading"><h2 class="create-exercise-title">Criar exercício</h2><span class="subtle">Inclua um exercício na sequência</span></div>
         <div class="add-form" id="addForm">
           <input id="newExercise" type="text" maxlength="90" placeholder="Digite o nome do exercício" aria-label="Nome do exercício">
           <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos"></div>
@@ -97,7 +97,7 @@
           <button class="btn" id="loadExampleBtn" type="button">Carregar exemplo</button>
           <button class="btn" id="clearBtn" type="button">Limpar blocos</button>
         </div>
-        <p class="subtle" style="margin:14px 0 0">As aulas salvas ficam neste navegador. Use “Salvar aula” para guardar a sequência atual.</p>
+        <p class="subtle saved-classes-note">As aulas salvas ficam neste navegador. Use “Salvar aula” para guardar a sequência atual.</p>
       </section>
     </main>
     <p class="bottom-note">ACUAS FITNESS · EXERCÍCIO COM RITMO, FOCO E ENERGIA</p>
