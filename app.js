@@ -1,20 +1,8 @@
 (() => {
     'use strict';
     const $ = (id) => document.getElementById(id);
-    function showNotice(message) {
-      let notice = $('appNotice');
-      if (!notice) {
-        notice = document.createElement('div');
-        notice.id = 'appNotice';
-        notice.setAttribute('role','status');
-        notice.setAttribute('aria-live','polite');
-        notice.style.cssText = 'display:none;position:sticky;top:8px;z-index:1000;padding:10px 14px;margin:8px 0;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--text);font-size:14px;box-shadow:0 4px 16px #0003';
-        const app = $('app');
-        app.prepend(notice);
-      }
-      notice.textContent = String(message);
-      notice.style.display = 'block';
-    }
+    // O app não usa caixas de alerta/notificações sobrepostas.
+    function showNotice(message) {}
     const els = {
       time: $('timeDisplay'), phaseText: $('phaseText'), phaseBadge: $('phaseBadge'), clockWrap: $('clockWrap'),
       progress: $('clockProgress'), caption: $('clockCaption'), name: $('currentName'), round: $('roundLabel'),
@@ -296,18 +284,20 @@
           const rename=document.createElement('button');rename.type='button';rename.className='group-rename';rename.textContent='✎';rename.title='Renomear grupo '+groupName;rename.setAttribute('aria-label','Renomear grupo '+groupName);
           rename.addEventListener('click',()=>{
             if(running){showNotice('Pause o timer antes de renomear grupos.');return;}
-            const nextName=prompt('Novo nome para o grupo:',groupName);
-            if(!nextName?.trim())return;
-            const trimmed=nextName.trim();
-            blocks.forEach(item=>{if(item.group===groupName)item.group=trimmed;});
-            if(collapsedGroups.has(groupName)){collapsedGroups.delete(groupName);collapsedGroups.add(trimmed);}
-            render();
+            if(headerRow.querySelector('.group-name-input'))return;
+            const input=document.createElement('input');input.type='text';input.value=groupName;input.maxLength=50;input.setAttribute('aria-label','Nome do grupo');
+            input.style.cssText='min-width:0;width:140px;max-width:40vw;padding:7px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text)';
+            input.className='group-name-input';
+            const finish=save=>{const next=input.value.trim();if(save&&next&&next!==groupName){blocks.forEach(item=>{if(item.group===groupName)item.group=next;});if(collapsedGroups.has(groupName)){collapsedGroups.delete(groupName);collapsedGroups.add(next);}}render();};
+            input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();finish(true);}else if(e.key==='Escape'){e.preventDefault();finish(false);}});
+            const saveName=document.createElement('button');saveName.type='button';saveName.className='group-rename';saveName.textContent='Salvar';saveName.addEventListener('click',()=>finish(true));
+            rename.replaceWith(input);headerRow.append(saveName);input.focus();input.select();
           });
           headerRow.append(header,rename);els.list.append(headerRow);
         }
         // Grupos recolhidos escondem os cartões no editor sem alterar a sequência do timer.
         const isGroupCollapsed = Boolean(b.group && collapsedGroups.has(b.group));
-        const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'')+(isGroupCollapsed?' group-collapsed':'')+(b.collapsed?' block-minimized':'');row.style.cssText='display:grid !important;grid-template-columns:20px 30px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:start;gap:8px 10px;min-height:76px;visibility:visible;opacity:1;overflow:visible';
+        const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'')+(isGroupCollapsed?' group-collapsed':'')+(b.collapsed?' block-minimized':'');row.style.cssText='display:grid;grid-template-columns:20px 30px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:start;gap:8px 10px;min-height:76px;visibility:visible;opacity:1;overflow:visible';
         row.dataset.blockIndex=String(i);
         row.addEventListener('dragover',e=>{if(!running&&draggedBlockIndex!==null&&draggedBlockIndex!==i){e.preventDefault();row.classList.add('drag-over');}});
         row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));
@@ -322,7 +312,7 @@
           if(e.target.closest('select,input,button,label'))return;
           row.classList.toggle('show-bank');
         });
-        const editor=document.createElement('div');editor.className='block-editor';editor.style.cssText=(b.collapsed?'display:none !important;':'display:grid !important;')+'grid-column:3 / -1;grid-row:2;align-self:stretch;min-width:0;width:100%;visibility:visible;opacity:1';
+        const editor=document.createElement('div');editor.className='block-editor';editor.style.cssText=(b.collapsed?'display:none;':'display:grid;')+'grid-column:3 / -1;grid-row:2;align-self:stretch;min-width:0;width:100%;visibility:visible;opacity:1';
         if(b.collapsed) row.classList.add('collapsed');
         if(b.type!=='rest'){
           const currentExercise=exerciseBank.find(ex=>ex.name.toLocaleLowerCase('pt-BR')===b.name.toLocaleLowerCase('pt-BR'));
@@ -565,8 +555,7 @@
     }
 
     function save() {
-      const title=prompt('Nome para salvar esta aula:', 'Minha aula coletiva');
-      if(!title?.trim())return;
+      const title='Minha aula coletiva';
       try {
         const saved=JSON.parse(localStorage.getItem(SAVED_CLASSES_KEY)||'[]');
         saved.push({title:title.trim(),blocks:blocks.map(b=>({...b})),settings:settings(),savedAt:new Date().toISOString()});
@@ -697,10 +686,8 @@
       if(running){showNotice('Pause o timer antes de agrupar blocos.');return;}
       const indexes=getCheckedBlockIndexes();
       if(indexes.length<2){showNotice('Marque a caixa à esquerda de pelo menos dois blocos — inclusive blocos que já reúnem vários exercícios — e tente novamente.');return;}
-      const name=prompt('Nome do grupo:', 'Grupo '+nextGroupId);
-      if(!name?.trim())return;
-      const group=name.trim();indexes.forEach(i=>blocks[i].group=group);nextGroupId++;selectedBlocks.clear();render();
-      showNotice(indexes.length+' blocos organizados no grupo “'+group+'”.');
+      const group='Grupo '+nextGroupId;
+      indexes.forEach(i=>blocks[i].group=group);nextGroupId++;selectedBlocks.clear();render();
     });
     $('ungroupSelectedBtn').addEventListener('click',()=>{
       if(running){showNotice('Pause o timer antes de desagrupar blocos.');return;}
@@ -747,8 +734,7 @@
     $('exportClassBtn').addEventListener('click',()=>{
       $('saveMenu').hidden=true;$('saveBtn').setAttribute('aria-expanded','false');
       if(!blocks.length){showNotice('Adicione pelo menos um bloco antes de exportar a aula.');return;}
-      const title=prompt('Nome do arquivo da aula:','Minha aula coletiva');
-      if(!title?.trim())return;
+      const title='Minha aula coletiva';
       const payload={format:'acuas-fitness-class',version:1,title:title.trim(),blocks:blocks.map(b=>({...b})),exportedAt:new Date().toISOString()};
       const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
       const url=URL.createObjectURL(blob);
@@ -769,7 +755,6 @@
         if(data.format!=='acuas-fitness-class'||!Array.isArray(data.blocks))throw new Error('Formato inválido');
         const imported=data.blocks;
         if(imported.some(b=>!b||typeof b.name!=='string'||!Number.isFinite(Number(b.duration))||Number(b.duration)<1))throw new Error('Blocos inválidos');
-        if(!confirm('Importar "'+(String(data.title||file.name))+'" e substituir a aula atual?'))return;
         blocks=imported.map(b=>({...b,collapsed:true,duration:Number(b.duration),extraExercises:Array.isArray(b.extraExercises)?b.extraExercises:[]}));
         selectedBlocks.clear();collapsedGroups.clear();blockIndex=0;phase='exercise';finished=false;running=false;
         reset();render();showNotice('Aula "'+(String(data.title||file.name))+'" importada com '+blocks.length+' bloco(s).');
