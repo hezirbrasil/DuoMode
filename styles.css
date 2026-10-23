@@ -315,3 +315,35 @@
 #exerciseList > .exercise-item.block-minimized .minimize-block-btn::after {
   content:"";
 }
+
+/* Modo Script é uma lista limpa para acompanhar a aula: somente nomes dos exercícios. */
+#app.mode-script > header,
+#app.mode-script #timerPanel,
+#app.mode-script #scriptPanel > :not(#exerciseList),
+#app.mode-script #scriptPanel #exerciseList > .group-header-row,
+#app.mode-script #scriptPanel #exerciseList > .exercise-item > input,
+#app.mode-script #scriptPanel #exerciseList > .exercise-item > .index,
+#app.mode-script #scriptPanel #exerciseList > .exercise-item > .block-editor,
+#app.mode-script #scriptPanel #exerciseList > .exercise-item > .item-actions,
+#app.mode-script #scriptPanel #exerciseList > .exercise-item .exercise-info small,
+#app.mode-script #scriptPanel #exerciseList > .exercise-item .exercise-info button {
+  display:none !important;
+}
+#app.mode-script .layout { display:block !important;max-width:900px;margin:38px auto 0; }
+#app.mode-script #scriptPanel { padding:12px 0;background:transparent;border:0;box-shadow:none; }
+#app.mode-script #scriptPanel #exerciseList { display:flex !important;flex-direction:column;gap:8px; }
+#app.mode-script #scriptPanel #exerciseList > .exercise-item {
+  display:block !important;min-height:0 !important;padding:14px 18px !important;
+  border:1px solid var(--line);border-radius:12px;background:var(--panel);
+  box-shadow:0 4px 14px #0002;
+}
+#app.mode-script #scriptPanel #exerciseList > .exercise-item.active { border-color:var(--lime);box-shadow:inset 4px 0 var(--lime),0 4px 14px #0002; }
+#app.mode-script #scriptPanel #exerciseList > .exercise-item .exercise-info { display:block !important;width:100%;min-width:0; }
+#app.mode-script #scriptPanel #exerciseList > .exercise-item .exercise-info > div { display:block !important;width:100%; }
+#app.mode-script #scriptPanel #exerciseList > .exercise-item .exercise-info strong {
+  display:block !important;width:100%;font-size:clamp(18px,2.5vw,24px) !important;
+  line-height:1.35 !important;font-weight:750;white-space:normal !important;
+  overflow-wrap:anywhere !important;text-align:left !important;
+}
+#app.mode-script .script-back { display:block !important;position:fixed;top:10px;left:10px;z-index:10002; }
+#app.mode-script .bottom-note { display:none !important; }
