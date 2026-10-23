@@ -385,3 +385,9 @@
   width:calc(100% - 48px) !important;
   vertical-align:middle;
 }
+
+/* Menu de opções de salvamento */
+.save-menu-wrap { position:relative;display:inline-flex; }
+.save-menu { position:absolute;top:calc(100% + 8px);right:0;z-index:10010;min-width:230px;padding:8px;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:0 12px 32px #0005; }
+.save-menu[hidden] { display:none !important; }
+.save-menu .btn { width:100%;text-align:left;white-space:normal; }
