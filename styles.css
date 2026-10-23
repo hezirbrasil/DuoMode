@@ -66,6 +66,7 @@
     #app.mode-script #scriptPanel .exercise-item > input[type=checkbox],
     #app.mode-script #scriptPanel .exercise-item .item-actions,
     #app.mode-script #scriptPanel .exercise-item small { display:none !important; }
+    #app.mode-script #scriptPanel .exercise-item .render-recovery-details { display:none !important; }
     #app.mode-script #scriptPanel .exercise-item .block-editor { display:none !important;grid-column:2;grid-row:2;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:6px;margin-top:10px;width:100%;min-width:0; }
     #app.mode-script #scriptPanel .exercise-item.show-bank .block-editor { display:grid !important; }
     #app.mode-edit #scriptPanel .exercise-item .block-editor { display:grid !important; }
