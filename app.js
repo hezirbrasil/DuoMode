@@ -542,14 +542,6 @@
       blocks.splice(i,1);selectedBlocks=new Set([...selectedBlocks].filter(k=>k!==i).map(k=>k>i?k-1:k));if(!blocks.length){reset();remaining=0;totalPhase=1;render();return;}
       if(blockIndex>=blocks.length)blockIndex=blocks.length-1;reset();
     }
-    function loadExample() {
-      if(running){showNotice('Pause o timer antes de carregar o exemplo.');return;}
-      collapsedGroups.clear();
-      const defaultDuration=intVal(els.exerciseMinutes,0,0,60)*60+intVal(els.exerciseSeconds,45,0,59)||45;blocks=[{name:'Agachamento Livre',duration:defaultDuration},{name:'Polichinelo',duration:defaultDuration},{name:'Prancha',duration:defaultDuration}];
-      temporaryNames.clear();
-      reset();
-    }
-
     function save() {
       const title='Minha aula coletiva';
       try {
@@ -856,7 +848,6 @@
       finally{event.target.value='';}
     });
 
-    $('loadExampleBtn').addEventListener('click',loadExample);
     $('clearBtn').addEventListener('click',()=>{if(running){showNotice('Pause o timer antes de limpar os blocos.');return;}blocks=[];reset();remaining=0;totalPhase=1;render();showNotice('Todos os blocos foram removidos.');});
     [els.exerciseMinutes,els.exerciseSeconds,els.restMinutes,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){showNotice('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){/* wall-clock interval continues */}});
