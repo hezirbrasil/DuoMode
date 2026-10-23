@@ -347,3 +347,23 @@
 }
 #app.mode-script .script-back { display:block !important;position:fixed;top:10px;left:10px;z-index:10002; }
 #app.mode-script .bottom-note { display:none !important; }
+
+/* No modo Script, manter a numeração dos exercícios junto aos nomes. */
+#app.mode-script #scriptPanel #exerciseList > .exercise-item > .index {
+  display:inline-grid !important;
+  vertical-align:top;
+  place-items:center;
+  width:32px;
+  height:32px;
+  margin-right:10px;
+  border-radius:9px;
+  background:#ffffff0b;
+  color:var(--lime);
+  font-size:13px;
+  font-weight:900;
+}
+#app.mode-script #scriptPanel #exerciseList > .exercise-item .exercise-info {
+  display:inline-block !important;
+  width:calc(100% - 48px) !important;
+  vertical-align:middle;
+}
