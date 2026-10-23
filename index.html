@@ -681,7 +681,7 @@
       if(blockIndex>=blocks.length)blockIndex=blocks.length-1;reset();
     }
     function loadExample() {
-      if(running&&!confirm('A aula está em execução. Substituir os blocos?'))return;
+      if(running){showNotice('Pause o timer antes de carregar o exemplo.');return;}
       collapsedGroups.clear();
       const defaultDuration=intVal(els.exerciseMinutes,0,0,60)*60+intVal(els.exerciseSeconds,45,0,59)||45;blocks=[{name:'Agachamento Livre',duration:defaultDuration},{name:'Polichinelo',duration:defaultDuration},{name:'Prancha',duration:defaultDuration}];
       temporaryNames.clear();
@@ -706,7 +706,7 @@
       if(running){status.textContent='Pause o timer antes de alterar os blocos.';return;}
       if(!name){status.textContent='Selecione um exercício no campo acima.';return;}
       const already=blocks.some(b=>b.name.toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR'));
-      if(already && !confirm('Esse exercício já está na aula. Adicionar outra vez?')) return;
+      if(already){status.textContent='Esse exercício já está na aula. Não foi adicionado novamente.';showNotice('Esse exercício já está na aula.');return;}
       const block={name,duration:intVal(els.exerciseSeconds,45,1,3600)};
       blocks.push(block);
       status.textContent='Adicionando '+name+'…';
@@ -817,7 +817,7 @@
     });
     $('saveBtn').addEventListener('click',save);
     $('loadExampleBtn').addEventListener('click',loadExample);
-    $('clearBtn').addEventListener('click',()=>{if(running){showNotice('Pause o timer antes de limpar os blocos.');return;}if(confirm('Limpar todos os blocos da aula?')){blocks=[];reset();remaining=0;totalPhase=1;render();}});
+    $('clearBtn').addEventListener('click',()=>{if(running){showNotice('Pause o timer antes de limpar os blocos.');return;}blocks=[];reset();remaining=0;totalPhase=1;render();showNotice('Todos os blocos foram removidos.');});
     [els.exerciseMinutes,els.exerciseSeconds,els.restMinutes,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){showNotice('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){/* wall-clock interval continues */}});
     reset();
