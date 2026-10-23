@@ -244,11 +244,12 @@
     .item-actions { display:flex;gap:4px; }
     .icon-btn { border:1px solid var(--line);background:#102d38;color:var(--text);border-radius:8px;width:30px;height:30px;display:grid;place-items:center;padding:0; }
     .icon-btn:disabled { opacity:.28;cursor:not-allowed; }
-    .add-form { display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-top:13px; }
-    .add-form > #newExercise,.add-form > .duration-edit,.add-form > #addExerciseBtn { grid-column:1; }
-    .add-form > .duration-edit { justify-content:flex-start; }
+    .add-form { display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;margin-top:13px; }
+    .add-form > #newExercise { grid-column:1;min-width:0; }
+    .add-form > .duration-edit { grid-column:1 / -1;justify-content:flex-start; }
     .add-form > .duration-edit input { width:64px; }
-    .add-form > #addExerciseBtn { width:100%; }
+    .add-form > #addExerciseBtn { grid-column:2;grid-row:1;width:auto;padding:8px 11px;font-size:13px;background:transparent;border-color:var(--line);color:var(--muted);white-space:nowrap; }
+    .add-form > #addExerciseBtn:hover { color:var(--lime);border-color:var(--lime);background:#8bd34a12; }
     .subtle { color:var(--muted);font-size:13px; }
     .library-tools { display:flex;gap:8px;margin-top:13px; }
     .library-tools .btn { flex:1;padding:9px 10px;font-size:13px; }
@@ -256,7 +257,7 @@
     .flash { animation:flash .4s ease-in-out 3; }
     @keyframes flash { 50% { color:var(--lime);transform:scale(1.025); } }
     @media(max-width:800px) { .layout { grid-template-columns:1fr; } .clock-wrap{width:min(70vw,300px)} header{align-items:flex-start} }
-    @media(max-width:470px) { .app{padding:16px 12px 30px}.brand-mark{width:40px;height:40px}.header-actions .btn{padding:8px 10px;font-size:13px}.settings{grid-template-columns:1fr 1fr}.settings > :last-child{grid-column:1/-1}.add-form{grid-template-columns:minmax(0,1fr) 72px}.add-form button{grid-column:1/-1}.item-actions{gap:3px}.icon-btn{width:27px;height:29px} }
+    @media(max-width:470px) { .app{padding:16px 12px 30px}.brand-mark{width:40px;height:40px}.header-actions .btn{padding:8px 10px;font-size:13px}.settings{grid-template-columns:1fr 1fr}.settings > :last-child{grid-column:1/-1}.add-form{grid-template-columns:minmax(0,1fr) auto}.add-form > #addExerciseBtn{grid-column:2;grid-row:1;padding:8px 9px;font-size:12px}.item-actions{gap:3px}.icon-btn{width:27px;height:29px} }
 
 /* Leitura do roteiro: texto corrido, sem espaçamento artificial nem quebras no meio das palavras. */
 #app.mode-script #scriptPanel #exerciseList {
