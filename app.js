@@ -559,7 +559,7 @@
       const name=($('bankExercise').value||'').trim();
       if(running){status.textContent='Pause o timer antes de alterar os blocos.';return;}
       if(!name){status.textContent='Selecione um exercício no campo acima.';return;}
-      const block={name,duration:intVal(els.exerciseSeconds,45,1,3600)};
+      const block={name,duration:intVal(els.exerciseSeconds,45,1,3600),collapsed:true};
       blocks.push(block);
       status.textContent='Adicionando '+name+'…';
       status.style.color='var(--lime)';
@@ -582,7 +582,7 @@
       if(duration<1){status.textContent='Informe uma duração de pelo menos 1 segundo.';$('newDuration').focus();return;}
       if(running){status.textContent='Pause o timer antes de alterar os blocos.';return;}
       try {
-        const block={name,duration};
+        const block={name,duration,collapsed:true};
         blocks.push(block);
         status.textContent='Adicionando exercício…';
         $('newExercise').value='';
