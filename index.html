@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#07151b">
+  <meta name="theme-color" content="#071b1b">
   <title>ACUAS Fitness — Timer de Aulas</title>
-    <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css">
 
 </head>
 <body>
@@ -13,7 +13,7 @@
     <header>
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">A</div>
-        <div><h1>ACUAS <span style="color:var(--blue)">FITNESS</span></h1><p>Timer de aulas coletivas</p></div>
+        <div><h1>ACUAS <span class="brand-accent">FITNESS</span></h1><p>Timer de aulas coletivas</p></div>
       </div>
       <div class="header-actions">
         <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Play</button>
@@ -56,7 +56,7 @@
         <button class="btn" id="exitTimerFullscreen" type="button">✕ Sair da tela cheia</button>
         <button class="transport-btn" id="backToScriptBtn" type="button" aria-label="Voltar" title="Voltar">←</button>
         <button class="transport-btn" id="maximizeTimerBtn" type="button" aria-label="Maximizar timer" title="Maximizar timer">⛶</button>
-        <div class="settings">
+        <div class="settings timer-settings">
           <div><label for="exerciseMinutes">Exercício (min)</label><input id="exerciseMinutes" type="number" min="0" max="60" value="0"></div>
           <div><label for="exerciseSeconds">Exercício (seg)</label><input id="exerciseSeconds" type="number" min="0" max="59" value="40"></div>
           <div><label for="restMinutes">Descanso (min)</label><input id="restMinutes" type="number" min="0" max="60" value="0"></div>
@@ -71,27 +71,27 @@
         </div>
         <div class="sequence-visual" id="visualSequence" aria-label="Sequência visual da aula" hidden></div>
         <div class="group-tools"><button class="btn blue" id="mergeSelectedBtn" type="button">⏱ Juntar no mesmo tempo</button><button class="btn" id="groupSelectedBtn" type="button">▦ Organizar em grupo</button><button class="btn" id="ungroupSelectedBtn" type="button">Desagrupar selecionados</button></div>
-        <p class="subtle" style="margin:0 0 10px">Marque os exercícios que deseja reunir no mesmo grupo. A sequência do timer permanece igual.</p>
+        <p class="subtle editor-help">Marque os exercícios que deseja reunir no mesmo grupo. A sequência do timer permanece igual.</p>
         <div class="exercise-list" id="exerciseList"></div>
-        <div style="border:1px solid var(--line);border-radius:13px;padding:13px;background:#0719207a;margin-bottom:12px">
-          <div class="section-head" style="margin-bottom:10px"><div><h2 style="font-size:15px;margin:0">Exercícios</h2></div></div>
-          <div class="settings" style="margin-top:0;grid-template-columns:1fr 1fr">
+        <div class="exercise-bank-panel">
+          <div class="section-head exercise-bank-heading"><div><h2 style="font-size:15px;margin:0">Exercícios</h2></div></div>
+          <div class="settings exercise-bank-settings">
             <div><label for="bankCategory">Categoria</label><select id="bankCategory"><option value="all">Todas</option></select></div>
             <div><label for="bankSearch">Buscar exercício</label><input id="bankSearch" type="search" placeholder="Ex.: agachamento"></div>
           </div>
-          <div style="display:flex;gap:8px;margin-top:10px">
+          <div class="exercise-bank-add-row">
             <select id="bankExercise" aria-label="Selecionar exercício do banco" style="flex:1"><option value="">Carregando banco…</option></select>
             <button class="btn blue" id="addBankExercise" type="button">＋ Adicionar</button>
           </div>
-          <p class="subtle" id="bankStatus" style="margin:8px 0 0">Banco de exercícios importado do aplicativo original.</p>
+          <p class="subtle bank-status" id="bankStatus">Banco de exercícios importado do aplicativo original.</p>
         </div>
-        <div class="section-head" style="margin:16px 0 8px"><h2 style="font-size:16px;margin:0">Criar exercício</h2><span class="subtle">Inclua um exercício na sequência</span></div>
+        <div class="section-head create-exercise-heading"><h2 style="font-size:16px;margin:0">Criar exercício</h2><span class="subtle">Inclua um exercício na sequência</span></div>
         <div class="add-form" id="addForm">
           <input id="newExercise" type="text" maxlength="90" placeholder="Digite o nome do exercício" aria-label="Nome do exercício">
           <div class="duration-edit" aria-label="Duração do novo bloco"><input id="newDurationMin" type="number" min="0" max="60" step="1" inputmode="numeric" value="0" aria-label="Minutos" title="Minutos"><span>min</span><input id="newDuration" type="number" min="0" max="59" value="45" aria-label="Segundos" title="Segundos"></div>
           <button class="btn blue" id="addExerciseBtn" type="button">＋ Adicionar exercício</button>
         </div>
-        <p id="addExerciseStatus" role="status" aria-live="polite" class="subtle" style="margin:8px 0 12px;min-height:20px">Digite um exercício e clique em Adicionar exercício.</p>
+        <p id="addExerciseStatus" role="status" aria-live="polite" class="subtle add-exercise-status">Digite um exercício e clique em Adicionar exercício.</p>
         <div class="library-tools">
 
           <button class="btn" id="loadExampleBtn" type="button">Carregar exemplo</button>
@@ -102,7 +102,7 @@
     </main>
     <p class="bottom-note">ACUAS FITNESS · EXERCÍCIO COM RITMO, FOCO E ENERGIA</p>
   </div>
-    <script src="./app.js" defer></script>
+  <script src="./app.js" defer></script>
 
 </body>
 </html>
