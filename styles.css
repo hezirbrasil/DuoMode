@@ -472,3 +472,14 @@
   grid-template-rows: auto !important;
   min-height: 0 !important;
 }
+
+
+/* Ação em lote para aplicar a mesma duração aos exercícios marcados. */
+.standardize-times-inline { border-top:1px solid var(--line);margin-top:4px; }
+.standardize-times-inline .duration-edit input { width:58px; }
+.group-tools { display:flex;flex-wrap:wrap;gap:8px; }
+.group-tools > .btn { flex:0 1 auto; }
+@media(max-width:600px) {
+  .group-tools > .btn { flex:1 1 100%; }
+  .standardize-times-inline .duration-edit { flex:1 1 100%; }
+}
