@@ -117,6 +117,8 @@
     .group-header .group-chevron { margin-left:auto;transition:transform .15s; }
     .group-header[aria-expanded="false"] .group-chevron { transform:rotate(-90deg); }
     .group-summary { color:var(--muted);font-size:11px;font-weight:600;letter-spacing:0;text-transform:none; }
+    /* Um grupo recolhido remove seus exercícios do layout, não apenas seus detalhes. */
+    #exerciseList > .exercise-item.group-collapsed { display:none !important; }
     #timerPanel:fullscreen { width:100vw;height:100vh;max-width:none;border:0;border-radius:0;margin:0;padding:clamp(14px,4vh,42px);display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at top right,#103644 0,transparent 44%),var(--bg); }
     #timerPanel:fullscreen .clock-wrap { width:min(48vh, min(70vw,440px));margin:clamp(8px,2vh,24px) auto; }
     #timerPanel:fullscreen .time { font-size:clamp(60px,12vh,110px); }
@@ -466,15 +468,18 @@
 
           if (block.group && !renderedGroups.has(block.group)) {
             renderedGroups.add(block.group);
+            const headingRow = document.createElement('div');
+            headingRow.className = 'group-header-row';
             const heading = document.createElement('div');
             heading.className = 'group-header';
             heading.style.cssText = 'display:block!important;padding:8px 10px;color:var(--lime);font-weight:800';
             heading.textContent = String(block.group);
-            fragment.append(heading);
+            headingRow.append(heading);
+            fragment.append(headingRow);
           }
 
           const row = document.createElement('div');
-          row.className = 'exercise-item render-recovery-item';
+          row.className = 'exercise-item render-recovery-item' + (block.group && collapsedGroups.has(block.group) ? ' group-collapsed' : '');
           row.style.cssText = 'display:grid!important;grid-template-columns:20px 30px minmax(0,1fr);gap:8px 10px;align-items:center;width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);visibility:visible!important;opacity:1;overflow:visible';
           const check = document.createElement('input');
           check.type = 'checkbox';
@@ -534,6 +539,12 @@
       }
     }
 
+    function toggleGroup(groupName) {
+      if (collapsedGroups.has(groupName)) collapsedGroups.delete(groupName);
+      else collapsedGroups.add(groupName);
+      renderList();
+    }
+
     function renderListDetailed() {
       // Migra automaticamente aulas antigas: etapas de descanso viram descansoAfter
       // no exercício anterior, evitando cartões separados de recuperação.
@@ -562,9 +573,8 @@
           const title=document.createElement('span');title.textContent=groupName;
           const summary=document.createElement('span');summary.className='group-summary';summary.textContent=groupCounts.get(groupName)+' exercícios';
           header.replaceChildren(document.createTextNode(expanded?'▾ ':'▸ '),title,summary);
-          header.addEventListener('click',()=>{
-            if(collapsedGroups.has(groupName))collapsedGroups.delete(groupName);else collapsedGroups.add(groupName);
-            renderList();
+          header.addEventListener('click', () => {
+            toggleGroup(groupName);
           });
           const rename=document.createElement('button');rename.type='button';rename.className='group-rename';rename.textContent='✎';rename.title='Renomear grupo '+groupName;rename.setAttribute('aria-label','Renomear grupo '+groupName);
           rename.addEventListener('click',()=>{
@@ -578,8 +588,9 @@
           });
           headerRow.append(header,rename);els.list.append(headerRow);
         }
-        // Mantém todos os cartões visíveis; o cabeçalho do grupo organiza a lista sem ocultar exercícios.
-        const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'');row.style.cssText='display:grid !important;grid-template-columns:20px 30px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:start;gap:8px 10px;min-height:76px;visibility:visible;opacity:1;overflow:visible';
+        // Grupos recolhidos escondem os cartões no editor sem alterar a sequência do timer.
+        const isGroupCollapsed = Boolean(b.group && collapsedGroups.has(b.group));
+        const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'')+(isGroupCollapsed?' group-collapsed':'');row.style.cssText='display:grid !important;grid-template-columns:20px 30px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:start;gap:8px 10px;min-height:76px;visibility:visible;opacity:1;overflow:visible';
         const check=document.createElement('input');check.type='checkbox';check.checked=selectedBlocks.has(i);check.setAttribute('aria-label','Selecionar '+b.name);check.addEventListener('change',()=>{check.checked?selectedBlocks.add(i):selectedBlocks.delete(i);});
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
         const info=document.createElement('div');info.className='exercise-info';info.style.cssText='display:block !important;grid-column:3;grid-row:1;min-width:0;visibility:visible;opacity:1;color:var(--text)';const nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap';const strong=document.createElement('strong');strong.style.cssText='display:block !important;visibility:visible;opacity:1;color:var(--text);font-size:16px;overflow-wrap:anywhere';strong.textContent=[b.name,...(Array.isArray(b.extraExercises)?b.extraExercises:[])].join(' + ');const renameExercise=document.createElement('button');renameExercise.type='button';renameExercise.className='icon-btn';renameExercise.textContent='✎';renameExercise.title='Editar nome deste exercício';renameExercise.setAttribute('aria-label','Editar nome de '+b.name);renameExercise.addEventListener('click',()=>{if(running)return;const input=document.createElement('input');input.type='text';input.maxLength=90;input.value=b.name;input.setAttribute('aria-label','Nome do exercício');input.style.cssText='min-width:120px;max-width:100%;font:inherit;flex:1;padding:5px 8px';let saved=false;const finish=(save)=>{if(saved)return;saved=true;const value=input.value.trim();if(save&&value)b.name=value;render();};input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();finish(true);}else if(e.key==='Escape'){e.preventDefault();finish(false);}});input.addEventListener('blur',()=>finish(true));nameRow.replaceChild(input,strong);renameExercise.style.display='none';input.focus();input.select();});nameRow.append(strong,renameExercise);const editBlockBtn=document.createElement('button');editBlockBtn.type='button';editBlockBtn.className='edit-block-btn';editBlockBtn.textContent='Editar exercícios';editBlockBtn.setAttribute('aria-label','Editar exercícios do bloco '+(i+1));editBlockBtn.addEventListener('click',e=>{e.stopPropagation();row.classList.toggle('show-bank');if(row.classList.contains('show-bank'))editor.scrollIntoView({block:'nearest',behavior:'smooth'});});nameRow.append(editBlockBtn);const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
