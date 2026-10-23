@@ -292,6 +292,12 @@
 .sequence-stack .sequence-step .step-number { grid-column:1/-1; }
 .sequence-stack .sequence-step .step-name { grid-column:1; }
 .sequence-stack .sequence-step .step-meta { grid-column:2;grid-row:2;align-self:center;white-space:nowrap; }
+    /* Uniformiza a cor dos exercícios da sequência no Modo Play. */
+    #app.mode-play .sequence-step,
+    #app.mode-play .sequence-step.active,
+    #app.mode-play .sequence-step.recovery { background:linear-gradient(145deg,#102d38,#0a1e26) !important;border:1px solid var(--line) !important;box-shadow:none !important; }
+    #app.mode-play .sequence-step .step-number { color:var(--lime) !important; }
+
 
 /* Construtor: modo compacto por bloco, mantendo nome e controle para expandir. */
 #exerciseList > .exercise-item.block-minimized {
