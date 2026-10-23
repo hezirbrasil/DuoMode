@@ -684,18 +684,29 @@
       showNotice('Exercícios unidos em um único bloco. Todos compartilham o tempo de ' + fmt(firstBlock.duration) + '.');
     });
 
+    function getCheckedBlockIndexes() {
+      // Usa os checkboxes atualmente visíveis para evitar índices antigos após juntar/reordenar blocos.
+      const rows = [...$('exerciseList').querySelectorAll('.exercise-item[data-block-index]')];
+      const checked = rows.filter(row => row.querySelector(':scope > input[type="checkbox"]')?.checked)
+        .map(row => Number.parseInt(row.dataset.blockIndex, 10))
+        .filter(i => Number.isInteger(i) && i >= 0 && i < blocks.length);
+      if (checked.length) return [...new Set(checked)].sort((a,b)=>a-b);
+      return [...selectedBlocks].filter(i=>Number.isInteger(i)&&i>=0&&i<blocks.length).sort((a,b)=>a-b);
+    }
     $('groupSelectedBtn').addEventListener('click',()=>{
       if(running){showNotice('Pause o timer antes de agrupar blocos.');return;}
-      const indexes=[...selectedBlocks].filter(i=>i>=0&&i<blocks.length).sort((a,b)=>a-b);
-      if(indexes.length<2){showNotice('Selecione pelo menos dois exercícios para agrupar.');return;}
+      const indexes=getCheckedBlockIndexes();
+      if(indexes.length<2){showNotice('Marque a caixa à esquerda de pelo menos dois blocos — inclusive blocos que já reúnem vários exercícios — e tente novamente.');return;}
       const name=prompt('Nome do grupo:', 'Grupo '+nextGroupId);
       if(!name?.trim())return;
       const group=name.trim();indexes.forEach(i=>blocks[i].group=group);nextGroupId++;selectedBlocks.clear();render();
+      showNotice(indexes.length+' blocos organizados no grupo “'+group+'”.');
     });
     $('ungroupSelectedBtn').addEventListener('click',()=>{
       if(running){showNotice('Pause o timer antes de desagrupar blocos.');return;}
-      const indexes=[...selectedBlocks];if(!indexes.length){showNotice('Selecione os exercícios que deseja desagrupar.');return;}
+      const indexes=getCheckedBlockIndexes();if(!indexes.length){showNotice('Marque as caixas dos blocos que deseja desagrupar.');return;}
       indexes.forEach(i=>{if(blocks[i])delete blocks[i].group;});selectedBlocks.clear();render();
+      showNotice(indexes.length+' bloco(s) desagrupado(s).');
     });
     function setViewMode(mode) {
       const play=mode==='play';
