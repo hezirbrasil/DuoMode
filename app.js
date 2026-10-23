@@ -567,8 +567,9 @@
       if(running){status.textContent='Pause o timer antes de alterar os blocos.';return;}
       if(!name){status.textContent='Selecione um exercício no campo acima.';return;}
       const duration=intVal($('bankDurationMin'),0,0,60)*60+intVal($('bankDurationSec'),45,0,59);
+      const restAfter=intVal($('bankRestMin'),0,0,60)*60+intVal($('bankRestSec'),0,0,59);
       if(duration<1){status.textContent='Informe uma duração de pelo menos 1 segundo.';$('bankDurationSec').focus();return;}
-      const block={name,duration,collapsed:true};
+      const block={name,duration,restAfter,collapsed:true};
       blocks.push(block);
       status.textContent='Adicionando '+name+'…';
       status.style.color='var(--lime)';
@@ -587,11 +588,12 @@
       const status=$('addExerciseStatus');
       const name=$('newExercise').value.trim();
       const duration=intVal($('newDurationMin'),0,0,60)*60+intVal($('newDuration'),45,0,59);
+      const restAfter=intVal($('newRestMin'),0,0,60)*60+intVal($('newRestSec'),0,0,59);
       if(!name){status.textContent='Digite o nome do exercício antes de adicionar.';$('newExercise').focus();return;}
       if(duration<1){status.textContent='Informe uma duração de pelo menos 1 segundo.';$('newDuration').focus();return;}
       if(running){status.textContent='Pause o timer antes de alterar os blocos.';return;}
       try {
-        const block={name,duration,collapsed:true};
+        const block={name,duration,restAfter,collapsed:true};
         blocks.push(block);
         status.textContent='Adicionando exercício…';
         $('newExercise').value='';
