@@ -364,7 +364,7 @@
   border:1px solid var(--line);border-radius:12px;background:var(--panel);
   box-shadow:0 4px 14px #0002;
 }
-#app.mode-script #scriptPanel #exerciseList > .exercise-item.active { border-color:var(--lime);box-shadow:inset 4px 0 var(--lime),0 4px 14px #0002; }
+#app.mode-script #scriptPanel #exerciseList > .exercise-item.active { border-color:var(--line);box-shadow:0 4px 14px #0002; }
 #app.mode-script #scriptPanel #exerciseList > .exercise-item .exercise-info { display:block !important;width:100%;min-width:0; }
 #app.mode-script #scriptPanel #exerciseList > .exercise-item .exercise-info > div { display:block !important;width:100%; }
 #app.mode-script #scriptPanel #exerciseList > .exercise-item .exercise-info strong {
