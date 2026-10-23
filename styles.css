@@ -1,6 +1,6 @@
-:root { color-scheme: dark; --bg:#07151b; --panel:#0d222b; --panel2:#102d38; --lime:#b6d900; --blue:#079cc3; --sky:#74d6f2; --text:#f2f8fa; --muted:#91aeb8; --line:#21414d; --danger:#ff645f; }
+:root { color-scheme: dark; --bg:#071b1b; --panel:#0b292b; --panel2:#104047; --lime:#8bd34a; --blue:#078fa8; --sky:#53cbd8; --text:#f3f1e7; --muted:#a7c2bb; --line:#286064; --danger:#ff7168; }
     * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; background:radial-gradient(ellipse at top right,#103644 0,transparent 44%),var(--bg); color:var(--text); font:16px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    body { margin:0; min-height:100vh; background:radial-gradient(ellipse at top right,#15545a 0,transparent 46%),var(--bg); color:var(--text); font:16px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
     button,input,select { font:inherit; }
     button { cursor:pointer; }
     button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid var(--sky); outline-offset:3px; }
@@ -17,7 +17,7 @@
     .btn.blue { background:var(--blue);border-color:var(--blue);color:#001c25; }
     .btn.danger { color:#ffaaa6; }
     .layout { display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);gap:18px;align-items:start; }
-    .mode-btn[aria-pressed="true"] { border-color:var(--lime);background:#b6d90020;color:var(--lime); }
+    .mode-btn[aria-pressed="true"] { border-color:var(--lime);background:#8bd34a20;color:var(--lime); }
     .mode-btn:focus-visible { outline:none;box-shadow:0 0 0 1px var(--lime); }
     /* Play mode uses a CSS full-screen fallback so it works on iOS Safari too. */
     #app.mode-play { position:fixed;inset:0;z-index:9999;width:100%;height:100vh;height:100dvh;max-width:none;margin:0;padding:12px clamp(10px,3vw,28px);overflow-y:auto;background:var(--bg); }
@@ -103,7 +103,7 @@
     .exercise-item input[type=checkbox] { width:17px;height:17px;accent-color:var(--lime);margin:0; }
     .exercise-item { grid-template-columns:20px 30px minmax(0,1fr) auto; }
     .group-label { grid-column:1/-1;color:var(--lime);font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;padding:2px 0 0; }
-    .group-header { display:flex;align-items:center;gap:9px;width:100%;grid-column:1/-1;border:0;background:#b6d90012;color:var(--lime);padding:10px 12px;border-radius:9px;text-align:left;font-size:12px;font-weight:850;letter-spacing:.08em;text-transform:uppercase; }
+    .group-header { display:flex;align-items:center;gap:9px;width:100%;grid-column:1/-1;border:0;background:#8bd34a12;color:var(--lime);padding:10px 12px;border-radius:9px;text-align:left;font-size:12px;font-weight:850;letter-spacing:.08em;text-transform:uppercase; }
     .group-header-row { display:flex;align-items:stretch;gap:6px;grid-column:1/-1;min-width:0; }
     .group-header-row .group-header { flex:1;min-width:0; }
     .group-rename { border:1px solid var(--line);background:var(--panel2);color:var(--sky);border-radius:9px;padding:0 12px;font-size:13px;font-weight:800; }
@@ -128,7 +128,7 @@
     #exitTimerFullscreen { display:none; margin-top:12px; }
     #backToScriptBtn { display:none; }
     .timer-panel:before { content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--lime),var(--blue)); }
-    .phase { display:inline-flex;align-items:center;gap:8px;border-radius:100px;padding:8px 14px;background:#b6d90016;color:var(--lime);border:1px solid #b6d95550;font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase; }
+    .phase { display:inline-flex;align-items:center;gap:8px;border-radius:100px;padding:8px 14px;background:#8bd34a18;color:var(--lime);border:1px solid #8bd34a50;font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase; }
     .phase.rest { background:#079cc31a;color:var(--sky);border-color:#079cc366; }
     .clock-wrap { width:min(72vw,330px);aspect-ratio:1;margin:15px auto 9px;position:relative;display:grid;place-items:center; }
     .clock-wrap svg { position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg); }
