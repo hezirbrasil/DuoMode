@@ -88,14 +88,8 @@
         container.append(empty);
         return;
       }
+      container.classList.add('sequence-stack');
       blocks.forEach((block, index) => {
-        if (index > 0) {
-          const arrow = document.createElement('span');
-          arrow.className = 'sequence-arrow';
-          arrow.textContent = '→';
-          arrow.setAttribute('aria-hidden', 'true');
-          container.append(arrow);
-        }
         const step = document.createElement('div');
         step.className = 'sequence-step' + (index === blockIndex && !finished ? ' active' : '') + (block.type === 'rest' ? ' recovery' : '');
         const number = document.createElement('span');
@@ -103,7 +97,7 @@
         number.textContent = index === blockIndex && !finished ? '▶ AGORA · ' + String(index + 1).padStart(2, '0') : 'ETAPA ' + String(index + 1).padStart(2, '0');
         const name = document.createElement('span');
         name.className = 'step-name';
-        name.textContent = temporaryNames.get(block) || block.name;
+        name.textContent = temporaryNames.get(block) || [block.name, ...(Array.isArray(block.extraExercises) ? block.extraExercises : [])].join(' + ');
         const meta = document.createElement('span');
         meta.className = 'step-meta';
         meta.textContent = fmt(block.duration) + (block.group ? ' · ' + block.group : '');
@@ -292,6 +286,11 @@
         // Grupos recolhidos escondem os cartões no editor sem alterar a sequência do timer.
         const isGroupCollapsed = Boolean(b.group && collapsedGroups.has(b.group));
         const row=document.createElement('div'); row.className='exercise-item'+(i===blockIndex&&!finished?' active':'')+(isGroupCollapsed?' group-collapsed':'');row.style.cssText='display:grid !important;grid-template-columns:20px 30px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:start;gap:8px 10px;min-height:76px;visibility:visible;opacity:1;overflow:visible';
+        row.dataset.blockIndex=String(i);
+        row.addEventListener('dragover',e=>{if(!running&&draggedBlockIndex!==null&&draggedBlockIndex!==i){e.preventDefault();row.classList.add('drag-over');}});
+        row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));
+        row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('drag-over');if(!running&&draggedBlockIndex!==null&&draggedBlockIndex!==i){reorderBlock(draggedBlockIndex,i);}});
+        row.addEventListener('dragend',()=>{draggedBlockIndex=null;document.querySelectorAll('.drag-over,.dragging').forEach(el=>el.classList.remove('drag-over','dragging'));});
         const check=document.createElement('input');check.type='checkbox';check.checked=selectedBlocks.has(i);check.setAttribute('aria-label','Selecionar '+b.name);check.addEventListener('change',()=>{check.checked?selectedBlocks.add(i):selectedBlocks.delete(i);});
         const idx=document.createElement('span');idx.className='index';idx.textContent=String(i+1).padStart(2,'0');
         const info=document.createElement('div');info.className='exercise-info';info.style.cssText='display:block !important;grid-column:3;grid-row:1;min-width:0;visibility:visible;opacity:1;color:var(--text)';const nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap';const strong=document.createElement('strong');strong.style.cssText='display:block !important;visibility:visible;opacity:1;color:var(--text);font-size:16px;overflow-wrap:anywhere';strong.textContent=[b.name,...(Array.isArray(b.extraExercises)?b.extraExercises:[])].join(' + ');const renameExercise=document.createElement('button');renameExercise.type='button';renameExercise.className='icon-btn';renameExercise.textContent='✎';renameExercise.title='Editar nome deste exercício';renameExercise.setAttribute('aria-label','Editar nome de '+b.name);renameExercise.addEventListener('click',()=>{if(running)return;const input=document.createElement('input');input.type='text';input.maxLength=90;input.value=b.name;input.setAttribute('aria-label','Nome do exercício');input.style.cssText='min-width:120px;max-width:100%;font:inherit;flex:1;padding:5px 8px';let saved=false;const finish=(save)=>{if(saved)return;saved=true;const value=input.value.trim();if(save&&value)b.name=value;render();};input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();finish(true);}else if(e.key==='Escape'){e.preventDefault();finish(false);}});input.addEventListener('blur',()=>finish(true));nameRow.replaceChild(input,strong);renameExercise.style.display='none';input.focus();input.select();});nameRow.append(strong,renameExercise);const editBlockBtn=document.createElement('button');editBlockBtn.type='button';editBlockBtn.className='edit-block-btn';editBlockBtn.textContent='Editar exercícios';editBlockBtn.setAttribute('aria-label','Editar exercícios do bloco '+(i+1));editBlockBtn.addEventListener('click',e=>{e.stopPropagation();row.classList.toggle('show-bank');if(row.classList.contains('show-bank'))editor.scrollIntoView({block:'nearest',behavior:'smooth'});});nameRow.append(editBlockBtn);const small=document.createElement('small');small.textContent=fmt(b.duration)+' · '+(i===blockIndex&&!finished?'Bloco atual':b.type==='rest'?'Recuperação':'Exercício');
@@ -390,7 +389,12 @@
          editor.append(durationWrap,restWrap);
         const actions=document.createElement('div');actions.className='item-actions';actions.style.cssText='display:flex;flex-wrap:wrap;grid-column:1/-1;grid-row:3;gap:6px;visibility:visible;opacity:1;width:100%;min-width:0';
         const make=(label,title,fn,disabled=false)=>{const btn=document.createElement('button');btn.type='button';btn.className='icon-btn';btn.textContent=label;btn.title=title;btn.setAttribute('aria-label',title);btn.disabled=disabled;btn.style.cssText='display:inline-flex!important;align-items:center;justify-content:center;gap:4px;width:auto;min-width:40px;height:34px;padding:0 9px;white-space:nowrap;visibility:visible!important;opacity:1';btn.addEventListener('click',fn);return btn;};
+        const dragHandle=make('⠿','Arraste para organizar este bloco',()=>{});
+        dragHandle.classList.add('drag-handle');
+        dragHandle.draggable=true;
+        dragHandle.addEventListener('dragstart',e=>{if(running){e.preventDefault();showNotice('Pause o timer antes de reorganizar os blocos.');return;}draggedBlockIndex=i;row.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(i));});
         actions.append(
+          dragHandle,
           make('↔ Trocar exercício','Abrir opções para trocar ou editar exercícios',()=>{
             row.classList.add('show-bank');
             editor.style.display='grid';
@@ -416,7 +420,22 @@
       els.caption.textContent=finished?'Tempo total concluído':isRecovery?'Tempo de recuperação':'Tempo restante';
       els.progress.style.strokeDasharray=CIRC;
       els.progress.style.strokeDashoffset=CIRC*(1-Math.max(0,Math.min(1,remaining/max)));
-      els.name.textContent=finished?'Parabéns! Aula finalizada':current?(temporaryNames.get(current)||[current.name,...(Array.isArray(current.extraExercises)?current.extraExercises:[])].join(' + ')):'Nenhum bloco adicionado';
+      els.name.replaceChildren();
+      els.name.classList.toggle('has-exercise-stack', Boolean(current && !finished && Array.isArray(current.extraExercises) && current.extraExercises.length && !temporaryNames.has(current)));
+      if (finished) {
+        els.name.textContent='Parabéns! Aula finalizada';
+      } else if (!current) {
+        els.name.textContent='Nenhum bloco adicionado';
+      } else if (temporaryNames.has(current)) {
+        els.name.textContent=temporaryNames.get(current);
+      } else {
+        const names=[current.name,...(Array.isArray(current.extraExercises)?current.extraExercises:[])];
+        if(names.length>1){
+          const panel=document.createElement('div');panel.className='current-exercise-stack';
+          names.forEach((name,index)=>{const item=document.createElement('div');item.className='current-exercise-item'+(index===0?' primary':'');const number=document.createElement('span');number.className='current-exercise-number';number.textContent=String(index+1).padStart(2,'0');const label=document.createElement('span');label.className='current-exercise-label';label.textContent=name;item.append(number,label);panel.append(item);});
+          els.name.append(panel);
+        } else els.name.textContent=names[0]||'Exercício';
+      }
       els.round.textContent=finished?'Você completou todos os rounds.':noBlocks?'Adicione exercícios para montar a aula.':'Round '+roundIndex+' de '+settings().rounds+' · Bloco '+(blockIndex+1)+' de '+blocks.length;
       const segments=blocks.reduce((s,b)=>s+b.duration,0)*settings().rounds+(blocks.length*Math.max(0,blocks.length-1))*settings().rest*settings().rounds;
       const doneRounds=(roundIndex-1)*(blocks.reduce((s,b)=>s+b.duration,0)+Math.max(0,blocks.length-1)*settings().rest);
@@ -492,12 +511,24 @@
       if(running){startedAt=Date.now();timerId=setInterval(tick,100);}
       render();
     }
+    let draggedBlockIndex = null;
+    function reorderBlock(from,to) {
+      if(running){showNotice('Pause o timer antes de reorganizar os blocos.');return;}
+      if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||from>=blocks.length||to>=blocks.length||from===to)return;
+      const [moved]=blocks.splice(from,1);blocks.splice(to,0,moved);
+      const remap=index=>index===from?to:from<to&&index>from&&index<=to?index-1:from>to&&index>=to&&index<from?index+1:index;
+      selectedBlocks=new Set([...selectedBlocks].map(remap));
+      blockIndex=remap(blockIndex);
+      draggedBlockIndex=null;
+      reset();
+      blockIndex=Math.max(0,Math.min(blockIndex,blocks.length-1));
+      remaining=blocks[blockIndex]?.duration||45;totalPhase=remaining;
+      render();
+      showNotice('Blocos reorganizados.');
+    }
     function moveBlock(i,delta) {
       const j=i+delta;if(j<0||j>=blocks.length)return;
-      [blocks[i],blocks[j]]=[blocks[j],blocks[i]];
-      selectedBlocks=new Set([...selectedBlocks].map(k=>k===i?j:k===j?i:k));
-      if(blockIndex===i)blockIndex=j;else if(blockIndex===j)blockIndex=i;
-      if(!running)reset();else render();
+      reorderBlock(i,j);
     }
     function removeBlock(i) {
       blocks.splice(i,1);selectedBlocks=new Set([...selectedBlocks].filter(k=>k!==i).map(k=>k>i?k-1:k));if(!blocks.length){reset();remaining=0;totalPhase=1;render();return;}
