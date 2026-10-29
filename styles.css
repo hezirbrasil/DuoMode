@@ -499,3 +499,43 @@
  #app.mode-play .layout { grid-template-columns:repeat(2,minmax(0,1fr));gap:8px; }
  #app.mode-play #timerPanel .current-name { font-size:clamp(16px,3vw,24px); }
 }
+
+/* Modo Duo reconstruído: dois construtores e dois timers independentes com transporte compartilhado. */
+#app.mode-duo .layout,#app.mode-duo .bottom-note,#app.mode-duo .script-back { display:none !important; }
+#app.mode-duo #duoPanel { display:block; }
+.duo-panel { margin-top:10px; }
+.duo-heading { display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px; }
+.duo-heading h2 { margin:0;font-size:clamp(25px,4vw,36px); }
+.duo-builders,.duo-timers { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start; }
+.duo-card,.duo-timer-card { min-width:0;padding:clamp(12px,2vw,20px);border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#171020,#0e0b15); }
+.duo-label,.duo-player-title { display:block;color:var(--sky);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:0 0 8px; }
+.duo-title,.duo-add-form input { width:100%;min-width:0;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text); }
+.duo-add-form { display:grid;gap:10px;margin-top:12px; }
+.duo-fields { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+.duo-fields label { display:grid;gap:5px;color:var(--muted);font-size:12px; }
+.duo-add-form .btn { justify-self:start; }
+.duo-exercise-list { display:flex;flex-direction:column;gap:8px;padding-left:26px; }
+.duo-exercise-list li { padding:10px;border:1px solid var(--line);border-radius:10px;background:#ffffff05;overflow-wrap:anywhere; }
+.duo-item-row { display:flex;justify-content:space-between;align-items:center;gap:8px; }
+.duo-item-row strong { font-size:14px; }
+.duo-item-meta { color:var(--muted);font-size:12px;margin-top:4px; }
+.duo-remove { border:1px solid var(--line);background:transparent;color:var(--sky);border-radius:8px;padding:5px 9px; }
+.duo-footer,.duo-controls { display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0; }
+.duo-player { margin-top:20px; }
+.duo-clock { position:relative;width:min(100%,320px);aspect-ratio:1;margin:8px auto 16px;display:grid;place-items:center; }
+.duo-clock svg { position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg); }
+.duo-track,.duo-progress { fill:none;stroke-width:5; }
+.duo-track { stroke:#33233f; }
+.duo-progress { stroke:var(--lime);stroke-linecap:round;stroke-dasharray:565.49;stroke-dashoffset:0; }
+.duo-clock > div { display:flex;flex-direction:column;align-items:center;gap:5px;z-index:1; }
+.duo-clock strong { font-size:clamp(34px,5vw,64px);font-variant-numeric:tabular-nums;letter-spacing:-.04em; }
+.duo-clock span { color:var(--sky);font-size:12px;text-transform:uppercase;letter-spacing:.12em; }
+.duo-timer-card h3 { text-align:center;overflow-wrap:anywhere;font-size:clamp(17px,2.4vw,26px);margin:0 0 8px; }
+.duo-timer-card > p:last-child { text-align:center;color:var(--muted);font-size:12px; }
+.duo-controls .transport-btn { display:grid;place-items:center;width:48px;height:48px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);color:var(--text);font-size:24px; }
+.duo-controls .transport-main { background:var(--blue);border-color:var(--blue); }
+#app.mode-duo { max-width:1400px; }
+#app.mode-duo .header-actions { justify-content:flex-end; }
+@media(max-width:680px) { .duo-builders,.duo-timers { grid-template-columns:minmax(0,1fr); } .duo-clock { width:min(70vw,260px); } .duo-heading { align-items:flex-start; } }
+#app.mode-duo:fullscreen { max-width:none;overflow:auto;background:var(--bg); }
+#app.mode-duo.duo-playing .duo-builders,.duo-panel:has(.duo-player:not([hidden])) .duo-builders { display:none; }
