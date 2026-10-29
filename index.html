@@ -18,16 +18,13 @@
       <div class="header-actions">
         <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Solo</button>
         <button class="btn mode-btn" id="modeConstructBtn" type="button" aria-pressed="true">🔧 Modo Construção</button>
-        <button class="btn mode-btn" id="modeDuoBtn" type="button" aria-pressed="false">▥ Modo Duo</button>
         <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="false">☷ Modo Script</button>
         <button class="btn" id="exportClassBtn" type="button">↥ Exportar Solo</button>
         <button class="btn" id="importClassBtn" type="button">↧ Importar Solo</button>
         <input id="importClassFile" type="file" accept=".json,application/json" hidden>
       </div>
     </header>
-
-    <section id="duoBuilder" class="duo-builder" hidden aria-label="Construtor de duas aulas"><div class="duo-builder-top"><div><h2>Modo Duo</h2><p>Monte duas aulas independentes e execute os dois cronômetros juntos.</p></div><div class="duo-builder-actions"><button class="btn" id="exportDuoBtn" type="button">↥ Exportar Duo</button><button class="btn" id="importDuoBtn" type="button">↧ Importar Duo</button><input id="importDuoFile" type="file" accept=".json,application/json" hidden><button class="btn blue" id="playDuoBtn" type="button">▶ Iniciar Duo</button><div class="duo-transport" id="duoTransport" hidden><button class="transport-btn" id="duoPrevBtn" type="button" aria-label="Voltar">◀</button><button class="transport-btn transport-main" id="duoToggleBtn" type="button" aria-label="Play/Pausar">▶</button><button class="transport-btn" id="duoNextBtn" type="button" aria-label="Avançar">▶|</button></div><button class="btn" id="maximizeDuoBtn" type="button" aria-pressed="false" hidden>⛶ Tela cheia</button><button class="btn" id="editDuoBtn" type="button" hidden>🔧 Voltar à construção</button><button class="btn" id="exitDuoBtn" type="button">← Voltar</button></div></div><div class="duo-builder-grid"><article class="duo-builder-card"><div class="duo-builder-label">AULA 1</div><iframe title="Construtor da Aula 1" src="./?duo-child=1&lesson=1"></iframe></article><article class="duo-builder-card"><div class="duo-builder-label">AULA 2</div><iframe title="Construtor da Aula 2" src="./?duo-child=1&lesson=2"></iframe></article></div></section>
-    <button class="script-back" id="scriptBackBtn" type="button">← Voltar à edição</button>
+<button class="script-back" id="scriptBackBtn" type="button">← Voltar à edição</button>
     <main class="layout">
       <section class="panel timer-panel" id="timerPanel" aria-label="Cronômetro">
         <p class="eyebrow">Em movimento</p>
