@@ -602,6 +602,39 @@
       }
     });
 
+    // Segundo cronômetro: estado e controles totalmente independentes do timer principal.
+    let timer2Running=false, timer2Remaining=45, timer2Total=45, timer2StartedAt=0, timer2Interval=null, timer2LastSecond=null, timer2Finished=false;
+    const timer2Circ=2*Math.PI*90;
+    function timer2Duration(){return intVal($('timer2Min'),0,0,60)*60+intVal($('timer2Sec'),45,0,59);}
+    function timer2Render(){
+      $('timer2Display').textContent=fmt(timer2Remaining);
+      $('timer2Progress').style.strokeDasharray=timer2Circ;
+      $('timer2Progress').style.strokeDashoffset=timer2Circ*(1-Math.max(0,Math.min(1,timer2Remaining/Math.max(1,timer2Total))));
+      $('timer2ClockWrap').classList.toggle('rest',timer2Finished);
+      $('timer2Phase').textContent=timer2Finished?'Tempo concluído':timer2Running?'Em execução':'Pausado / pronto';
+      const b=$('timer2Start');b.classList.toggle('is-running',timer2Running);
+      b.setAttribute('aria-label',timer2Running?'Pausar segundo timer':timer2Finished?'Reiniciar segundo timer':'Iniciar segundo timer');
+      b.title=timer2Running?'Pausar':timer2Finished?'Reiniciar':'Iniciar';
+    }
+    function timer2StopInterval(){if(timer2Interval!==null){clearInterval(timer2Interval);timer2Interval=null;}}
+    function timer2Tick(){
+      if(!timer2Running)return;
+      timer2Remaining=Math.max(0,timer2Remaining-(Date.now()-timer2StartedAt)/1000);timer2StartedAt=Date.now();
+      const sec=Math.ceil(timer2Remaining);
+      if(sec<=3&&sec>0&&sec!==timer2LastSecond){tone(sec===1?1100:780,.09);timer2LastSecond=sec;}
+      if(timer2Remaining<=0){timer2Remaining=0;timer2Running=false;timer2Finished=true;timer2StopInterval();tone(1040,.35);timer2Render();return;}
+      timer2Render();
+    }
+    $('timer2Start').addEventListener('click',()=>{
+      if(timer2Running){timer2Remaining=Math.max(0,timer2Remaining-(Date.now()-timer2StartedAt)/1000);timer2Running=false;timer2StopInterval();timer2Render();return;}
+      if(timer2Finished){timer2Remaining=timer2Duration()||45;timer2Total=timer2Remaining;timer2Finished=false;}
+      if(timer2Remaining<=0){timer2Remaining=timer2Duration()||45;timer2Total=timer2Remaining;}
+      timer2Running=true;timer2StartedAt=Date.now();timer2LastSecond=null;timer2StopInterval();timer2Interval=setInterval(timer2Tick,100);tone(660,.12);timer2Render();
+    });
+    $('timer2Reset').addEventListener('click',()=>{timer2StopInterval();timer2Running=false;timer2Finished=false;timer2Remaining=timer2Duration()||45;timer2Total=timer2Remaining;timer2LastSecond=null;timer2Render();});
+    ['timer2Min','timer2Sec'].forEach(id=>$(id).addEventListener('change',()=>{if(!timer2Running){timer2Remaining=timer2Duration()||45;timer2Total=timer2Remaining;timer2Finished=false;timer2Render();}}));
+    $('timer2Name').addEventListener('input',()=>{});
+    timer2Render();
     $('startBtn').addEventListener('click',start);
     $('resetBtn').addEventListener('click',reset);
     $('previousBtn').addEventListener('click',()=>jumpBlock(-1));
