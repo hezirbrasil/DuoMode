@@ -847,6 +847,7 @@
 
     // Modo Duo novo: aulas separadas, timers independentes e controles compartilhados.
     const duoLessons = [[], []];
+    const duoSelected = [new Set(), new Set()];
     const duoState = [0, 1].map(() => ({ index:0, remaining:45, phase:'exercise', total:45, finished:false }));
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = value => { const n=Math.max(0,Math.ceil(value)); return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); };
@@ -870,12 +871,13 @@
         const list=$('duoList'+i);list.replaceChildren();
         duoLessons[i].forEach((item,index)=>{
           const li=document.createElement('li'),row=document.createElement('div');row.className='duo-item-row';
-          const name=document.createElement('strong');name.textContent=item.name;
+          const select=document.createElement('input');select.type='checkbox';select.className='duo-select-item';select.checked=duoSelected[i].has(index);select.setAttribute('aria-label','Selecionar '+item.name);select.addEventListener('change',()=>{select.checked?duoSelected[i].add(index):duoSelected[i].delete(index);});
+          const name=document.createElement('strong');name.textContent=item.name+(item.group?' · '+item.group:'');
           const actions=document.createElement('div');actions.className='duo-item-actions';
           const up=document.createElement('button');up.type='button';up.className='duo-remove';up.textContent='↑';up.title='Mover para cima';up.disabled=index===0;up.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index-1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index-1]];renderDuoLists();});
           const down=document.createElement('button');down.type='button';down.className='duo-remove';down.textContent='↓';down.title='Mover para baixo';down.disabled=index===duoLessons[i].length-1;down.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index+1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index+1]];renderDuoLists();});
-          const remove=document.createElement('button');remove.type='button';remove.className='duo-remove';remove.textContent='Remover';remove.addEventListener('click',()=>{if(duoRunning)return;duoLessons[i].splice(index,1);duoState[i].index=Math.min(duoState[i].index,Math.max(0,duoLessons[i].length-1));renderDuoLists();});
-          actions.append(up,down,remove);row.append(name,actions);const meta=document.createElement('div');meta.className='duo-item-meta';meta.textContent=duoFmt(item.duration)+' de exercício · '+duoFmt(item.rest)+' de descanso';li.append(row,meta);list.append(li);
+          const remove=document.createElement('button');remove.type='button';remove.className='duo-remove';remove.textContent='Remover';remove.addEventListener('click',()=>{if(duoRunning)return;duoLessons[i].splice(index,1);duoSelected[i]=new Set([...duoSelected[i]].filter(n=>n!==index).map(n=>n>index?n-1:n));duoState[i].index=Math.min(duoState[i].index,Math.max(0,duoLessons[i].length-1));renderDuoLists();});
+          actions.append(up,down,remove);row.append(select,name,actions);const meta=document.createElement('div');meta.className='duo-item-meta';meta.textContent=duoFmt(item.duration)+' de exercício · '+duoFmt(item.rest)+' de descanso';li.append(row,meta);list.append(li);
         });
       });
       renderDuoTimers();
@@ -886,6 +888,48 @@
       if(duoLessons[i].length===1){duoState[i].index=0;duoState[i].phase='exercise';duoState[i].remaining=duration;duoState[i].total=duration;duoState[i].finished=false;}
       renderDuoLists();
     }
+
+    function selectedDuoIndexes(i){return [...duoSelected[i]].filter(n=>n>=0&&n<duoLessons[i].length).sort((a,b)=>a-b);}
+    function showDuoToolEditor(content){const editor=$('duoToolEditor');editor.replaceChildren();editor.hidden=false;editor.append(content);}
+    function makeDuoField(labelText,value,aria){const label=document.createElement('label');label.className='duo-tool-field';label.textContent=labelText;const input=document.createElement('input');input.type='number';input.min='0';input.max='3600';input.step='1';input.value=String(value);input.setAttribute('aria-label',aria);label.append(input);return {label,input};}
+    function duoToolApply(i,mode){
+      const indexes=selectedDuoIndexes(i), lesson=duoLessons[i];
+      if(indexes.length<(mode==='group'?1:2)){showDuoToolEditor(document.createTextNode('Marque '+(mode==='group'?'pelo menos um exercício.':'pelo menos dois exercícios.')+' na Aula '+(i+1)+'.'));return;}
+      const editor=document.createElement('div');editor.className='duo-tool-fields';
+      if(mode==='standardize'){
+        const d=makeDuoField('Tempo (seg)',lesson[indexes[0]].duration,'Tempo padronizado em segundos');
+        const r=makeDuoField('Descanso (seg)',lesson[indexes[0]].rest,'Descanso padronizado em segundos');
+        const apply=document.createElement('button');apply.type='button';apply.className='btn blue';apply.textContent='Aplicar tempos';
+        apply.addEventListener('click',()=>{const duration=Number(d.input.value),rest=Number(r.input.value);if(!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;indexes.forEach(n=>{lesson[n].duration=duration;lesson[n].rest=rest;});$('duoToolEditor').hidden=true;renderDuoLists();});
+        editor.append(d.label,r.label,apply);
+      }else if(mode==='group'){
+        const label=document.createElement('label');label.className='duo-tool-field';label.textContent='Nome do grupo';const input=document.createElement('input');input.type='text';input.maxLength=50;input.placeholder='Ex.: Bloco de força';label.append(input);
+        const apply=document.createElement('button');apply.type='button';apply.className='btn blue';apply.textContent='Aplicar grupo';
+        apply.addEventListener('click',()=>{const group=input.value.trim();if(!group)return;indexes.forEach(n=>lesson[n].group=group);$('duoToolEditor').hidden=true;renderDuoLists();});
+        editor.append(label,apply);
+      }else{
+        const info=document.createElement('p');info.className='subtle';info.textContent='Os exercícios selecionados serão unidos em um único item. Informe o tempo e o descanso compartilhados.';
+        const d=makeDuoField('Tempo (seg)',lesson[indexes[0]].duration,'Tempo compartilhado em segundos');
+        const r=makeDuoField('Descanso (seg)',lesson[indexes[indexes.length-1]].rest,'Descanso compartilhado em segundos');
+        const apply=document.createElement('button');apply.type='button';apply.className='btn blue';apply.textContent='Juntar exercícios';
+        apply.addEventListener('click',()=>{const duration=Number(d.input.value),rest=Number(r.input.value);if(!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;const names=indexes.map(n=>lesson[n].name);const first=indexes[0];lesson[first]={name:names.join(' + '),duration,rest,group:lesson[first].group||''};for(let j=indexes.length-1;j>=1;j--)lesson.splice(indexes[j],1);duoSelected[i].clear();duoState[i].index=Math.min(duoState[i].index,lesson.length-1);$('duoToolEditor').hidden=true;renderDuoLists();});
+        editor.append(info,d.label,r.label,apply);
+      }
+      const cancel=document.createElement('button');cancel.type='button';cancel.className='btn';cancel.textContent='Cancelar';cancel.addEventListener('click',()=>{$('duoToolEditor').hidden=true;});editor.append(cancel);showDuoToolEditor(editor);
+    }
+    function selectedDuoAction(mode){
+      const editor=$('duoToolEditor');editor.hidden=true;
+      const choice=document.createElement('div');choice.className='duo-tool-fields';
+      const label=document.createElement('label');label.className='duo-tool-field';label.textContent='Aplicar à aula';
+      const select=document.createElement('select');[['0','Aula 1'],['1','Aula 2']].forEach(([value,text])=>{const o=document.createElement('option');o.value=value;o.textContent=text;select.append(o);});label.append(select);
+      const proceed=document.createElement('button');proceed.type='button';proceed.className='btn blue';proceed.textContent='Continuar';proceed.addEventListener('click',()=>duoToolApply(Number(select.value),mode));
+      choice.append(label,proceed);showDuoToolEditor(choice);
+    }
+    $('duoStandardize').addEventListener('click',()=>selectedDuoAction('standardize'));
+    $('duoMerge').addEventListener('click',()=>selectedDuoAction('merge'));
+    $('duoGroup').addEventListener('click',()=>selectedDuoAction('group'));
+    $('duoUngroup').addEventListener('click',()=>{const editor=$('duoToolEditor');const box=document.createElement('div');box.className='duo-tool-fields';const label=document.createElement('label');label.className='duo-tool-field';label.textContent='Desagrupar na aula';const select=document.createElement('select');[['0','Aula 1'],['1','Aula 2']].forEach(([value,text])=>{const o=document.createElement('option');o.value=value;o.textContent=text;select.append(o);});label.append(select);const apply=document.createElement('button');apply.type='button';apply.className='btn blue';apply.textContent='Desagrupar selecionados';apply.addEventListener('click',()=>{const i=Number(select.value),indexes=selectedDuoIndexes(i);indexes.forEach(n=>delete duoLessons[i][n].group);duoSelected[i].clear();editor.hidden=true;renderDuoLists();});box.append(label,apply);showDuoToolEditor(box);});
+
     function renderDuoTimers() {
       [0,1].forEach(i=>{
         const state=duoState[i], lesson=duoLessons[i], item=lesson[state.index];
