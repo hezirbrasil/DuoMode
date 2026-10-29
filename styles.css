@@ -532,3 +532,11 @@ body.duo-child.duo-child-play #app.mode-play #timerPanel .time{font-size:clamp(3
 body.duo-child.duo-child-play #app.mode-play #timerPanel .current-name{font-size:clamp(18px,3dvh,30px)!important}
 body.duo-child.duo-child-play #app.mode-play #timerPanel .controls{gap:6px}
 @media(max-width:800px){.duo-builder.is-playing .duo-builder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.duo-builder.is-playing .duo-builder-card iframe{height:calc(100dvh - 110px);min-height:460px}.duo-builder-actions{gap:5px}}
+
+
+/* Play Duo sempre visível e destacado no cabeçalho do Modo Duo. */
+#duoBuilder .duo-builder-top{align-items:flex-start}
+#duoBuilder .duo-builder-actions{display:flex!important;align-items:center;gap:10px;flex-wrap:wrap}
+#duoBuilder #playDuoBtn{display:inline-flex!important;align-items:center;justify-content:center;min-height:46px;padding:12px 22px;font-size:16px;font-weight:850;background:var(--lime);border-color:var(--lime);color:#142000;box-shadow:0 0 0 2px #8bd34a30}
+#duoBuilder #playDuoBtn[hidden],#duoBuilder #editDuoBtn[hidden]{display:none!important}
+@media(max-width:600px){#duoBuilder .duo-builder-top{flex-direction:column}#duoBuilder .duo-builder-actions{width:100%}#duoBuilder #playDuoBtn{flex:1}}
