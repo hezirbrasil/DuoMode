@@ -637,3 +637,29 @@
   #app.mode-duo:fullscreen .duo-clock { width:min(42vh,42vw); }
   #app.mode-duo:fullscreen .duo-clock strong { font-size:clamp(38px,8vh,76px); }
 }
+
+
+/* Em tela cheia, o exercício atual também precisa ficar visível para os alunos. */
+#timerPanel:fullscreen .current-name-row {
+  display:block !important;
+  width:min(1100px,94%);
+  margin:0 auto clamp(10px,2vh,22px);
+  text-align:center;
+}
+#timerPanel:fullscreen .current-name {
+  display:block;
+  margin:0;
+  font-size:clamp(30px,5.5vh,64px);
+  line-height:1.12;
+  text-align:center;
+  overflow-wrap:anywhere;
+}
+#app.mode-duo:fullscreen .duo-timer-card h3 {
+  display:block !important;
+  max-width:90%;
+  margin:1vh auto 0;
+  font-size:clamp(22px,3.6vh,42px);
+  line-height:1.15;
+  text-align:center;
+  overflow-wrap:anywhere;
+}
