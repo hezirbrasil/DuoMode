@@ -595,3 +595,45 @@ body.duo-child.duo-child-play.duo-timer-maximized #backToScriptBtn {display:none
 .duo-builder.is-playing.duo-maximized .duo-builder-grid {position:fixed!important;inset:0!important;z-index:99999!important;background:var(--bg);padding:0!important;gap:2px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .duo-builder.is-playing.duo-maximized .duo-builder-card {border-radius:0!important;border:0!important}
 .duo-builder.is-playing.duo-maximized .duo-builder-card iframe {height:100dvh!important;min-height:100dvh!important;width:100%!important}
+
+
+/* Correção: no Duo maximizado, cada timer ocupa toda a metade da tela e o círculo cresce. */
+html:has(body.duo-child.duo-child-play.duo-timer-maximized),
+body.duo-child.duo-child-play.duo-timer-maximized {
+  width:100%!important;height:100%!important;min-height:100%!important;margin:0!important;padding:0!important;overflow:hidden!important;
+}
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play {
+  display:block!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;
+  min-height:100vh!important;min-height:100dvh!important;padding:0!important;margin:0!important;
+}
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play .layout {
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr)!important;
+  width:100%!important;height:100vh!important;height:100dvh!important;min-height:100vh!important;min-height:100dvh!important;
+  margin:0!important;padding:0!important;gap:0!important;align-items:stretch!important;
+}
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play #timerPanel {
+  display:flex!important;width:100%!important;height:100vh!important;height:100dvh!important;
+  min-height:100vh!important;min-height:100dvh!important;margin:0!important;border:0!important;border-radius:0!important;
+  padding:clamp(8px,2vh,24px)!important;justify-content:center!important;overflow:hidden!important;
+}
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play #timerPanel .clock-wrap {
+  width:min(52dvh,44vw,560px)!important;max-width:88%!important;margin:clamp(8px,2vh,24px) auto!important;
+}
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play #timerPanel .time {
+  font-size:clamp(42px,9dvh,112px)!important;
+}
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play #timerPanel .current-name {
+  font-size:clamp(20px,3.8dvh,38px)!important;
+}
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play #timerPanel .current-exercise-stack {
+  width:min(88%,540px)!important;max-height:24dvh!important;
+}
+.duo-builder.is-playing.duo-maximized .duo-builder-grid {
+  inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;
+  margin:0!important;padding:0!important;gap:2px!important;
+}
+.duo-builder.is-playing.duo-maximized .duo-builder-card,
+.duo-builder.is-playing.duo-maximized .duo-builder-card iframe {
+  height:100vh!important;height:100dvh!important;min-height:100vh!important;min-height:100dvh!important;
+  max-height:100vh!important;max-height:100dvh!important;
+}
