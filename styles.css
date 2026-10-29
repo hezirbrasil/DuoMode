@@ -485,3 +485,11 @@
   .group-tools > .btn { flex:1 1 100%; }
   .standardize-times-inline .duration-edit { flex:1 1 100%; }
 }
+
+.save-menu-wrap { position:relative;display:inline-block; }
+.save-menu-wrap > summary { list-style:none;cursor:pointer; }
+.save-menu-wrap > summary::-webkit-details-marker { display:none; }
+.save-menu-trigger { display:inline-block; }
+.save-menu { position:absolute;top:calc(100% + 8px);right:0;z-index:10010;min-width:230px;padding:8px;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:0 12px 32px #0005; }
+.save-menu .btn { width:100%;text-align:left;white-space:normal; }
+@media(max-width:600px) { .save-menu { right:0;min-width:210px; } }
