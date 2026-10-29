@@ -790,6 +790,8 @@
         if(event.data.command==='play'){
           document.body.classList.add('duo-child-play');
           setViewMode('play');
+        }else if(event.data.command==='start-together'){
+          if(!running)start();
         }else if(event.data.command==='edit'){
           document.body.classList.remove('duo-child-play');
           document.body.classList.remove('duo-timer-maximized');
@@ -837,7 +839,10 @@
       $('duoBuilder').classList.toggle('is-playing',enabled);
       $('playDuoBtn').hidden=enabled;
       $('editDuoBtn').hidden=!enabled;
+      $('maximizeDuoBtn').hidden=!enabled;
       sendDuoCommand(enabled?'play':'edit');
+      if(enabled) requestAnimationFrame(()=>sendDuoCommand('start-together'));
+      else setDuoMaximized(false);
     }
     $('playDuoBtn').addEventListener('click',()=>setDuoPlaying(true));
     let duoExportPayloads={};
@@ -861,6 +866,7 @@
       finally{event.target.value='';}
     });
     $('editDuoBtn').addEventListener('click',()=>setDuoPlaying(false));
+    $('maximizeDuoBtn').addEventListener('click',()=>setDuoMaximized(!$('duoBuilder').classList.contains('duo-maximized')));
     window.addEventListener('message',event=>{
       if(event.origin!==window.location.origin||event.data?.source!=='acuas-duo-child')return;
       if(event.data.command==='ready'&&$('duoBuilder').classList.contains('is-playing'))sendDuoCommand('play');
@@ -870,6 +876,8 @@
     });
     function setDuoMaximized(enabled){
       $('duoBuilder').classList.toggle('duo-maximized',enabled);
+      $('maximizeDuoBtn').textContent=enabled?'⛶ Sair da tela cheia':'⛶ Tela cheia';
+      $('maximizeDuoBtn').setAttribute('aria-pressed',String(enabled));
       sendDuoCommand(enabled?'maximize':'unmaximize');
     }
     function setDuoMode(enabled){
