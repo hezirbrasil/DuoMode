@@ -609,7 +609,7 @@
     $('previousBtn').addEventListener('click',()=>jumpBlock(-1));
     $('nextBtn').addEventListener('click',()=>jumpBlock(1));
     $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;els.sound.textContent=soundEnabled?'♫':'♩';els.sound.setAttribute('aria-label',soundEnabled?'Desligar som':'Ligar som');els.sound.title=soundEnabled?'Desligar som':'Ligar som';els.sound.setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)tone();});
-    $('maximizeTimerBtn').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await $('timerPanel').requestFullscreen();}catch(e){showNotice('A maximização não está disponível neste navegador.');}});
+    $('maximizeTimerBtn').addEventListener('click',async()=>{if(duoChild){window.parent.postMessage({source:'acuas-duo-child',command:'maximize-request'},window.location.origin);return;}try{if(!document.fullscreenElement)await $('timerPanel').requestFullscreen();}catch(e){showNotice('A maximização não está disponível neste navegador.');}});
     $('exitTimerFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{setViewMode('script');}});
     $('backToScriptBtn').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}setViewMode('script');});
     $('mergeSelectedBtn').addEventListener('click', () => {
@@ -784,6 +784,7 @@
       tools.append(editor);
     });
     if(duoChild){
+      const duoLesson=Number(new URLSearchParams(window.location.search).get('lesson'))||1;
       window.addEventListener('message',event=>{
         if(event.origin!==window.location.origin||event.data?.source!=='acuas-duo-parent')return;
         if(event.data.command==='play'){
@@ -791,10 +792,26 @@
           setViewMode('play');
         }else if(event.data.command==='edit'){
           document.body.classList.remove('duo-child-play');
+          document.body.classList.remove('duo-timer-maximized');
           setViewMode('edit');
+        }else if(event.data.command==='maximize'){
+          document.body.classList.add('duo-timer-maximized');
+        }else if(event.data.command==='unmaximize'){
+          document.body.classList.remove('duo-timer-maximized');
+        }else if(event.data.command==='export'){
+          window.parent.postMessage({source:'acuas-duo-child',command:'export-data',lesson:duoLesson,payload:{blocks:blocks.map(b=>({...b,extraExercises:Array.isArray(b.extraExercises)?[...b.extraExercises]:[]})),settings:{exerciseMinutes:els.exerciseMinutes.value,exerciseSeconds:els.exerciseSeconds.value,restMinutes:els.restMinutes.value,restSeconds:els.restSeconds.value,rounds:els.rounds.value}}},window.location.origin);
+        }else if(event.data.command==='import'&&event.data.lesson===duoLesson){
+          const payload=event.data.payload;
+          if(payload&&Array.isArray(payload.blocks)&&payload.blocks.every(b=>b&&typeof b.name==='string'&&Number.isFinite(Number(b.duration))&&Number(b.duration)>=1)){
+            running=false;stopInterval();blocks=payload.blocks.map(b=>({...b,duration:Number(b.duration),extraExercises:Array.isArray(b.extraExercises)?b.extraExercises:[],collapsed:true}));
+            const st=payload.settings||{};
+            for(const key of ['exerciseMinutes','exerciseSeconds','restMinutes','restSeconds','rounds'])if(st[key]!==undefined&&$(key))$(key).value=String(st[key]);
+            selectedBlocks.clear();collapsedGroups.clear();blockIndex=0;phase='exercise';roundIndex=1;finished=false;reset();render();
+            window.parent.postMessage({source:'acuas-duo-child',command:'imported',lesson:duoLesson},window.location.origin);
+          }
         }
       });
-      window.parent.postMessage({source:'acuas-duo-child',command:'ready'},window.location.origin);
+      window.parent.postMessage({source:'acuas-duo-child',command:'ready',lesson:duoLesson},window.location.origin);
     }
     function setViewMode(mode) {
       const play=mode==='play';
@@ -823,11 +840,38 @@
       sendDuoCommand(enabled?'play':'edit');
     }
     $('playDuoBtn').addEventListener('click',()=>setDuoPlaying(true));
+    let duoExportPayloads={};
+    let duoExportPending=false;
+    function downloadDuoFile(payload){
+      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+      const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='workout-fight-duo.json';document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);
+    }
+    $('exportDuoBtn').addEventListener('click',()=>{
+      duoExportPayloads={};duoExportPending=true;sendDuoCommand('export');
+      window.setTimeout(()=>{if(!duoExportPending)return;duoExportPending=false;if(duoExportPayloads[1]&&duoExportPayloads[2])downloadDuoFile({format:'workout-fight-duo',version:1,lessons:duoExportPayloads,exportedAt:new Date().toISOString()});else showNotice('Não foi possível reunir as duas aulas. Abra o Modo Duo e tente novamente.');},700);
+    });
+    $('importDuoBtn').addEventListener('click',()=>$('importDuoFile').click());
+    $('importDuoFile').addEventListener('change',async event=>{
+      const file=event.target.files?.[0];if(!file)return;
+      try{
+        const data=JSON.parse(await file.text());
+        if(data.format!=='workout-fight-duo'||!data.lessons||!data.lessons[1]||!data.lessons[2])throw new Error('Formato inválido');
+        [1,2].forEach(lesson=>document.querySelectorAll('.duo-builder-grid iframe')[lesson-1]?.contentWindow.postMessage({source:'acuas-duo-parent',command:'import',lesson,payload:data.lessons[lesson]},window.location.origin));
+      }catch(error){showNotice('Arquivo Duo inválido. Selecione um arquivo exportado pelo Workout Fight.');}
+      finally{event.target.value='';}
+    });
     $('editDuoBtn').addEventListener('click',()=>setDuoPlaying(false));
     window.addEventListener('message',event=>{
       if(event.origin!==window.location.origin||event.data?.source!=='acuas-duo-child')return;
       if(event.data.command==='ready'&&$('duoBuilder').classList.contains('is-playing'))sendDuoCommand('play');
+      if(event.data.command==='maximize-request')setDuoMaximized(true);
+      if(event.data.command==='export-data'&&duoExportPending){duoExportPayloads[event.data.lesson]=event.data.payload;if(duoExportPayloads[1]&&duoExportPayloads[2]){duoExportPending=false;downloadDuoFile({format:'workout-fight-duo',version:1,lessons:duoExportPayloads,exportedAt:new Date().toISOString()});}}
+      if(event.data.command==='imported'){} 
     });
+    function setDuoMaximized(enabled){
+      $('duoBuilder').classList.toggle('duo-maximized',enabled);
+      sendDuoCommand(enabled?'maximize':'unmaximize');
+    }
     function setDuoMode(enabled){
       $('app').classList.toggle('mode-duo',enabled);
       $('duoBuilder').hidden=!enabled;
