@@ -894,9 +894,7 @@
         $('modeScriptBtn').setAttribute('aria-pressed','true');
       }
     });
-    $('saveLocalBtn').addEventListener('click',()=>{ $('saveMenu').closest('details').open=false; save(); });
     $('exportClassBtn').addEventListener('click',()=>{
-      $('saveBtn').closest('details').open=false;
       if(!blocks.length){showNotice('Adicione pelo menos um bloco antes de exportar a aula.');return;}
       const title='Minha aula coletiva';
       const payload={format:'acuas-fitness-class',version:1,title:title.trim(),blocks:blocks.map(b=>({...b})),exportedAt:new Date().toISOString()};
