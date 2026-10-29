@@ -539,3 +539,18 @@
 @media(max-width:680px) { .duo-builders,.duo-timers { grid-template-columns:minmax(0,1fr); } .duo-clock { width:min(70vw,260px); } .duo-heading { align-items:flex-start; } }
 #app.mode-duo:fullscreen { max-width:none;overflow:auto;background:var(--bg); }
 #app.mode-duo.duo-playing .duo-builders,.duo-panel:has(.duo-player:not([hidden])) .duo-builders { display:none; }
+
+/* Construtores Duo alinhados ao padrão do Modo Construção Solo. */
+.duo-card { display:flex;flex-direction:column;gap:12px; }
+.duo-bank-tools { display:flex;flex-direction:column;gap:7px;padding:12px;border:1px solid var(--line);border-radius:13px;background:#0719207a; }
+.duo-bank-tools .duo-label { margin:4px 0 0; }
+.duo-bank-tools select,.duo-bank-tools input { width:100%;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text); }
+.duo-bank-tools .duo-fields { margin-top:5px; }
+.duo-add-form { padding:12px;border:1px solid var(--line);border-radius:13px;background:#0719207a; }
+.duo-add-form .duo-label { margin:0; }
+.duo-add-form .duo-fields { margin-top:3px; }
+.duo-item-actions { display:flex;gap:4px;flex-shrink:0; }
+.duo-remove:disabled { opacity:.3;cursor:default; }
+.duo-exercise-list { margin-top:4px; }
+.duo-exercise-list li { background:var(--panel); }
+.duo-bank-tools .btn,.duo-add-form .btn { align-self:flex-start; }
