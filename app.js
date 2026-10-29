@@ -798,6 +798,23 @@
         document.exitFullscreen().catch(()=>{});
       }
     }
+    function sendDuoCommand(command){
+      document.querySelectorAll('.duo-builder-grid iframe').forEach(frame=>{
+        try{frame.contentWindow.postMessage({source:'acuas-duo-parent',command},window.location.origin);}catch(error){}
+      });
+    }
+    function setDuoPlaying(enabled){
+      $('duoBuilder').classList.toggle('is-playing',enabled);
+      $('playDuoBtn').hidden=enabled;
+      $('editDuoBtn').hidden=!enabled;
+      sendDuoCommand(enabled?'play':'edit');
+    }
+    $('playDuoBtn').addEventListener('click',()=>setDuoPlaying(true));
+    $('editDuoBtn').addEventListener('click',()=>setDuoPlaying(false));
+    window.addEventListener('message',event=>{
+      if(event.origin!==window.location.origin||event.data?.source!=='acuas-duo-child')return;
+      if(event.data.command==='ready'&&$('duoBuilder').classList.contains('is-playing'))sendDuoCommand('play');
+    });
     function setDuoMode(enabled){
       $('app').classList.toggle('mode-duo',enabled);
       $('duoBuilder').hidden=!enabled;
