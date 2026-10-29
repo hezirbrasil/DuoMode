@@ -19,13 +19,13 @@
         <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Play</button>
         <button class="btn mode-btn" id="modeConstructBtn" type="button" aria-pressed="true">🔧 Modo Construção</button>
         <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="false">☷ Modo Script</button>
-        <div class="save-menu-wrap">
-          <button class="btn" id="saveBtn" type="button" aria-expanded="false">Salvar aula ▾</button>
-          <div class="save-menu" id="saveMenu" hidden>
-            <button class="btn" id="saveLocalBtn" type="button">Salvar aula</button>
+        <details class="save-menu-wrap">
+          <summary class="btn save-menu-trigger" id="saveBtn">Salvar aula ▾</summary>
+          <div class="save-menu">
+            <button class="btn" id="saveLocalBtn" type="button">Salvar neste navegador</button>
             <button class="btn" id="exportClassBtn" type="button">Salvar arquivo</button>
           </div>
-        </div>
+        </details>
         <button class="btn" id="importClassBtn" type="button">Importar arquivo</button>
         <input id="importClassFile" type="file" accept=".json,application/json" hidden>
       </div>
