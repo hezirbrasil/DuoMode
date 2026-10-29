@@ -1,6 +1,8 @@
 (() => {
     'use strict';
     const $ = (id) => document.getElementById(id);
+    const duoChild=new URLSearchParams(window.location.search).get("duo-child")==="1";
+    if(duoChild)document.body.classList.add("duo-child");
     // O app não usa caixas de alerta/notificações sobrepostas.
     function showNotice(message) {}
     const els = {
@@ -829,6 +831,15 @@
         document.exitFullscreen().catch(()=>{});
       }
     }
+    function setDuoMode(enabled){
+      $('app').classList.toggle('mode-duo',enabled);
+      $('duoBuilder').hidden=!enabled;
+      $('modeDuoBtn').setAttribute('aria-pressed',String(enabled));
+      $('modeConstructBtn').setAttribute('aria-pressed',String(!enabled));
+      if(enabled)window.scrollTo(0,0);
+    }
+    $('modeDuoBtn').addEventListener('click',()=>setDuoMode(true));
+    $('exitDuoBtn').addEventListener('click',()=>setDuoMode(false));
     $('modePlayBtn').addEventListener('click',()=>setViewMode('play'));
     $('modeConstructBtn').addEventListener('click',()=>setViewMode('edit'));
     $('modeScriptBtn').addEventListener('click',()=>setViewMode('script'));
