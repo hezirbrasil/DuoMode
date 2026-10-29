@@ -16,18 +16,12 @@
         <div><h1>WORKOUT <span class="brand-accent">FIGHT</span></h1><p>Timer de treinos</p></div>
       </div>
       <div class="header-actions">
-        <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Play</button>
+        <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Solo</button>
         <button class="btn mode-btn" id="modeConstructBtn" type="button" aria-pressed="true">🔧 Modo Construção</button>
         <button class="btn mode-btn" id="modeDuoBtn" type="button" aria-pressed="false">▥ Modo Duo</button>
         <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="false">☷ Modo Script</button>
-        <details class="save-menu-wrap">
-          <summary class="btn save-menu-trigger" id="saveBtn">Salvar aula ▾</summary>
-          <div class="save-menu" id="saveMenu">
-            <button class="btn" id="saveLocalBtn" type="button">Salvar neste navegador</button>
-            <button class="btn" id="exportClassBtn" type="button">Salvar arquivo</button>
-          </div>
-        </details>
-        <button class="btn" id="importClassBtn" type="button">Importar arquivo</button>
+        <button class="btn" id="exportClassBtn" type="button">↥ Exportar Solo</button>
+        <button class="btn" id="importClassBtn" type="button">↧ Importar Solo</button>
         <input id="importClassFile" type="file" accept=".json,application/json" hidden>
       </div>
     </header>
