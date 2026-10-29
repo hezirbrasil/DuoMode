@@ -18,6 +18,7 @@
       <div class="header-actions">
         <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Solo</button>
         <button class="btn mode-btn" id="modeConstructBtn" type="button" aria-pressed="true">🔧 Modo Construção</button>
+        <button class="btn mode-btn" id="modeDuoBtn" type="button" aria-pressed="false">◫ Modo Duo</button>
         <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="false">☷ Modo Script</button>
         <button class="btn" id="exportClassBtn" type="button">↥ Exportar Solo</button>
         <button class="btn" id="importClassBtn" type="button">↧ Importar Solo</button>
@@ -114,6 +115,29 @@
         <p class="subtle saved-classes-note">As aulas salvas ficam neste navegador. Use “Salvar aula” para guardar a sequência atual.</p>
       </section>
     </main>
+    <section id="duoPanel" class="duo-panel" hidden aria-label="Construtor do Modo Duo">
+      <div class="duo-heading"><div><p class="eyebrow">WORKOUT FIGHT</p><h2>Modo Duo</h2><p class="subtle">Monte duas aulas independentes. Os cronômetros começam juntos.</p></div><button class="btn" id="duoBackBtn" type="button">← Voltar</button></div>
+      <div class="duo-builders">
+        <article class="duo-card" data-duo="0">
+          <label class="duo-label" for="duoTitle0">Aula 1 · nome</label><input id="duoTitle0" class="duo-title" value="Aula 1" maxlength="60">
+          <form class="duo-add-form" data-duo="0"><input class="duo-exercise-name" placeholder="Nome do exercício" required maxlength="90" aria-label="Exercício da aula 1"><div class="duo-fields"><label>Tempo (seg)<input class="duo-duration" type="number" min="1" max="3600" value="45" required></label><label>Descanso (seg)<input class="duo-rest" type="number" min="0" max="3600" value="0" required></label></div><button class="btn blue" type="submit">＋ Adicionar</button></form>
+          <ol class="duo-exercise-list" id="duoList0"></ol>
+        </article>
+        <article class="duo-card" data-duo="1">
+          <label class="duo-label" for="duoTitle1">Aula 2 · nome</label><input id="duoTitle1" class="duo-title" value="Aula 2" maxlength="60">
+          <form class="duo-add-form" data-duo="1"><input class="duo-exercise-name" placeholder="Nome do exercício" required maxlength="90" aria-label="Exercício da aula 2"><div class="duo-fields"><label>Tempo (seg)<input class="duo-duration" type="number" min="1" max="3600" value="45" required></label><label>Descanso (seg)<input class="duo-rest" type="number" min="0" max="3600" value="0" required></label></div><button class="btn blue" type="submit">＋ Adicionar</button></form>
+          <ol class="duo-exercise-list" id="duoList1"></ol>
+        </article>
+      </div>
+      <div class="duo-player" id="duoPlayer" hidden>
+        <div class="duo-timers">
+          <article class="duo-timer-card"><p class="duo-player-title" id="duoPlayerTitle0">Aula 1</p><div class="duo-clock"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="duo-track" cx="100" cy="100" r="90"/><circle class="duo-progress" id="duoProgress0" cx="100" cy="100" r="90"/></svg><div><strong id="duoTime0">00:45</strong><span id="duoPhase0">Pronto</span></div></div><h3 id="duoCurrent0">Adicione exercícios</h3><p id="duoMeta0">0 exercícios</p></article>
+          <article class="duo-timer-card"><p class="duo-player-title" id="duoPlayerTitle1">Aula 2</p><div class="duo-clock"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="duo-track" cx="100" cy="100" r="90"/><circle class="duo-progress" id="duoProgress1" cx="100" cy="100" r="90"/></svg><div><strong id="duoTime1">00:45</strong><span id="duoPhase1">Pronto</span></div></div><h3 id="duoCurrent1">Adicione exercícios</h3><p id="duoMeta1">0 exercícios</p></article>
+        </div>
+        <div class="duo-controls"><button class="transport-btn" id="duoPrev" type="button" aria-label="Voltar exercício">‹</button><button class="transport-btn transport-main" id="duoPlay" type="button" aria-label="Iniciar ou pausar">▶</button><button class="transport-btn" id="duoReset" type="button" aria-label="Reiniciar aulas">■</button><button class="transport-btn" id="duoNext" type="button" aria-label="Avançar exercício">›</button><button class="transport-btn" id="duoFullscreen" type="button" aria-label="Tela cheia">⛶</button></div>
+      </div>
+      <div class="duo-footer"><button class="btn primary" id="duoStartLessons" type="button">▶ Preparar execução das duas aulas</button><button class="btn" id="duoExport" type="button">Exportar Duo</button><button class="btn" id="duoImport" type="button">Importar Duo</button><input id="duoImportFile" type="file" accept=".json,application/json" hidden></div>
+    </section>
     <p class="bottom-note">WORKOUT FIGHT · TREINO COM RITMO, FOCO E INTENSIDADE</p>
   </div>
   <script src="./app.js" defer></script>
