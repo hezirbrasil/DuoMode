@@ -1,6 +1,6 @@
-:root { color-scheme: dark; --bg:#071b1b; --panel:#0b292b; --panel2:#104047; --lime:#8bd34a; --blue:#078fa8; --sky:#53cbd8; --text:#f3f1e7; --muted:#a7c2bb; --line:#286064; --danger:#ff7168; }
+:root { color-scheme: dark; --bg:#08060d; --panel:#12101b; --panel2:#211833; --lime:#b66cff; --blue:#8b35e6; --sky:#d2a4ff; --text:#f7f2ff; --muted:#b9adc9; --line:#493060; --danger:#ff7168; }
     * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; background:radial-gradient(ellipse at top right,#15545a 0,transparent 46%),var(--bg); color:var(--text); font:16px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    body { margin:0; min-height:100vh; background:radial-gradient(ellipse at top right,#32134f 0,transparent 46%),var(--bg); color:var(--text); font:16px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
     button,input,select { font:inherit; }
     button { cursor:pointer; }
     button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid var(--sky); outline-offset:3px; }
@@ -540,3 +540,14 @@ body.duo-child.duo-child-play #app.mode-play #timerPanel .controls{gap:6px}
 #duoBuilder #playDuoBtn{display:inline-flex!important;align-items:center;justify-content:center;min-height:46px;padding:12px 22px;font-size:16px;font-weight:850;background:var(--lime);border-color:var(--lime);color:#142000;box-shadow:0 0 0 2px #8bd34a30}
 #duoBuilder #playDuoBtn[hidden],#duoBuilder #editDuoBtn[hidden]{display:none!important}
 @media(max-width:600px){#duoBuilder .duo-builder-top{flex-direction:column}#duoBuilder .duo-builder-actions{width:100%}#duoBuilder #playDuoBtn{flex:1}}
+
+
+/* Identidade Workout Fight: preto e roxo */
+.brand-mark{border-color:#b66cff;color:#d2a4ff;transform:none;border-radius:13px}
+.brand-accent{color:#b66cff}
+.btn.primary{background:#b66cff;border-color:#b66cff;color:#14091f}
+.btn.blue{background:#8b35e6;border-color:#8b35e6;color:#fff}
+.mode-btn[aria-pressed="true"]{border-color:#b66cff;background:#b66cff22;color:#d2a4ff}
+.mode-btn:focus-visible{box-shadow:0 0 0 1px #b66cff}
+#duoBuilder #playDuoBtn{background:#b66cff;border-color:#b66cff;color:#14091f;box-shadow:0 0 0 2px #b66cff30}
+.duo-builder-label{color:#d2a4ff}
