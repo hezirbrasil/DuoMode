@@ -67,22 +67,6 @@
         </div>
       </section>
 
-      <section class="panel secondary-timer" id="timerPanel2" aria-label="Segundo cronômetro">
-        <p class="eyebrow">Timer 2 · independente</p>
-        <label class="secondary-name-label" for="timer2Name">Nome do exercício</label>
-        <input id="timer2Name" class="secondary-name-input" type="text" maxlength="90" value="Segundo exercício" aria-label="Nome do exercício do segundo timer">
-        <div class="phase"><span>●</span><span id="timer2Phase">Pronto para começar</span></div>
-        <div class="clock-wrap" id="timer2ClockWrap">
-          <svg viewBox="0 0 200 200" aria-hidden="true"><circle class="clock-track" cx="100" cy="100" r="90"/><circle class="clock-progress" id="timer2Progress" cx="100" cy="100" r="90"/></svg>
-          <div class="clock-content"><div class="time" id="timer2Display" role="timer" aria-live="off">00:45</div><div class="clock-caption">Tempo restante</div></div>
-        </div>
-        <div class="secondary-duration"><label>Min <input id="timer2Min" type="number" min="0" max="60" value="0"></label><label>Seg <input id="timer2Sec" type="number" min="1" max="59" value="45"></label></div>
-        <div class="controls transport-controls" role="group" aria-label="Controles do segundo cronômetro">
-          <button class="transport-btn transport-main" id="timer2Start" type="button" aria-label="Iniciar segundo timer" title="Iniciar"><svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg><svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM15 5h4v14h-4z"/></svg></button>
-          <button class="transport-btn" id="timer2Reset" type="button" aria-label="Parar e reiniciar segundo timer" title="Parar e reiniciar"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1"/></svg></button>
-        </div>
-      </section>
-
       <section class="panel" id="scriptPanel">
         <div class="section-head script-list-heading">
           <span class="subtle" id="blockCount">3 blocos</span>
