@@ -850,17 +850,41 @@
     const duoState = [0, 1].map(() => ({ index:0, remaining:45, phase:'exercise', total:45, finished:false }));
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = value => { const n=Math.max(0,Math.ceil(value)); return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); };
+    function renderDuoBank(i) {
+      const category=$('duoCategory'+i).value||'all';
+      const query=$('duoSearch'+i).value.trim().toLocaleLowerCase('pt-BR');
+      const filtered=exerciseBank.filter(ex=>(category==='all'||ex.category===category)&&ex.name.toLocaleLowerCase('pt-BR').includes(query));
+      const select=$('duoBank'+i), previous=select.value;select.replaceChildren();
+      filtered.forEach(ex=>{const option=document.createElement('option');option.value=ex.name;option.textContent=ex.name;select.append(option);});
+      if(!filtered.length){const option=document.createElement('option');option.value='';option.textContent='Nenhum exercício encontrado';select.append(option);}
+      else if(filtered.some(ex=>ex.name===previous))select.value=previous;
+    }
     function renderDuoLists() {
       [0,1].forEach(i=>{
-        const list=$('duoList'+i); list.replaceChildren();
+        const category=$('duoCategory'+i), selected=category.value||'all';
+        if(category.options.length===1 && exerciseBank.length){
+          [...new Set(exerciseBank.map(ex=>ex.category))].sort((x,y)=>(categoryLabels[x]||x).localeCompare(categoryLabels[y]||y,'pt-BR')).forEach(cat=>{const option=document.createElement('option');option.value=cat;option.textContent=categoryLabels[cat]||cat;category.append(option);});
+          category.value=selected;
+        }
+        renderDuoBank(i);
+        const list=$('duoList'+i);list.replaceChildren();
         duoLessons[i].forEach((item,index)=>{
-          const li=document.createElement('li'), row=document.createElement('div');row.className='duo-item-row';
+          const li=document.createElement('li'),row=document.createElement('div');row.className='duo-item-row';
           const name=document.createElement('strong');name.textContent=item.name;
-          const remove=document.createElement('button');remove.type='button';remove.className='duo-remove';remove.textContent='Remover';remove.addEventListener('click',()=>{if(duoRunning)return;duoLessons[i].splice(index,1);duoState[i].index=Math.min(duoState[i].index,Math.max(0,duoLessons[i].length-1));renderDuoLists();renderDuoTimers();});
-          row.append(name,remove);const meta=document.createElement('div');meta.className='duo-item-meta';meta.textContent=duoFmt(item.duration)+' de exercício · '+duoFmt(item.rest)+' de descanso';li.append(row,meta);list.append(li);
+          const actions=document.createElement('div');actions.className='duo-item-actions';
+          const up=document.createElement('button');up.type='button';up.className='duo-remove';up.textContent='↑';up.title='Mover para cima';up.disabled=index===0;up.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index-1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index-1]];renderDuoLists();});
+          const down=document.createElement('button');down.type='button';down.className='duo-remove';down.textContent='↓';down.title='Mover para baixo';down.disabled=index===duoLessons[i].length-1;down.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index+1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index+1]];renderDuoLists();});
+          const remove=document.createElement('button');remove.type='button';remove.className='duo-remove';remove.textContent='Remover';remove.addEventListener('click',()=>{if(duoRunning)return;duoLessons[i].splice(index,1);duoState[i].index=Math.min(duoState[i].index,Math.max(0,duoLessons[i].length-1));renderDuoLists();});
+          actions.append(up,down,remove);row.append(name,actions);const meta=document.createElement('div');meta.className='duo-item-meta';meta.textContent=duoFmt(item.duration)+' de exercício · '+duoFmt(item.rest)+' de descanso';li.append(row,meta);list.append(li);
         });
       });
       renderDuoTimers();
+    }
+    function addDuoExercise(i,name,duration,rest) {
+      if(duoRunning||!name||!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;
+      duoLessons[i].push({name,duration,rest});
+      if(duoLessons[i].length===1){duoState[i].index=0;duoState[i].phase='exercise';duoState[i].remaining=duration;duoState[i].total=duration;duoState[i].finished=false;}
+      renderDuoLists();
     }
     function renderDuoTimers() {
       [0,1].forEach(i=>{
@@ -903,9 +927,20 @@
     $('duoBackBtn').addEventListener('click',()=>{resetDuo();$('app').classList.remove('mode-duo');$('duoPanel').hidden=true;setViewMode('edit');$('modeDuoBtn').setAttribute('aria-pressed','false');});
     document.querySelectorAll('.duo-add-form').forEach(form=>form.addEventListener('submit',event=>{
       event.preventDefault();if(duoRunning)return;const i=Number(form.dataset.duo),name=form.querySelector('.duo-exercise-name').value.trim(),duration=Number(form.querySelector('.duo-duration').value),rest=Number(form.querySelector('.duo-rest').value);
-      if(!name||!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;
-      duoLessons[i].push({name,duration,rest});form.querySelector('.duo-exercise-name').value='';renderDuoLists();
+      addDuoExercise(i,name,duration,rest);if(name)form.querySelector('.duo-exercise-name').value='';
     }));
+    [0,1].forEach(i=>{
+      $('duoCategory'+i).addEventListener('change',()=>renderDuoBank(i));
+      $('duoSearch'+i).addEventListener('input',()=>renderDuoBank(i));
+      $('duoBank'+i).addEventListener('dblclick',()=>{const card=document.querySelector('.duo-card[data-duo="'+i+'"]');card.querySelector('.duo-add-bank').click();});
+      document.querySelector('.duo-card[data-duo="'+i+'"] .duo-add-bank').addEventListener('click',()=>{
+        const card=document.querySelector('.duo-card[data-duo="'+i+'"]');
+        const name=$('duoBank'+i).value;
+        const duration=Number(card.querySelector('.duo-bank-tools .duo-duration').value);
+        const rest=Number(card.querySelector('.duo-bank-tools .duo-rest').value);
+        addDuoExercise(i,name,duration,rest);
+      });
+    });
     [0,1].forEach(i=>$('duoTitle'+i).addEventListener('input',renderDuoTimers));
     $('duoStartLessons').addEventListener('click',()=>{
       if(duoRunning)return;
