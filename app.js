@@ -783,6 +783,19 @@
       editor.append(label,durationFields.group,restFields.group,apply,cancel,status);
       tools.append(editor);
     });
+    if(duoChild){
+      window.addEventListener('message',event=>{
+        if(event.origin!==window.location.origin||event.data?.source!=='acuas-duo-parent')return;
+        if(event.data.command==='play'){
+          document.body.classList.add('duo-child-play');
+          setViewMode('play');
+        }else if(event.data.command==='edit'){
+          document.body.classList.remove('duo-child-play');
+          setViewMode('edit');
+        }
+      });
+      window.parent.postMessage({source:'acuas-duo-child',command:'ready'},window.location.origin);
+    }
     function setViewMode(mode) {
       const play=mode==='play';
       $('app').classList.toggle('mode-play',play);
