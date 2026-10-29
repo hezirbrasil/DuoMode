@@ -609,7 +609,7 @@
     $('previousBtn').addEventListener('click',()=>jumpBlock(-1));
     $('nextBtn').addEventListener('click',()=>jumpBlock(1));
     $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;els.sound.textContent=soundEnabled?'♫':'♩';els.sound.setAttribute('aria-label',soundEnabled?'Desligar som':'Ligar som');els.sound.title=soundEnabled?'Desligar som':'Ligar som';els.sound.setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)tone();});
-    $('maximizeTimerBtn').addEventListener('click',async()=>{if(duoChild){window.parent.postMessage({source:'acuas-duo-child',command:'maximize-request'},window.location.origin);return;}try{if(!document.fullscreenElement)await $('timerPanel').requestFullscreen();}catch(e){showNotice('A maximização não está disponível neste navegador.');}});
+    $('maximizeTimerBtn').addEventListener('click',async()=>{if(duoChild){window.parent.postMessage({source:'acuas-duo-child',command:'toggle-maximize'},window.location.origin);return;}try{if(!document.fullscreenElement)await $('timerPanel').requestFullscreen();}catch(e){showNotice('A maximização não está disponível neste navegador.');}});
     $('exitTimerFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{setViewMode('script');}});
     $('backToScriptBtn').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}setViewMode('script');});
     $('mergeSelectedBtn').addEventListener('click', () => {
@@ -864,7 +864,7 @@
     window.addEventListener('message',event=>{
       if(event.origin!==window.location.origin||event.data?.source!=='acuas-duo-child')return;
       if(event.data.command==='ready'&&$('duoBuilder').classList.contains('is-playing'))sendDuoCommand('play');
-      if(event.data.command==='maximize-request')setDuoMaximized(true);
+      if(event.data.command==='toggle-maximize')setDuoMaximized(!$('duoBuilder').classList.contains('duo-maximized'));
       if(event.data.command==='export-data'&&duoExportPending){duoExportPayloads[event.data.lesson]=event.data.payload;if(duoExportPayloads[1]&&duoExportPayloads[2]){duoExportPending=false;downloadDuoFile({format:'workout-fight-duo',version:1,lessons:duoExportPayloads,exportedAt:new Date().toISOString()});}}
       if(event.data.command==='imported'){} 
     });
