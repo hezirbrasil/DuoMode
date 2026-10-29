@@ -796,7 +796,14 @@
         document.exitFullscreen().catch(()=>{});
       }
     }
-    $('modePlayBtn').addEventListener('click',()=>setViewMode('play'));
+    $('modePlayBtn').addEventListener('click',()=>{
+      if($('app').classList.contains('mode-duo')){
+        $('app').classList.remove('mode-duo');$('duoPanel').hidden=true;$('layout').removeAttribute('hidden');
+        setViewMode('edit');$('modeDuoBtn').setAttribute('aria-pressed','false');
+        return;
+      }
+      setViewMode('play');
+    });
     $('modeConstructBtn').addEventListener('click',()=>setViewMode('edit'));
     $('modeScriptBtn').addEventListener('click',()=>setViewMode('script'));
     $('scriptBackBtn').addEventListener('click',()=>setViewMode('edit'));
