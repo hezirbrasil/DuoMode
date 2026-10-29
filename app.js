@@ -790,8 +790,7 @@
         if(event.data.command==='play'){
           document.body.classList.add('duo-child-play');
           setViewMode('play');
-        }else if(event.data.command==='start-together'){
-          if(!running)start();
+        }else if(event.data.command==='start-together'){if(!running)start();}else if(event.data.command==='toggle-play'){start();}else if(event.data.command==='previous'){jumpBlock(-1);}else if(event.data.command==='next'){jumpBlock(1);
         }else if(event.data.command==='edit'){
           document.body.classList.remove('duo-child-play');
           document.body.classList.remove('duo-timer-maximized');
@@ -838,6 +837,7 @@
     function setDuoPlaying(enabled){
       $('duoBuilder').classList.toggle('is-playing',enabled);
       $('playDuoBtn').hidden=enabled;
+      $('duoTransport').hidden=!enabled;
       $('editDuoBtn').hidden=!enabled;
       $('maximizeDuoBtn').hidden=!enabled;
       sendDuoCommand(enabled?'play':'edit');
@@ -865,7 +865,7 @@
       }catch(error){showNotice('Arquivo Duo inválido. Selecione um arquivo exportado pelo Workout Fight.');}
       finally{event.target.value='';}
     });
-    $('editDuoBtn').addEventListener('click',()=>setDuoPlaying(false));
+    $('editDuoBtn').addEventListener('click',()=>setDuoPlaying(false));$('duoPrevBtn').addEventListener('click',()=>sendDuoCommand('previous'));$('duoToggleBtn').addEventListener('click',()=>sendDuoCommand('toggle-play'));$('duoNextBtn').addEventListener('click',()=>sendDuoCommand('next'));
     $('maximizeDuoBtn').addEventListener('click',()=>setDuoMaximized(!$('duoBuilder').classList.contains('duo-maximized')));
     window.addEventListener('message',event=>{
       if(event.origin!==window.location.origin||event.data?.source!=='acuas-duo-child')return;
