@@ -551,3 +551,28 @@ body.duo-child.duo-child-play #app.mode-play #timerPanel .controls{gap:6px}
 .mode-btn:focus-visible{box-shadow:0 0 0 1px #b66cff}
 #duoBuilder #playDuoBtn{background:#b66cff;border-color:#b66cff;color:#14091f;box-shadow:0 0 0 2px #b66cff30}
 .duo-builder-label{color:#d2a4ff}
+
+
+/* Modo Duo: garantir que o controle de minimizar continue acessível nos blocos com exercícios agrupados. */
+body.duo-child #exerciseList > .exercise-item .exercise-info .nameRow .minimize-block-btn,
+body.duo-child #exerciseList > .exercise-item .minimize-block-btn {
+  display: inline-grid !important;
+  flex: 0 0 30px !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  place-items: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 2 !important;
+  color: var(--lime) !important;
+  border-color: var(--lime) !important;
+  cursor: pointer !important;
+}
+body.duo-child #exerciseList > .exercise-item.block-minimized .minimize-block-btn {
+  display: inline-grid !important;
+}
+body.duo-child #exerciseList > .exercise-item.block-minimized .block-editor {
+  display: none !important;
+}
