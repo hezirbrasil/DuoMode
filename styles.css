@@ -22,9 +22,10 @@
     /* Play mode uses a CSS full-screen fallback so it works on iOS Safari too. */
     #app.mode-play { position:fixed;inset:0;z-index:9999;width:100%;height:100vh;height:100dvh;max-width:none;margin:0;padding:12px clamp(10px,3vw,28px);overflow-y:auto;background:var(--bg); }
     #app.mode-play header { display:none; }
-    #app.mode-play .layout { grid-template-columns:minmax(0,1fr);min-height:100%;gap:0; }
+    #app.mode-play .layout { grid-template-columns:repeat(2,minmax(0,1fr));min-height:100%;gap:16px;align-items:center; }
     #app.mode-play #scriptPanel { display:none; }
     #app.mode-play #timerPanel { width:100%;min-height:calc(100vh - 24px);min-height:calc(100dvh - 24px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(12px,3vh,28px); }
+    #app.mode-play #timerPanel2 { width:100%;min-width:0;min-height:calc(100vh - 24px);min-height:calc(100dvh - 24px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(12px,3vh,28px);gap:12px; }
     #app.mode-play #timerPanel .clock-wrap { width:min(48vh, min(76vw,500px));width:min(48dvh, min(76vw,500px));margin:clamp(6px,1.5vh,18px) auto;flex-shrink:0; }
     #app.mode-play #timerPanel .time { font-size:clamp(64px,13vh,124px);font-size:clamp(64px,13dvh,124px); }
     #app.mode-play #timerPanel .current-name { font-size:clamp(28px,4.8vh,42px);font-size:clamp(28px,4.8dvh,42px); }
@@ -493,3 +494,26 @@
 .save-menu { position:absolute;top:calc(100% + 8px);right:0;z-index:10010;min-width:230px;padding:8px;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:0 12px 32px #0005; }
 .save-menu .btn { width:100%;text-align:left;white-space:normal; }
 @media(max-width:600px) { .save-menu { right:0;min-width:210px; } }
+
+/* Segundo timer independente */
+#timerPanel2 { display:none; }
+.secondary-timer .clock-wrap { width:min(34vh, min(68vw,390px)); margin:12px auto; flex-shrink:0; }
+.secondary-timer .time { font-size:clamp(42px,8vh,90px); }
+.secondary-timer .secondary-name-label { color:var(--muted);font-size:12px; }
+.secondary-name-input { width:min(100%,420px);padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);text-align:center;font-weight:750;font-size:clamp(18px,2vw,26px); }
+.secondary-duration { display:flex;justify-content:center;gap:12px; }
+.secondary-duration label { display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px; }
+.secondary-duration input { width:64px;padding:7px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);text-align:center; }
+#app.mode-play #timerPanel2 .phase { display:none; }
+#app.mode-play #timerPanel2 .clock-wrap { width:min(34vh, min(40vw,390px)); }
+#app.mode-play #timerPanel2 .current-name { font-size:clamp(22px,3vw,36px); }
+@media(max-width:650px) {
+ #app.mode-play .layout { grid-template-columns:repeat(2,minmax(0,1fr));gap:8px; }
+ #app.mode-play #timerPanel,#app.mode-play #timerPanel2 { min-height:calc(100dvh - 24px);padding:10px 5px; }
+ #app.mode-play #timerPanel .clock-wrap,#app.mode-play #timerPanel2 .clock-wrap { width:min(34dvh,42vw); }
+ #app.mode-play #timerPanel .time,#app.mode-play #timerPanel2 .time { font-size:clamp(28px,7vw,58px); }
+ #app.mode-play #timerPanel .current-name { font-size:clamp(16px,3vw,24px); }
+ .secondary-name-input {font-size:14px;padding:8px 4px}
+ .secondary-duration {gap:4px}
+ .secondary-duration input {width:42px;padding:5px 2px}
+}
