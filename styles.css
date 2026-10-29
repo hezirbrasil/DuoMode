@@ -515,3 +515,20 @@ body.duo-child header,body.duo-child .bottom-note,body.duo-child .script-back{di
 body.duo-child #scriptPanel{display:block!important;width:100%!important;padding:12px!important}
 body.duo-child #scriptPanel>.section-head{display:flex!important}body.duo-child #scriptPanel>.sequence-visual{display:none!important}
 @media(max-width:800px){.duo-builder-grid{grid-template-columns:1fr}.duo-builder-card iframe{height:78vh;min-height:620px}}
+
+
+/* Play Duo: cada construtor vira um player independente, lado a lado. */
+.duo-builder-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.duo-builder.is-playing .duo-builder-label{display:none}
+.duo-builder.is-playing .duo-builder-card iframe{height:calc(100vh - 115px);min-height:500px}
+body.duo-child.duo-child-play #scriptPanel{display:none!important}
+body.duo-child.duo-child-play #timerPanel{display:flex!important}
+body.duo-child.duo-child-play .app{padding:0!important}
+body.duo-child.duo-child-play #app.mode-play{position:relative!important;inset:auto!important;height:auto!important;min-height:100vh;min-height:100dvh;overflow:hidden!important;padding:8px!important}
+body.duo-child.duo-child-play #app.mode-play .layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important;min-height:100vh;min-height:100dvh;gap:0!important}
+body.duo-child.duo-child-play #app.mode-play #timerPanel{min-height:100vh;min-height:100dvh;padding:8px!important}
+body.duo-child.duo-child-play #app.mode-play #timerPanel .clock-wrap{width:min(34dvh,68vw,330px)!important}
+body.duo-child.duo-child-play #app.mode-play #timerPanel .time{font-size:clamp(34px,8dvh,76px)!important}
+body.duo-child.duo-child-play #app.mode-play #timerPanel .current-name{font-size:clamp(18px,3dvh,30px)!important}
+body.duo-child.duo-child-play #app.mode-play #timerPanel .controls{gap:6px}
+@media(max-width:800px){.duo-builder.is-playing .duo-builder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.duo-builder.is-playing .duo-builder-card iframe{height:calc(100dvh - 110px);min-height:460px}.duo-builder-actions{gap:5px}}
