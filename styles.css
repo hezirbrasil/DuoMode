@@ -576,3 +576,22 @@ body.duo-child #exerciseList > .exercise-item.block-minimized .minimize-block-bt
 body.duo-child #exerciseList > .exercise-item.block-minimized .block-editor {
   display: none !important;
 }
+
+
+/* Maximização sincronizada dos dois timers no Modo Duo. */
+body.duo-child.duo-child-play.duo-timer-maximized .app,
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play {
+  position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;
+  min-height:100vh!important;min-height:100dvh!important;max-width:none!important;margin:0!important;
+  padding:8px!important;z-index:100000!important;overflow:hidden!important;background:var(--bg)!important;
+}
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play .layout,
+body.duo-child.duo-child-play.duo-timer-maximized #app.mode-play #timerPanel {
+  min-height:100vh!important;min-height:100dvh!important;height:100vh!important;height:100dvh!important;
+}
+body.duo-child.duo-child-play.duo-timer-maximized #maximizeTimerBtn {display:none!important}
+body.duo-child.duo-child-play.duo-timer-maximized #backToScriptBtn {display:none!important}
+.duo-builder.is-playing.duo-maximized .duo-builder-top {display:none!important}
+.duo-builder.is-playing.duo-maximized .duo-builder-grid {position:fixed!important;inset:0!important;z-index:99999!important;background:var(--bg);padding:0!important;gap:2px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.duo-builder.is-playing.duo-maximized .duo-builder-card {border-radius:0!important;border:0!important}
+.duo-builder.is-playing.duo-maximized .duo-builder-card iframe {height:100dvh!important;min-height:100dvh!important;width:100%!important}
