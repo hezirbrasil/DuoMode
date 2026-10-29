@@ -931,7 +931,7 @@
     function renderDuoTimers() {
       [0,1].forEach(i=>{
         const state=duoState[i], lesson=duoLessons[i], item=lesson[state.index];
-        $('duoPlayerTitle'+i).textContent=$('duoTitle'+i).value.trim()||'Aula '+(i+1);
+        $('duoPlayerTitle'+i).textContent=$('duoTitle'+i).value.trim()||(i===0?'Fight':'Workout');
         $('duoTime'+i).textContent=duoFmt(state.remaining);
         $('duoPhase'+i).textContent=state.finished?'Concluída':!item?'Sem exercícios':state.phase==='rest'?'Descanso':duoRunning?'Em execução':'Pronto';
         $('duoCurrent'+i).textContent=state.finished?'Aula concluída':item?(state.phase==='rest'?'Descanso · '+item.name:item.name):'Adicione exercícios';
