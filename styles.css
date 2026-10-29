@@ -565,3 +565,75 @@
 .duo-tool-field input,.duo-tool-field select { width:100%;min-width:0;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text); }
 .duo-item-row { align-items:center; }
 .duo-select-item { flex:0 0 auto;width:17px;height:17px;accent-color:var(--blue); }
+
+
+/* Tela cheia para TV: somente o essencial para os alunos. */
+#timerPanel:fullscreen {
+  gap:0;
+  background:radial-gradient(ellipse at 50% 0%,#291344 0,transparent 55%),var(--bg);
+}
+#timerPanel:fullscreen::after {
+  content:"AQUECIMENTO";
+  order:-1;
+  display:block;
+  margin:0 0 clamp(8px,2vh,22px);
+  color:var(--text);
+  font-size:clamp(20px,3.2vh,34px);
+  font-weight:900;
+  letter-spacing:.18em;
+  text-align:center;
+}
+#timerPanel:fullscreen .current-name-row,
+#timerPanel:fullscreen .round-label,
+#timerPanel:fullscreen .progress-bar,
+#timerPanel:fullscreen .timer-settings,
+#timerPanel:fullscreen .clock-caption,
+#timerPanel:fullscreen #resetBtn,
+#timerPanel:fullscreen #soundBtn,
+#timerPanel:fullscreen #maximizeTimerBtn,
+#timerPanel:fullscreen #exitTimerFullscreen,
+#timerPanel:fullscreen .eyebrow,
+#timerPanel:fullscreen .phase { display:none !important; }
+#timerPanel:fullscreen .clock-wrap {
+  width:min(64vh, min(76vw,560px));
+  margin:0 auto clamp(14px,3vh,30px);
+}
+#timerPanel:fullscreen .time { font-size:clamp(76px,16vh,150px);font-weight:900; }
+#timerPanel:fullscreen .controls { margin-top:clamp(10px,2vh,24px);gap:clamp(12px,2vw,24px); }
+#timerPanel:fullscreen .transport-btn { width:clamp(54px,7vh,76px);height:clamp(54px,7vh,76px); }
+#timerPanel:fullscreen #backToScriptBtn { display:none !important; }
+
+/* Modo Duo em tela cheia: dois cronômetros grandes, sem construtores e metadados. */
+#app.mode-duo:fullscreen {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:2vh 3vw;
+  overflow:hidden;
+  background:radial-gradient(ellipse at 50% 0%,#291344 0,transparent 58%),var(--bg);
+}
+#app.mode-duo:fullscreen header,
+#app.mode-duo:fullscreen .duo-heading,
+#app.mode-duo:fullscreen .duo-builders,
+#app.mode-duo:fullscreen .duo-tools,
+#app.mode-duo:fullscreen .duo-footer,
+#app.mode-duo:fullscreen .bottom-note,
+#app.mode-duo:fullscreen .duo-meta,
+#app.mode-duo:fullscreen #duoMeta0,
+#app.mode-duo:fullscreen #duoMeta1 { display:none !important; }
+#app.mode-duo:fullscreen #duoPanel { display:flex;flex-direction:column;justify-content:center;width:100%;max-width:none; }
+#app.mode-duo:fullscreen .duo-player { display:flex;flex-direction:column;justify-content:center;width:100%;gap:2vh; }
+#app.mode-duo:fullscreen .duo-timers { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3vw;align-items:center; }
+#app.mode-duo:fullscreen .duo-timer-card { padding:1vh 1vw;border:0;background:transparent;box-shadow:none; }
+#app.mode-duo:fullscreen .duo-player-title { font-size:clamp(18px,3vh,32px);margin:0 0 1vh;letter-spacing:.12em;text-transform:uppercase; }
+#app.mode-duo:fullscreen .duo-clock { width:min(48vh,36vw,520px);margin:0 auto 1vh; }
+#app.mode-duo:fullscreen .duo-clock strong { font-size:clamp(70px,12vh,130px); }
+#app.mode-duo:fullscreen .duo-clock span { font-size:clamp(12px,1.8vh,18px); }
+#app.mode-duo:fullscreen .duo-timer-card h3,
+#app.mode-duo:fullscreen .duo-timer-card > p:last-child { display:none !important; }
+#app.mode-duo:fullscreen .duo-controls { justify-content:center;gap:clamp(12px,2vw,24px);margin-top:1vh; }
+#app.mode-duo:fullscreen .duo-controls .transport-btn { width:clamp(54px,7vh,76px);height:clamp(54px,7vh,76px); }
+@media(max-width:680px) {
+  #app.mode-duo:fullscreen .duo-clock { width:min(42vh,42vw); }
+  #app.mode-duo:fullscreen .duo-clock strong { font-size:clamp(38px,8vh,76px); }
+}
