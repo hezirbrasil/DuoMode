@@ -60,7 +60,7 @@
         exerciseBank = Array.isArray(data.exercises) ? data.exercises : [];
         const categories = [...new Set(exerciseBank.map(x=>x.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR'));
         categories.forEach(cat=>{const opt=document.createElement('option');opt.value=cat;opt.textContent=categoryLabels[cat]||cat;$('bankCategory').append(opt);});
-        bankLoaded=true;renderBankPicker();renderList();
+        bankLoaded=true;renderBankPicker();renderList();renderDuoLists();
       } catch (error) {
         $('bankCount').textContent='Indisponível';
         $('bankExercise').innerHTML='<option value="">Abra via GitHub Pages para carregar o banco</option>';
