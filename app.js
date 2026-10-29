@@ -790,8 +790,8 @@
         if(event.data.command==='play'){
           document.body.classList.add('duo-child-play');
           setViewMode('play');
-        }else if(event.data.command==='start-together'){if(!running)start();}else if(event.data.command==='toggle-play'){start();}else if(event.data.command==='previous'){jumpBlock(-1);}else if(event.data.command==='next'){jumpBlock(1);
-        }else if(event.data.command==='edit'){
+        }else if(event.data.command==='start-together'){if(!running)start();}else if(event.data.command==='toggle-play'){start();}else if(event.data.command==='previous'){jumpBlock(-1);}else if(event.data.command==='next'){jumpBlock(1);}
+        else if(event.data.command==='edit'){
           document.body.classList.remove('duo-child-play');
           document.body.classList.remove('duo-timer-maximized');
           setViewMode('edit');
