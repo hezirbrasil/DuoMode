@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#08060d">
   <title>Workout Fight — Timer de Treinos</title>
-  <link rel="stylesheet" href="./styles.css?v=duo-top-actions-20261030b">
+  <link rel="stylesheet" href="./styles.css?v=duo-toolbar-mode-20261030d">
 
 </head>
 <body>
@@ -109,6 +109,13 @@
       </section>
     </main>
     <section id="duoPanel" class="duo-panel" hidden aria-label="Construtor do Modo Duo">
+        <div class="duo-top-actions">
+          <button class="btn" id="duoBackTop" type="button">Construtor</button><button class="btn primary" id="duoStartLessons" type="button">Play</button>
+          <button class="btn" id="duoScriptToggle" type="button" aria-pressed="false">Script</button>
+          <button class="btn" id="duoExport" type="button">Exportar</button>
+          <button class="btn" id="duoImport" type="button">Importar</button>
+          <input id="duoImportFile" type="file" accept=".json,application/json" hidden>
+        </div>
       <div class="duo-heading"><div><p class="eyebrow">WORKOUT FIGHT</p><h2>Modo Duo</h2><p class="subtle">Monte duas aulas independentes. Os cronômetros começam juntos.</p></div></div>
       <div class="duo-builders">
         <article class="duo-card" data-duo="0">
@@ -169,13 +176,7 @@
           </section>
         </article>
       </div>
-        <div class="duo-top-actions">
-          <button class="btn" id="duoBackTop" type="button">Construtor</button><button class="btn primary" id="duoStartLessons" type="button">Play</button>
-          <button class="btn" id="duoScriptToggle" type="button" aria-pressed="false">Script</button>
-          <button class="btn" id="duoExport" type="button">Exportar</button>
-          <button class="btn" id="duoImport" type="button">Importar</button>
-          <input id="duoImportFile" type="file" accept=".json,application/json" hidden>
-        </div>
+
       <div class="duo-player" id="duoPlayer" hidden>
         <div class="duo-timers">
           <article class="duo-timer-card"><p class="duo-player-title" id="duoPlayerTitle0">Fight</p><div class="duo-clock"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="duo-track" cx="100" cy="100" r="90"/><circle class="duo-progress" id="duoProgress0" cx="100" cy="100" r="90"/></svg><div><strong id="duoTime0">00:45</strong><span id="duoPhase0">Pronto</span></div></div><h3 id="duoCurrent0">Adicione exercícios</h3></article>
@@ -190,7 +191,7 @@
   <script src="./data/exercises.js?v=duo-min-sec-ui-20261029b" defer></script>
   <script src="./data/duo-timer.js?v=duo-min-sec-ui-20261029b" defer></script>
   <script src="./data/duo-diagnostics.js?v=duo-min-sec-ui-20261029b" defer></script>
-  <script src="./app.js?v=duo-builder-return-20261030c" defer></script>
+  <script src="./app.js?v=duo-toolbar-mode-20261030d" defer></script>
   <script src="./data/workout-bank-ui.js?v=duo-min-sec-ui-20261029b" defer></script>
 
 </body>
