@@ -536,6 +536,9 @@
 .duo-controls .transport-main { background:var(--blue);border-color:var(--blue); }
 #app.mode-duo { max-width:1400px; }
 #app.mode-duo .header-actions { justify-content:flex-end; }
+#app.mode-duo:has(#duoPlayer:not([hidden])) .duo-footer { display:none !important; }
+#app.mode-duo .duo-back-btn { background:transparent;border-color:var(--line);color:var(--sky);font-size:30px; }
+
 @media(max-width:680px) { .duo-builders,.duo-timers { grid-template-columns:minmax(0,1fr); } .duo-clock { width:min(70vw,260px); } .duo-heading { align-items:flex-start; } }
 #app.mode-duo:fullscreen { max-width:none;overflow:auto;background:var(--bg); }
 #app.mode-duo.duo-playing .duo-builders,.duo-panel:has(.duo-player:not([hidden])) .duo-builders { display:none; }
