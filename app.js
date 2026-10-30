@@ -843,7 +843,7 @@
     [els.exerciseMinutes,els.exerciseSeconds,els.restMinutes,els.restSeconds,els.rounds].forEach(el=>el.addEventListener('change',()=>{if(running){showNotice('Pause o timer para alterar os parâmetros.');return;}syncSettings();reset();}));
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){/* wall-clock interval continues */}});
     reset();
-    loadExerciseBank();
+
 
     // Modo Duo novo: aulas separadas, timers independentes e controles compartilhados.
     const duoLessons = [[], []];
@@ -1037,5 +1037,6 @@
     $('duoImport').addEventListener('click',()=>$('duoImportFile').click());
     $('duoImportFile').addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=='workout-fight-duo'||!Array.isArray(data.lessons)||data.lessons.length!==2||data.lessons.some(list=>!Array.isArray(list)||list.some(x=>typeof x.name!=='string'||!Number.isFinite(x.duration)||x.duration<1||!Number.isFinite(x.rest)||x.rest<0)))throw new Error('Formato inválido');resetDuo();[0,1].forEach(i=>{duoLessons[i].splice(0,duoLessons[i].length,...data.lessons[i]);$('duoTitle'+i).value=String(data.titles?.[i]||'Aula '+(i+1));});renderDuoLists();}catch(error){$('duoImportFile').value='';return;}event.target.value='';});
     renderDuoLists();
+    loadExerciseBank();
 
   })();
