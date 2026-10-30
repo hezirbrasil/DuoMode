@@ -18,7 +18,7 @@
     let collapsedGroups = new Set();
     let nextGroupId = 1;
     let bankLoaded = false;
-    const categoryLabels = { peito:'Peito', costas:'Costas', ombros:'Ombros', bíceps:'Bíceps', tríceps:'Tríceps', pernas:'Pernas', posterior:'Posterior', composto:'Compostos', core:'Core e abdômen', cardio:'Cardio e funcional' };
+    const categoryLabels = { peito:'Peito', costas:'Costas', ombros:'Ombros', biceps:'Bíceps', triceps:'Tríceps', bíceps:'Bíceps', tríceps:'Tríceps', pernas:'Inferiores', posterior:'Posterior', composto:'Compostos', core:'Core e abdômen', cardio:'Cardio e funcional' };
     function renderBankPicker() {
       const category = $('bankCategory').value || 'all';
       const query = ($('bankSearch').value || '').trim().toLocaleLowerCase('pt-BR');
