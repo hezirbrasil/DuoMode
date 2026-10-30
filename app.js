@@ -975,8 +975,8 @@
       if(indexes.length<(mode==='group'?1:2)){showDuoToolEditor(i,document.createTextNode('Marque '+(mode==='group'?'pelo menos um exercício.':'pelo menos dois exercícios.')+' nesta aula.'));return;}
       const box=document.createElement('div');box.className='duo-tool-fields';
       if(mode==='standardize'){
-        const d=makeDuoField('Tempo (seg)',lesson[indexes[0]].duration,'Tempo padronizado em segundos');
-        const r=makeDuoField('Descanso (seg)',lesson[indexes[0]].rest,'Descanso padronizado em segundos');
+        const d=makeDuoField('Tempo',lesson[indexes[0]].duration,'Tempo padronizado');
+        const r=makeDuoField('Descanso',lesson[indexes[0]].rest,'Descanso padronizado');
         const apply=document.createElement('button');apply.type='button';apply.className='btn blue';apply.textContent='Aplicar tempos';
         apply.addEventListener('click',()=>{const duration=d.read(),rest=r.read();if(!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;indexes.forEach(n=>{lesson[n].duration=duration;lesson[n].rest=rest;});editor.hidden=true;renderDuoLists();});
         box.append(d.label,r.label,apply);
@@ -987,8 +987,8 @@
         box.append(label,apply);
       }else{
         const info=document.createElement('p');info.className='subtle';info.textContent='Os exercícios selecionados desta aula serão unidos em um único item.';
-        const d=makeDuoField('Tempo (seg)',lesson[indexes[0]].duration,'Tempo compartilhado em segundos');
-        const r=makeDuoField('Descanso (seg)',lesson[indexes[indexes.length-1]].rest,'Descanso compartilhado em segundos');
+        const d=makeDuoField('Tempo',lesson[indexes[0]].duration,'Tempo compartilhado');
+        const r=makeDuoField('Descanso',lesson[indexes[indexes.length-1]].rest,'Descanso compartilhado');
         const apply=document.createElement('button');apply.type='button';apply.className='btn blue';apply.textContent='Juntar exercícios';
         apply.addEventListener('click',()=>{const duration=d.read(),rest=r.read();if(!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;const names=indexes.map(n=>lesson[n].name);const first=indexes[0];lesson[first]={name:names.join(' + '),duration,rest,group:lesson[first].group||''};for(let k=indexes.length-1;k>=1;k--)lesson.splice(indexes[k],1);duoSelected[i].clear();duoState[i].index=Math.min(duoState[i].index,lesson.length-1);editor.hidden=true;renderDuoLists();});
         box.append(info,d.label,r.label,apply);
