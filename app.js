@@ -340,7 +340,20 @@
             if(running){showNotice('Pause o timer antes de excluir um agrupamento.');return;}
             removeGroup(groupName);
           });
-          headerRow.append(header,rename,deleteGroup);els.list.append(headerRow);
+          const moveUp=document.createElement('button');
+          moveUp.type='button';moveUp.className='group-rename group-move';
+          moveUp.textContent='↑';moveUp.title='Mover agrupamento para cima';
+          moveUp.setAttribute('aria-label','Mover agrupamento '+groupName+' para cima');
+          moveUp.disabled=running||blocks.findIndex(item=>item.group===groupName)===0;
+          moveUp.addEventListener('click',e=>{e.stopPropagation();moveGroup(groupName,-1);});
+          const moveDown=document.createElement('button');
+          moveDown.type='button';moveDown.className='group-rename group-move';
+          moveDown.textContent='↓';moveDown.title='Mover agrupamento para baixo';
+          moveDown.setAttribute('aria-label','Mover agrupamento '+groupName+' para baixo');
+          const groupLast=blocks.reduce((last,item,index)=>item.group===groupName?index:last,-1);
+          moveDown.disabled=running||groupLast===blocks.length-1;
+          moveDown.addEventListener('click',e=>{e.stopPropagation();moveGroup(groupName,1);});
+          headerRow.append(header,moveUp,moveDown,rename,deleteGroup);els.list.append(headerRow);
         }
         // Grupos recolhidos escondem os cartões no editor sem alterar a sequência do timer.
         const isGroupCollapsed = Boolean(b.group && collapsedGroups.has(b.group));
@@ -591,6 +604,42 @@
       if(!blocks.length){reset();remaining=0;totalPhase=1;render();return;}
       if(blockIndex>=blocks.length)blockIndex=blocks.length-1;
       reset();
+    }
+    function moveGroup(groupName, delta) {
+      if(!groupName||running||![-1,1].includes(delta))return;
+      const first=blocks.findIndex(item=>item.group===groupName);
+      if(first<0)return;
+      let last=first;
+      while(last+1<blocks.length&&blocks[last+1].group===groupName)last++;
+      let start,end;
+      if(delta<0){
+        if(first===0)return;
+        end=first-1;
+        const previousGroup=blocks[end].group;
+        start=previousGroup?end: end;
+        if(previousGroup){while(start>0&&blocks[start-1].group===previousGroup)start--;}
+      }else{
+        if(last===blocks.length-1)return;
+        start=last+1;
+        const nextGroup=blocks[start].group;
+        end=nextGroup?start:start;
+        if(nextGroup){while(end+1<blocks.length&&blocks[end+1].group===nextGroup)end++;}
+      }
+      const currentBlock=blocks[blockIndex];
+      const selectedItems=[...selectedBlocks].map(index=>blocks[index]).filter(Boolean);
+      if(delta<0){
+        const before=blocks.slice(start,first);
+        const moving=blocks.slice(first,last+1);
+        blocks.splice(start,last-start+1,...moving,...before);
+      }else{
+        const moving=blocks.slice(first,last+1);
+        const after=blocks.slice(last+1,end+1);
+        blocks.splice(first,end-first+1,...after,...moving);
+      }
+      blockIndex=Math.max(0,blocks.indexOf(currentBlock));
+      selectedBlocks=new Set(selectedItems.map(item=>blocks.indexOf(item)).filter(index=>index>=0));
+      remaining=blocks[blockIndex]?.duration||45;totalPhase=remaining;
+      render();
     }
     function removeGroup(groupName) {
       if(!groupName||running)return;
@@ -922,6 +971,7 @@
       { name:'Jab + Direto', category:'jab' },
       { name:'Jab + Jab + Direto', category:'jab' },
       { name:'Jab + Direto + Cruzado', category:'jab' },
+      { name:'Jab + Direto + Upper F + Upper T + Cruzado F + Cruzado T', category:'jab' },
       { name:'Jab + Direto + Esquiva + Direto', category:'jab' },
       { name:'Jab + Direto + Esquiva + Direto + Cruzado', category:'jab' },
       { name:'Jab + Direto + Esquiva + Direto + Cruzado F + Cruzado T', category:'jab' },
