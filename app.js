@@ -943,6 +943,14 @@
       renderDuoLists();
     }
 
+    // Ponte pública e pequena para o módulo isolado do banco Workout.
+    // A inclusão continua usando a mesma lista interna consumida pelo cronômetro.
+    window.addWorkoutExerciseFromBank = function(name, duration, rest) {
+      const before = duoLessons[1].length;
+      addDuoExercise(1, String(name || '').trim(), Number(duration), Number(rest));
+      return duoLessons[1].length === before + 1;
+    };
+
     function selectedDuoIndexes(i){return [...duoSelected[i]].filter(n=>n>=0&&n<duoLessons[i].length).sort((a,b)=>a-b);}
     function showDuoToolEditor(i,content){const editor=$('duoToolEditor'+i);editor.replaceChildren();editor.hidden=false;editor.append(content);}
     function makeDuoField(labelText,value,aria){const label=document.createElement('label');label.className='duo-tool-field';label.textContent=labelText;const input=document.createElement('input');input.type='number';input.min='0';input.max='3600';input.step='1';input.value=String(value);input.setAttribute('aria-label',aria);label.append(input);return {label,input};}
