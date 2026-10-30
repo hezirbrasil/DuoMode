@@ -746,3 +746,10 @@
   .duo-top-actions { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:10px; }
   .duo-top-actions .btn { width:100%;min-width:0;padding:9px 8px;font-size:13px; }
 }
+
+/* Barra principal fixa no topo do construtor; em execução, mantém apenas o retorno. */
+#duoPanel > .duo-top-actions { order:-1; }
+#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoStartLessons,
+#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoScriptToggle,
+#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoExport,
+#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoImport { display:none !important; }
