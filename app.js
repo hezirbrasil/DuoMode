@@ -1117,10 +1117,20 @@
     $('duoNext').addEventListener('click',()=>{if(duoRunning){duoRunning=false;clearInterval(duoInterval);duoInterval=null;}[0,1].forEach(i=>advanceDuoState(i,true));renderDuoTimers();});
     $('duoPrev').addEventListener('click',()=>{if(duoRunning){duoRunning=false;clearInterval(duoInterval);duoInterval=null;}[0,1].forEach(i=>{const s=duoState[i];s.finished=false;s.index=Math.max(0,s.index-1);s.phase='exercise';s.remaining=duoLessons[i][s.index]?.duration||45;s.total=s.remaining;});renderDuoTimers();});
     $('duoScriptToggle').addEventListener('click',()=>{
-      const player=$('duoPlayer'),enabled=!player.classList.contains('is-script');
-      player.classList.toggle('is-script',enabled);
-      $('duoScriptToggle').setAttribute('aria-pressed',String(enabled));
-      $('duoScriptToggle').textContent=enabled?'Ver timer':'Ver script';
+      if(!duoLessons.some(lesson=>lesson.length))return;
+      const player=$('duoPlayer');
+      player.hidden=false;
+      player.classList.add('is-script');
+      $('duoViewToggle').textContent='Timer';
+      $('duoViewToggle').setAttribute('aria-pressed','true');
+      renderDuoTimers();renderDuoScript();
+      window.scrollTo(0,player.offsetTop);
+    });
+    $('duoViewToggle').addEventListener('click',()=>{
+      const player=$('duoPlayer'),scriptMode=!player.classList.contains('is-script');
+      player.classList.toggle('is-script',scriptMode);
+      $('duoViewToggle').textContent=scriptMode?'Timer':'Script';
+      $('duoViewToggle').setAttribute('aria-pressed',String(scriptMode));
       renderDuoScript();
     });
     document.querySelectorAll('[data-script-tab]').forEach(btn=>btn.addEventListener('click',()=>{
