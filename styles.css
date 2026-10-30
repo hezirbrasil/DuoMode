@@ -710,3 +710,6 @@
 .duo-tool-time-pair{grid-column:auto;width:min(100%,260px);margin:6px 0}
 .duo-inline-editor .duo-time-pair{grid-column:1/-1}
 @media(max-width:520px){.duo-fields .duo-time-pair{grid-template-columns:repeat(2,minmax(0,1fr))}.duo-time-pair label{font-size:12px}}
+
+/* Em tela cheia no Duo, ocultar toda a barra de botões; sair com Esc. */
+#app.mode-duo:fullscreen .duo-controls { display:none !important; }
