@@ -1061,36 +1061,25 @@
       $('duoSearch'+i).addEventListener('input',()=>renderDuoBank(i));
       $('duoBank'+i).addEventListener('dblclick',()=>{const card=document.querySelector('.duo-card[data-duo="'+i+'"]');card.querySelector('.duo-add-bank').click();});
     });
-    // Delegação no documento: o clique continua funcionando mesmo se a lista
-    // for reconstruída durante a renderização do construtor.
-    document.addEventListener('click',event=>{
-      const button=event.target.closest('.duo-add-bank');
-      if(!button)return;
-      const card=button.closest('.duo-card');
-      const i=Number(card?.dataset.duo);
-      if(!card)return;
-      event.preventDefault();
-      if(i===0){
-        const status=$('duoBankStatus0');
-        if(status)status.textContent='O índice Fight já está criado. Cadastre as técnicas dentro da categoria para adicioná-las à aula.';
-        return;
-      }
-      if(i!==1)return;
-      const status=$('duoBankStatus1');
-      const bankSelect=$('duoBank1');
-      const durationInput=card.querySelector('.duo-bank-tools .duo-duration');
-      const restInput=card.querySelector('.duo-bank-tools .duo-rest');
-      const name=String(bankSelect?.value||'').trim();
-      const duration=Number(durationInput?.value);
-      const rest=Number(restInput?.value);
-      if(duoRunning){if(status)status.textContent='Pause o cronômetro antes de adicionar exercícios.';return;}
-      if(!name){if(status)status.textContent='Selecione um exercício no banco.';return;}
-      if(!Number.isInteger(duration)||duration<1||duration>3600){if(status)status.textContent='Informe um tempo entre 1 e 3600 segundos.';durationInput?.focus();return;}
-      if(!Number.isInteger(rest)||rest<0||rest>3600){if(status)status.textContent='Informe um descanso entre 0 e 3600 segundos.';restInput?.focus();return;}
-      const before=duoLessons[1].length;
-      addDuoExercise(1,name,duration,rest);
-      if(status)status.textContent=duoLessons[1].length===before+1?'“'+name+'” adicionado à aula Workout.':'Não foi possível adicionar. Tente novamente.';
-    });;
+    // Liga o clique diretamente aos dois botões do construtor.
+    [0,1].forEach(i=>{
+      const button=document.querySelector('.duo-card[data-duo="'+i+'"] .duo-add-bank');
+      button.addEventListener('click',event=>{
+        event.preventDefault();
+        const card=button.closest('.duo-card');
+        const status=$('duoBankStatus'+i);
+        const name=String($('duoBank'+i)?.value||'').trim();
+        const duration=Number(card.querySelector('.duo-bank-tools .duo-duration')?.value);
+        const rest=Number(card.querySelector('.duo-bank-tools .duo-rest')?.value);
+        if(!name){if(status)status.textContent='Selecione uma opção no banco antes de adicionar.';return;}
+        if(!Number.isInteger(duration)||duration<1||duration>3600){if(status)status.textContent='Tempo inválido: use de 1 a 3600 segundos.';return;}
+        if(!Number.isInteger(rest)||rest<0||rest>3600){if(status)status.textContent='Descanso inválido: use de 0 a 3600 segundos.';return;}
+        const before=duoLessons[i].length;
+        addDuoExercise(i,name,duration,rest);
+        const added=duoLessons[i].length===before+1;
+        if(status)status.textContent=added?name+' adicionado à estrutura da aula.':(duoRunning?'Pause o cronômetro antes de adicionar.':'Não foi possível adicionar este item.');
+      });
+    });
     [0,1].forEach(i=>$('duoTitle'+i).addEventListener('input',renderDuoTimers));
     $('duoStartLessons').addEventListener('click',()=>{
       if(duoRunning)return;
