@@ -71,9 +71,19 @@
           bankCategory.replaceChildren(new Option('Todos os grupamentos','all'));
           categories.forEach(cat => bankCategory.append(new Option(categoryLabels[cat]||cat,cat)));
         }
+        // O banco do Workout é renderizado de forma independente das listas das aulas.
+        // Assim, uma falha em outro componente não impede a exibição dos exercícios.
+        const workoutCategory = $('duoCategory1');
+        if (workoutCategory) {
+          const selectedCategory = workoutCategory.value || 'all';
+          workoutCategory.replaceChildren(new Option('Todos os grupamentos','all'));
+          categories.forEach(cat => workoutCategory.append(new Option(categoryLabels[cat]||cat,cat)));
+          workoutCategory.value = selectedCategory;
+        }
         try { renderBankPicker(); } catch (error) { console.warn('Seletor geral do banco indisponível:', error); }
         try { renderList(); } catch (error) { console.warn('Lista geral indisponível:', error); }
-        try { renderDuoLists(); } catch (error) { console.error('Falha ao montar banco do Workout:', error); }
+        try { renderDuoBank(1); } catch (error) { console.error('Falha ao exibir exercícios do Workout:', error); }
+        try { renderDuoLists(); } catch (error) { console.error('Falha ao montar listas Duo:', error); }
         setDuoStatus(exerciseBank.length + ' exercícios carregados. Escolha um exercício para adicionar.');
         const bankStatus = $('bankStatus');
         if (bankStatus) bankStatus.textContent = exerciseBank.length + ' exercícios carregados.';
