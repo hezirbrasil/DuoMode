@@ -765,3 +765,10 @@
 #app.mode-duo:fullscreen #duoBackTop,
 #duoPlayer:fullscreen ~ .duo-top-actions #duoBackTop,
 #duoPanel.player-active:fullscreen #duoBackTop { display:none !important; }
+
+
+/* Em tela cheia no Script Duo, não exibir o atalho de Construtor. */
+#app.mode-duo:fullscreen:has(#duoPlayer.is-script) #duoBackTop,
+#app.mode-duo:fullscreen #duoPanel:has(#duoPlayer.is-script) #duoBackTop {
+  display:none !important;
+}
