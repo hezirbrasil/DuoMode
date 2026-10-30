@@ -850,7 +850,7 @@
     const duoSelected = [new Set(), new Set()];
     const duoState = [0, 1].map(() => ({ index:0, remaining:45, phase:'exercise', total:45, finished:false }));
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
-    const duoFmt = value => { const n=Math.max(0,Math.ceil(value)); return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); };
+    const duoFmt = fmt;
     function renderDuoBank(i) {
       const select=$('duoBank'+i);
       if(!select)return;
@@ -982,9 +982,33 @@
       state.phase='exercise';state.remaining=lesson[state.index].duration;state.total=state.remaining;
     }
     function duoTick() {
-      const now=Date.now(),elapsed=Math.max(0,(now-duoLastTick)/1000);duoLastTick=now;
-      [0,1].forEach(i=>{const state=duoState[i];if(state.finished)return;state.remaining-=elapsed;let guard=0;while(state.remaining<=0&&!state.finished&&guard++<20){const overflow=state.remaining;advanceDuoState(i);if(!state.finished)state.remaining+=overflow;}});
-      if(duoState.every(s=>s.finished||!duoLessons[duoState.indexOf(s)].length)){duoRunning=false;clearInterval(duoInterval);duoInterval=null;}
+      const now = Date.now();
+      const elapsed = Math.max(0, (now - duoLastTick) / 1000);
+      duoLastTick = now;
+
+      duoState.forEach((state, index) => {
+        if (state.finished) return;
+
+        state.remaining -= elapsed;
+        let transitions = 0;
+
+        while (state.remaining <= 0 && !state.finished && transitions < 20) {
+          const overflow = state.remaining;
+          advanceDuoState(index);
+          if (!state.finished) state.remaining += overflow;
+          transitions++;
+        }
+      });
+
+      const allComplete = duoState.every((state, index) =>
+        state.finished || duoLessons[index].length === 0
+      );
+      if (allComplete) {
+        duoRunning = false;
+        clearInterval(duoInterval);
+        duoInterval = null;
+      }
+
       renderDuoTimers();
     }
     function openDuoWorkspace(){
