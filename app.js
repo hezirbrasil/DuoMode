@@ -1087,10 +1087,23 @@
         const selected=new Set(indexes);
         const duplicated=[];
         const duplicatedIndexes=[];
+        const copiedGroupNames=new Map();
+        const usedGroupNames=new Set(duoLessons[i].map(item=>item.group).filter(Boolean));
+        const getCopiedGroupName=group=>{
+          if(!group)return '';
+          if(copiedGroupNames.has(group))return copiedGroupNames.get(group);
+          let copyName=group+' (cópia)',suffix=2;
+          while(usedGroupNames.has(copyName))copyName=group+' (cópia '+suffix+++')';
+          usedGroupNames.add(copyName);
+          copiedGroupNames.set(group,copyName);
+          return copyName;
+        };
         duoLessons[i].forEach((item,index)=>{
           duplicated.push(item);
           if(selected.has(index)){
-            duplicated.push({...item});
+            const copy={...item};
+            if(copy.group)copy.group=getCopiedGroupName(copy.group);
+            duplicated.push(copy);
             duplicatedIndexes.push(duplicated.length-1);
           }
         });
