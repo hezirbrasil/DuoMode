@@ -170,21 +170,27 @@
         </article>
       </div>
       <div class="duo-player" id="duoPlayer" hidden>
+        <div class="duo-top-actions">
+          <button class="btn primary" id="duoStartLessons" type="button">Play</button>
+          <button class="btn" id="duoScriptToggle" type="button" aria-pressed="false">Script</button>
+          <button class="btn" id="duoExport" type="button">Exportar</button>
+          <button class="btn" id="duoImport" type="button">Importar</button>
+          <input id="duoImportFile" type="file" accept=".json,application/json" hidden>
+        </div>
         <div class="duo-timers">
           <article class="duo-timer-card"><p class="duo-player-title" id="duoPlayerTitle0">Fight</p><div class="duo-clock"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="duo-track" cx="100" cy="100" r="90"/><circle class="duo-progress" id="duoProgress0" cx="100" cy="100" r="90"/></svg><div><strong id="duoTime0">00:45</strong><span id="duoPhase0">Pronto</span></div></div><h3 id="duoCurrent0">Adicione exercícios</h3></article>
           <article class="duo-timer-card"><p class="duo-player-title" id="duoPlayerTitle1">Workout</p><div class="duo-clock"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="duo-track" cx="100" cy="100" r="90"/><circle class="duo-progress" id="duoProgress1" cx="100" cy="100" r="90"/></svg><div><strong id="duoTime1">00:45</strong><span id="duoPhase1">Pronto</span></div></div><h3 id="duoCurrent1">Adicione exercícios</h3></article>
         </div>
         <section class="duo-script-view" id="duoScriptView" hidden aria-label="Roteiro das aulas"><div class="duo-script-tabs" role="group" aria-label="Selecionar roteiro"><button type="button" class="duo-script-tab is-active" data-script-tab="0">Fight</button><button type="button" class="duo-script-tab" data-script-tab="1">Workout</button></div><ol class="duo-script-list" id="duoScriptList"></ol></section>
-        <div class="duo-controls"><button class="transport-btn duo-back-btn" id="duoBack" type="button" aria-label="Voltar ao construtor">‹</button><button class="transport-btn" id="duoPrev" type="button" aria-label="Voltar exercício">‹</button><button class="transport-btn transport-main" id="duoPlay" type="button" aria-label="Iniciar ou pausar">▶</button><button class="transport-btn" id="duoReset" type="button" aria-label="Reiniciar aulas">■</button><button class="transport-btn" id="duoNext" type="button" aria-label="Avançar exercício">›</button><button class="transport-btn" id="duoFullscreen" type="button" aria-label="Tela cheia">⛶</button><button class="btn duo-script-toggle" id="duoScriptToggle" type="button" aria-pressed="false">Script</button></div>
+        <div class="duo-controls"><button class="transport-btn duo-back-btn" id="duoBack" type="button" aria-label="Voltar ao construtor">‹</button><button class="transport-btn" id="duoPrev" type="button" aria-label="Voltar exercício">‹</button><button class="transport-btn transport-main" id="duoPlay" type="button" aria-label="Iniciar ou pausar">▶</button><button class="transport-btn" id="duoReset" type="button" aria-label="Reiniciar aulas">■</button><button class="transport-btn" id="duoNext" type="button" aria-label="Avançar exercício">›</button><button class="transport-btn" id="duoFullscreen" type="button" aria-label="Tela cheia">⛶</button></div>
       </div>
-      <div class="duo-footer"><button class="btn primary" id="duoStartLessons" type="button">▶ Preparar execução das duas aulas</button><button class="btn" id="duoExport" type="button">Exportar Duo</button><button class="btn" id="duoImport" type="button">Importar Duo</button><input id="duoImportFile" type="file" accept=".json,application/json" hidden></div>
     </section>
     
   </div>
   <script src="./data/exercises.js?v=duo-min-sec-ui-20261029b" defer></script>
   <script src="./data/duo-timer.js?v=duo-min-sec-ui-20261029b" defer></script>
   <script src="./data/duo-diagnostics.js?v=duo-min-sec-ui-20261029b" defer></script>
-  <script src="./app.js?v=mobile-duo-script-import-20261030a" defer></script>
+  <script src="./app.js?v=duo-top-actions-20261030b" defer></script>
   <script src="./data/workout-bank-ui.js?v=duo-min-sec-ui-20261029b" defer></script>
 
 </body>
