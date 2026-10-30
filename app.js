@@ -954,8 +954,12 @@
             selectGroup.addEventListener('click',event=>event.stopPropagation());
             selectGroup.addEventListener('change',()=>{
               const shouldSelect=selectGroup.checked;
-              groupIndexes.forEach(index=>shouldSelect?duoSelected[i].add(index):duoSelected[i].delete(index));
-              renderDuoLists();
+              groupIndexes.forEach(index=>{
+                if(shouldSelect)duoSelected[i].add(index);
+                else duoSelected[i].delete(index);
+                const itemRow=list.querySelector(':scope > li[data-lesson-index="'+index+'"] .duo-select-item');
+                if(itemRow)itemRow.checked=shouldSelect;
+              });
             });
             const toggle=document.createElement('button');toggle.type='button';toggle.className='duo-group-toggle';
             const collapsed=duoCollapsedGroups[i].has(entry.name);
