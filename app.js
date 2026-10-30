@@ -1048,7 +1048,7 @@
     function makeDuoField(labelText,value,aria){const wrap=document.createElement('div');wrap.className='duo-time-pair duo-tool-time-pair';const heading=document.createElement('span');heading.className='duo-time-label';heading.textContent=labelText.replace(' (seg)','');const minLabel=document.createElement('label');minLabel.textContent='Minutos';const minInput=document.createElement('input');minInput.type='number';minInput.min='0';minInput.max='60';minInput.value=String(Math.floor(value/60));minInput.setAttribute('aria-label',aria+' minutos');minLabel.append(minInput);const secLabel=document.createElement('label');secLabel.textContent='Segundos';const secInput=document.createElement('input');secInput.type='number';secInput.min='0';secInput.max='59';secInput.value=String(value%60);secInput.setAttribute('aria-label',aria+' segundos');secLabel.append(secInput);wrap.append(heading,minLabel,secLabel);return {label:wrap,read:()=>Number(minInput.value)*60+Number(secInput.value)};}
     function duoToolApply(i,mode){
       const indexes=selectedDuoIndexes(i), lesson=duoLessons[i], editor=$('duoToolEditor'+i);
-      if(indexes.length<2){showDuoToolEditor(i,document.createTextNode('Marque pelo menos dois exercícios nesta aula.));return;}
+      if(indexes.length<2){showDuoToolEditor(i,document.createTextNode('Marque pelo menos dois exercícios nesta aula.'));return;}
       const box=document.createElement('div');box.className='duo-tool-fields';
       if(mode==='standardize'){
         const d=makeDuoField('Tempo',lesson[indexes[0]].duration,'Tempo padronizado');
