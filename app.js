@@ -933,7 +933,47 @@
         list.hidden=duoLessons[i].length===0;
         duoLessons[i].forEach((item,index)=>{
           const li=document.createElement('li'),row=document.createElement('div');row.className='duo-item-row';
-          const select=document.createElement('input');select.type='checkbox';select.className='duo-select-item';select.checked=duoSelected[i].has(index);select.setAttribute('aria-label','Selecionar '+item.name);select.addEventListener('change',()=>{select.checked?duoSelected[i].add(index):duoSelected[i].delete(index);});
+          const dragHandle=document.createElement('button');dragHandle.type='button';dragHandle.className='duo-drag-handle';dragHandle.textContent='⋮⋮';dragHandle.title='Arrastar para reorganizar';dragHandle.setAttribute('aria-label','Arrastar '+item.name+' para reorganizar');dragHandle.disabled=duoRunning;
+          dragHandle.addEventListener('pointerdown',event=>{
+            if(duoRunning||event.button!==0)return;
+            event.preventDefault();
+            const originalItems=duoLessons[i].slice();
+            const originalIndex=index;
+            const activeItem=originalItems[duoState[i].index];
+            const selectedBefore=new Set(duoSelected[i]);
+            const handle=dragHandle;
+            const startRow=li;
+            startRow.classList.add('is-dragging');
+            handle.setPointerCapture(event.pointerId);
+            const move=moveEvent=>{
+              if(!handle.hasPointerCapture(moveEvent.pointerId))return;
+              const target=document.elementFromPoint(moveEvent.clientX,moveEvent.clientY)?.closest('.duo-exercise-list li[data-lesson-index]');
+              if(!target||target.parentElement!==list||target===startRow)return;
+              const rect=target.getBoundingClientRect();
+              const after=moveEvent.clientY>rect.top+rect.height/2;
+              list.insertBefore(startRow,after?target.nextSibling:target);
+            };
+            const finish=upEvent=>{
+              if(handle.hasPointerCapture(upEvent.pointerId))handle.releasePointerCapture(upEvent.pointerId);
+              handle.removeEventListener('pointermove',move);
+              handle.removeEventListener('pointerup',finish);
+              handle.removeEventListener('pointercancel',finish);
+              startRow.classList.remove('is-dragging');
+              const order=[...list.children].map(node=>Number(node.dataset.lessonIndex)).filter(n=>Number.isInteger(n)&&n>=0&&n<originalItems.length);
+              if(order.length===originalItems.length){
+                duoLessons[i]=order.map(n=>originalItems[n]);
+                duoSelected[i]=new Set(order.map((oldIndex,newIndex)=>selectedBefore.has(oldIndex)?newIndex:-1).filter(n=>n>=0));
+                const activeIndex=duoLessons[i].indexOf(activeItem);
+                if(activeIndex>=0)duoState[i].index=activeIndex;
+              }
+              renderDuoLists();
+            };
+            handle.addEventListener('pointermove',move);
+            handle.addEventListener('pointerup',finish);
+            handle.addEventListener('pointercancel',finish);
+          });
+          li.dataset.lessonIndex=String(index);
+                    const select=document.createElement('input');select.type='checkbox';select.className='duo-select-item';select.checked=duoSelected[i].has(index);select.setAttribute('aria-label','Selecionar '+item.name);select.addEventListener('change',()=>{select.checked?duoSelected[i].add(index):duoSelected[i].delete(index);});
           const name=document.createElement('strong');name.textContent=item.name+(item.group?' · '+item.group:'');
           const actions=document.createElement('div');actions.className='duo-item-actions';
           const edit=document.createElement('button');edit.type='button';edit.className='duo-remove';edit.textContent='Editar';edit.disabled=duoRunning;edit.addEventListener('click',()=>{
@@ -950,7 +990,7 @@
           const up=document.createElement('button');up.type='button';up.className='duo-remove';up.textContent='↑';up.title='Mover para cima';up.disabled=index===0||duoRunning;up.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index-1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index-1]];renderDuoLists();});
           const down=document.createElement('button');down.type='button';down.className='duo-remove';down.textContent='↓';down.title='Mover para baixo';down.disabled=index===duoLessons[i].length-1||duoRunning;down.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index+1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index+1]];renderDuoLists();});
           const remove=document.createElement('button');remove.type='button';remove.className='duo-remove';remove.textContent='Remover';remove.disabled=duoRunning;remove.addEventListener('click',()=>{if(duoRunning)return;duoLessons[i].splice(index,1);duoSelected[i]=new Set([...duoSelected[i]].filter(n=>n!==index).map(n=>n>index?n-1:n));duoState[i].index=Math.min(duoState[i].index,Math.max(0,duoLessons[i].length-1));renderDuoLists();});
-          actions.append(edit,up,down,remove);row.append(select,name,actions);const meta=document.createElement('div');meta.className='duo-item-meta';meta.textContent=duoFmt(item.duration)+' de exercício · '+duoFmt(item.rest)+' de descanso';li.append(row,meta);list.append(li);
+          actions.append(edit,up,down,remove);row.append(dragHandle,select,name,actions);const meta=document.createElement('div');meta.className='duo-item-meta';meta.textContent=duoFmt(item.duration)+' de exercício · '+duoFmt(item.rest)+' de descanso';li.append(row,meta);list.append(li);
         });
       });
       renderDuoTimers();
