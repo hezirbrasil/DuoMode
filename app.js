@@ -1102,6 +1102,7 @@
       [0,1].forEach(i=>{if(duoLessons[i].length&&!duoState[i].finished&&duoState[i].remaining===0){duoState[i].index=0;duoState[i].phase='exercise';duoState[i].remaining=duoLessons[i][0].duration;duoState[i].total=duoState[i].remaining;}});
       renderDuoTimers();window.scrollTo(0,$('duoPlayer').offsetTop); 
     });
+    $('duoBackTop').addEventListener('click',()=> $('duoBack').click());
     $('duoBack').addEventListener('click',()=>{
       if(duoRunning){duoRunning=false;clearInterval(duoInterval);duoInterval=null;renderDuoTimers();}
       $('duoPlayer').hidden=true;
