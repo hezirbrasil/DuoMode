@@ -813,3 +813,10 @@
 .duo-group-delete:hover { background:#3a1c4d; border-color:#a56bd0; }
 .duo-group-delete:focus-visible { outline:2px solid var(--lime); outline-offset:2px; }
 .duo-group-delete:disabled { opacity:.45; cursor:not-allowed; }
+
+
+/* Setas para mover o agrupamento inteiro, sem confundir com expandir/recolher. */
+.duo-group-move { flex:0 0 34px; min-width:34px; min-height:34px; margin:0 2px; padding:5px; border:1px solid var(--line); border-radius:8px; background:var(--panel2); color:var(--text); font-size:19px; font-weight:800; line-height:1; cursor:pointer; }
+.duo-group-move:hover:not(:disabled) { border-color:#a855f7; background:#32164f; color:#fff; }
+.duo-group-move:focus-visible { outline:2px solid var(--lime); outline-offset:2px; }
+.duo-group-move:disabled { opacity:.35; cursor:not-allowed; }
