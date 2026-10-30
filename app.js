@@ -887,7 +887,10 @@
         const card=document.querySelector('.duo-card[data-duo="'+i+'"]');
         if(!card)return;
         const bankTools=card.querySelector('.duo-bank-tools');
-        if(bankTools)bankTools.hidden=i===0;
+        if(bankTools){
+          bankTools.hidden=i===0;
+          bankTools.style.display=i===0?'none':'';
+        }
         const category=$('duoCategory'+i), selected=category?.value||'all';
         if(i===1 && category && category.options.length===1 && exerciseBank.length){
           [...new Set(exerciseBank.map(ex=>ex.category))].sort((x,y)=>(categoryLabels[x]||x).localeCompare(categoryLabels[y]||y,'pt-BR')).forEach(cat=>{const option=document.createElement('option');option.value=cat;option.textContent=categoryLabels[cat]||cat;category.append(option);});
