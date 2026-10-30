@@ -729,7 +729,7 @@
 .duo-script-item.is-current { border-color:#a855f7;background:#241333;box-shadow:inset 3px 0 #a855f7; }
 .duo-script-item.is-done .duo-script-name { color:var(--muted); }
 .duo-script-empty { padding:18px;text-align:center;color:var(--muted); }
-.duo-player.is-script .duo-timers,.duo-player.is-script .duo-controls > :not(#duoScriptToggle) { display:none !important; }
+.duo-player.is-script .duo-timers,.duo-player.is-script .duo-controls > :not(#duoViewToggle) { display:none !important; }
 .duo-player.is-script .duo-script-view { display:block !important; }
 .duo-player.is-script .duo-controls { margin-top:12px; }
 @media(max-width:680px) {
@@ -753,3 +753,8 @@
 #duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoScriptToggle,
 #duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoExport,
 #duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoImport { display:none !important; }
+
+/* Alternância entre Timer e Script fica disponível nos dois modos de execução. */
+.duo-view-toggle { min-height:40px;padding:8px 13px; }
+.duo-player.is-script .duo-controls { display:flex;justify-content:center;align-items:center; }
+.duo-player.is-script .duo-view-toggle { display:inline-flex !important; }
