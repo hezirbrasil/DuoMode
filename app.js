@@ -819,7 +819,8 @@
       }
     }
 
-    $('exportClassBtn').addEventListener('click',()=>{
+    const exportClassBtn = $('exportClassBtn');
+    if (exportClassBtn) exportClassBtn.addEventListener('click',()=>{
       if(!blocks.length){showNotice('Adicione pelo menos um bloco antes de exportar a aula.');return;}
       const title='Minha aula coletiva';
       const payload={format:'acuas-fitness-class',version:1,title:title.trim(),blocks:blocks.map(b=>({...b})),exportedAt:new Date().toISOString()};
@@ -831,11 +832,13 @@
       document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);
       showNotice('Arquivo da aula exportado. Envie esse arquivo para outra pessoa que usa o ACUAS Fitness.');
     });
-    $('importClassBtn').addEventListener('click',()=>{
+    const importClassBtn = $('importClassBtn');
+    if (importClassBtn) importClassBtn.addEventListener('click',()=>{
       if(running){showNotice('Pause o timer antes de importar uma aula.');return;}
       $('importClassFile').click();
     });
-    $('importClassFile').addEventListener('change',async event=>{
+    const importClassFile = $('importClassFile');
+    if (importClassFile) importClassFile.addEventListener('change',async event=>{
       const file=event.target.files?.[0];if(!file)return;
       try{
         const data=JSON.parse(await file.text());
