@@ -54,28 +54,58 @@
       if (!filtered.length) { const opt=document.createElement('option');opt.value='';opt.textContent='Nenhum resultado';select.append(opt); }
     }
     async function loadExerciseBank() {
-      try {
-        let response;
+      const setDuoStatus = message => {
+        const status = $('duoBankStatus1');
+        if (status) status.textContent = message;
+      };
+      const sources = [
+        new URL('./data/exercises.json', document.baseURI).href,
+        'https://cdn.jsdelivr.net/gh/hezirbrasil/DuoMode@main/data/exercises.json',
+        'https://raw.githubusercontent.com/hezirbrasil/DuoMode/main/data/exercises.json'
+      ];
+      let lastError = null;
+      for (const source of sources) {
         try {
-          response = await fetch('./data/exercises.json',{cache:'no-store'});
-          if (!response.ok) throw new Error('HTTP '+response.status);
-        } catch (primaryError) {
-          response = await fetch('https://raw.githubusercontent.com/hezirbrasil/DuoMode/main/data/exercises.json',{cache:'no-store'});
-          if (!response.ok) throw new Error('Não foi possível carregar o banco ('+response.status+').');
+          setDuoStatus('Carregando banco de exercícios…');
+          const response = await fetch(source, { cache:'no-store' });
+          if (!response.ok) throw new Error('HTTP ' + response.status + ' em ' + source);
+          const data = await response.json();
+          if (!data || !Array.isArray(data.exercises) || !data.exercises.length) {
+            throw new Error('O arquivo foi encontrado, mas não contém uma lista válida de exercícios.');
+          }
+          exerciseBank = data.exercises.filter(ex => ex && typeof ex.name === 'string' && ex.name.trim());
+          if (!exerciseBank.length) throw new Error('O banco não contém exercícios válidos.');
+          bankLoaded = true;
+          const categories = [...new Set(exerciseBank.map(x=>x.category).filter(Boolean))]
+            .sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR'));
+          const bankCategory = $('bankCategory');
+          if (bankCategory) {
+            bankCategory.replaceChildren(new Option('Todos os grupamentos','all'));
+            categories.forEach(cat => bankCategory.append(new Option(categoryLabels[cat]||cat,cat)));
+          }
+          try { renderBankPicker(); } catch (error) { console.warn('Seletor geral do banco indisponível:', error); }
+          try { renderList(); } catch (error) { console.warn('Lista geral indisponível:', error); }
+          try { renderDuoLists(); } catch (error) { console.error('Falha ao montar banco do Workout:', error); }
+          setDuoStatus(exerciseBank.length + ' exercícios carregados. Escolha um exercício para adicionar.');
+          const bankStatus = $('bankStatus');
+          if (bankStatus) bankStatus.textContent = exerciseBank.length + ' exercícios carregados.';
+          return;
+        } catch (error) {
+          lastError = error;
+          console.warn('Falha ao carregar banco em ' + source, error);
         }
-        const data = await response.json();
-        exerciseBank = Array.isArray(data.exercises) ? data.exercises : [];
-        const categories = [...new Set(exerciseBank.map(x=>x.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR'));
-        categories.forEach(cat=>{const opt=document.createElement('option');opt.value=cat;opt.textContent=categoryLabels[cat]||cat;$('bankCategory').append(opt);});
-        bankLoaded=true;renderBankPicker();renderList();renderDuoLists();
-      } catch (error) {
-        const bankCount=$('bankCount');if(bankCount)bankCount.textContent='Indisponível';
-        const duoStatus=$('duoBankStatus1');if(duoStatus)duoStatus.textContent='Falha ao carregar o banco: '+(error?.message||'erro desconhecido');
-        $('bankExercise').innerHTML='<option value="">Banco indisponível</option>';
-        $('bankStatus').textContent='Não foi possível carregar o banco de exercícios.';
-        [0,1].forEach(i=>{const select=$('duoBank'+i);if(select){select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent='Erro ao carregar banco';select.append(option);}});
-        console.error('Falha ao carregar banco de exercícios:',error);
       }
+      const message = lastError?.message || 'Não foi possível acessar o arquivo de exercícios.';
+      setDuoStatus('Não foi possível carregar o banco. ' + message);
+      const bankCount = $('bankCount');
+      if (bankCount) bankCount.textContent = 'Indisponível';
+      const bankExercise = $('bankExercise');
+      if (bankExercise) bankExercise.replaceChildren(new Option('Banco indisponível',''));
+      const bankStatus = $('bankStatus');
+      if (bankStatus) bankStatus.textContent = 'Não foi possível carregar o banco de exercícios.';
+      const duoSelect = $('duoBank1');
+      if (duoSelect) duoSelect.replaceChildren(new Option('Falha ao carregar — veja a mensagem abaixo',''));
+      console.error('Falha ao carregar banco de exercícios:', lastError);
     }
     let running = false, phase = 'exercise', blockIndex = 0, roundIndex = 1, remaining = 45, totalPhase = 45, lastSecond = null, timerId = null, soundEnabled = true, audioCtx = null, finished = false, startedAt = 0;
     const temporaryNames = new Map();
