@@ -130,7 +130,14 @@
             <p class="subtle duo-tool-help">Selecione os exercícios desta aula. As ferramentas não alteram a outra aula.</p>
             <div class="duo-tool-editor" id="duoToolEditor0" hidden></div>
           </div>
-          <ol class="duo-exercise-list" id="duoList0"></ol>
+          <section class="duo-lesson-structure" aria-label="Estrutura da aula Fight">
+            <div class="duo-structure-heading">
+              <div><p class="duo-tool-title">ESTRUTURA DA AULA</p><p class="duo-structure-hint">Os exercícios de luta adicionados aparecem aqui, na ordem de execução.</p></div>
+              <span class="duo-structure-count" id="duoCount0">0 exercícios</span>
+            </div>
+            <p class="duo-structure-empty" id="duoEmpty0">Sua aula ainda está vazia. Adicione os blocos de luta para montar a sequência.</p>
+            <ol class="duo-exercise-list" id="duoList0"></ol>
+          </section>
         </article>
         <article class="duo-card" data-duo="1">
           <label class="duo-label" for="duoTitle1">Workout · nome</label><input id="duoTitle1" class="duo-title" value="Workout" maxlength="60">
@@ -175,7 +182,7 @@
   </div>
   <script src="./data/exercises.js?v=clean-20261030c" defer></script>
   <script src="./data/duo-timer.js?v=clean-20261030c" defer></script>
-  <script src="./app.js?v=click-init-fix-20261030" defer></script>
+  <script src="./app.js?v=both-lesson-structures-20261030" defer></script>
   <script src="./data/workout-bank-ui.js?v=bank-ui-20261030" defer></script>
 
 </body>
