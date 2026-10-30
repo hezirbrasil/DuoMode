@@ -716,3 +716,25 @@
 
 /* Centralizar os títulos Fight e Workout sobre cada cronômetro no Duo em tela cheia. */
 #app.mode-duo:fullscreen .duo-player-title { text-align:center !important; width:100%; }
+
+/* Roteiro estático do Duo para consulta no celular após importar a aula. */
+.duo-script-view { width:min(760px,100%);margin:0 auto;padding:12px;border:1px solid var(--line);border-radius:16px;background:#0d0a13; }
+.duo-script-tabs { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px; }
+.duo-script-tab { min-height:42px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--text);font-weight:800; }
+.duo-script-tab.is-active { background:#32164f;border-color:#8b45c5;color:#fff; }
+.duo-script-list { list-style:none;margin:0;padding:0;display:grid;gap:7px; }
+.duo-script-item { display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#17121f; }
+.duo-script-name { min-width:0;font-weight:700;overflow-wrap:anywhere; }
+.duo-script-time { flex:none;color:var(--muted);font-size:12px;white-space:nowrap; }
+.duo-script-item.is-current { border-color:#a855f7;background:#241333;box-shadow:inset 3px 0 #a855f7; }
+.duo-script-item.is-done .duo-script-name { color:var(--muted); }
+.duo-script-empty { padding:18px;text-align:center;color:var(--muted); }
+.duo-player.is-script .duo-timers,.duo-player.is-script .duo-controls > :not(#duoScriptToggle) { display:none !important; }
+.duo-player.is-script .duo-script-view { display:block !important; }
+.duo-player.is-script .duo-controls { margin-top:12px; }
+@media(max-width:680px) {
+  .duo-player.is-script { margin-top:8px; }
+  .duo-player.is-script .duo-script-view { padding:10px; }
+  .duo-script-item { align-items:flex-start;padding:11px; }
+  .duo-script-name { font-size:15px; }
+}
