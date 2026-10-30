@@ -16,17 +16,10 @@
         <div><h1>WORKOUT <span class="brand-accent">FIGHT</span></h1><p>Timer de treinos</p></div>
       </div>
       <div class="header-actions">
-        <button class="btn mode-btn" id="modePlayBtn" type="button" aria-pressed="false">▶ Modo Solo</button>
-        <button class="btn mode-btn" id="modeConstructBtn" type="button" aria-pressed="true">🔧 Modo Construção</button>
-        <button class="btn mode-btn" id="modeDuoBtn" type="button" aria-pressed="false">◫ Modo Duo</button>
-        <button class="btn mode-btn" id="modeScriptBtn" type="button" aria-pressed="false">☷ Modo Script</button>
-        <button class="btn" id="exportClassBtn" type="button">↥ Exportar Solo</button>
-        <button class="btn" id="importClassBtn" type="button">↧ Importar Solo</button>
-        <input id="importClassFile" type="file" accept=".json,application/json" hidden>
+        <button class="btn mode-btn" id="modeDuoBtn" type="button" aria-pressed="true">◫ Modo Duo</button>
       </div>
     </header>
-<button class="script-back" id="scriptBackBtn" type="button">← Voltar à edição</button>
-    <main class="layout">
+<main class="layout" hidden>
       <section class="panel timer-panel" id="timerPanel" aria-label="Cronômetro">
         <p class="eyebrow">Em movimento</p>
         <div class="phase" id="phaseBadge"><span>●</span><span id="phaseText">Pronto para começar</span></div>
@@ -170,7 +163,7 @@
       </div>
       <div class="duo-footer"><button class="btn primary" id="duoStartLessons" type="button">▶ Preparar execução das duas aulas</button><button class="btn" id="duoExport" type="button">Exportar Duo</button><button class="btn" id="duoImport" type="button">Importar Duo</button><input id="duoImportFile" type="file" accept=".json,application/json" hidden></div>
     </section>
-    <p class="bottom-note">WORKOUT FIGHT · TREINO COM RITMO, FOCO E INTENSIDADE</p>
+    
   </div>
   <script src="./app.js" defer></script>
 
