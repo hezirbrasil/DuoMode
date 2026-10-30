@@ -862,6 +862,9 @@
     const duoLessons = [[], []];
     const duoSelected = [new Set(), new Set()];
     const duoCollapsedGroups = [new Set(), new Set()];
+    let duoGroupSequence = 0;
+    const duoGroupKey = item => item?.group ? (item.groupId || 'legacy:' + item.group) : null;
+    const newDuoGroupId = () => 'duo-group-' + (++duoGroupSequence);
     const duoState = [0, 1].map(() => DuoTimer.createState());
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = DuoTimer.format;
@@ -935,19 +938,20 @@
         const orderedEntries=[];
         const emittedGroups=new Set();
         duoLessons[i].forEach((item,index)=>{
-          if(!item.group){orderedEntries.push({type:'item',index});return;}
-          if(emittedGroups.has(item.group))return;
-          emittedGroups.add(item.group);
-          orderedEntries.push({type:'group',name:item.group});
+          const groupKey=duoGroupKey(item);
+          if(!groupKey){orderedEntries.push({type:'item',index});return;}
+          if(emittedGroups.has(groupKey))return;
+          emittedGroups.add(groupKey);
+          orderedEntries.push({type:'group',name:item.group,key:groupKey});
           duoLessons[i].forEach((candidate,candidateIndex)=>{
-            if(candidate.group===item.group)orderedEntries.push({type:'item',index:candidateIndex});
+            if(duoGroupKey(candidate)===groupKey)orderedEntries.push({type:'item',index:candidateIndex});
           });
         });
         orderedEntries.forEach(entry=>{
           if(entry.type==='group'){
-            const total=duoLessons[i].filter(item=>item.group===entry.name).length;
+            const total=duoLessons[i].filter(item=>duoGroupKey(item)===entry.key).length;
             const header=document.createElement('li');header.className='duo-group-tab';
-            const groupItems=duoLessons[i].map((item,index)=>({item,index})).filter(entry=>entry.item.group===entry.name);
+            const groupItems=duoLessons[i].map((item,index)=>({item,index})).filter(groupEntry=>duoGroupKey(groupEntry.item)===entry.key);
             const groupIndexes=groupItems.map(entry=>entry.index);
             const selectedCount=groupIndexes.filter(index=>duoSelected[i].has(index)).length;
             const selectGroup=document.createElement('input');selectGroup.type='checkbox';selectGroup.className='duo-group-select';selectGroup.checked=selectedCount===total;selectGroup.disabled=duoRunning;selectGroup.setAttribute('aria-label','Selecionar todos do grupo '+entry.name);
@@ -962,12 +966,12 @@
               });
             });
             const toggle=document.createElement('button');toggle.type='button';toggle.className='duo-group-toggle';
-            const collapsed=duoCollapsedGroups[i].has(entry.name);
+            const collapsed=duoCollapsedGroups[i].has(entry.key);
             toggle.setAttribute('aria-expanded',String(!collapsed));
             toggle.textContent=(collapsed?'＋ ':'− ')+entry.name+' · '+total+' exercícios';
             toggle.addEventListener('click',()=>{
-              if(duoCollapsedGroups[i].has(entry.name))duoCollapsedGroups[i].delete(entry.name);
-              else duoCollapsedGroups[i].add(entry.name);
+              if(duoCollapsedGroups[i].has(entry.key))duoCollapsedGroups[i].delete(entry.key);
+              else duoCollapsedGroups[i].add(entry.key);
               renderDuoLists();
             });
             header.append(selectGroup,toggle);list.append(header);return;
@@ -975,7 +979,7 @@
           const index=entry.index;
           const item=duoLessons[i][index];
           const li=document.createElement('li'),row=document.createElement('div');row.className='duo-item-row';
-          if(item.group&&duoCollapsedGroups[i].has(item.group))li.hidden=true;
+          if(item.group&&duoCollapsedGroups[i].has(duoGroupKey(item)))li.hidden=true;
           const dragHandle=document.createElement('button');dragHandle.type='button';dragHandle.className='duo-drag-handle';dragHandle.textContent='⋮⋮';dragHandle.title='Arrastar para reorganizar';dragHandle.setAttribute('aria-label','Arrastar '+item.name+' para reorganizar');dragHandle.disabled=duoRunning;
           dragHandle.addEventListener('pointerdown',event=>{
             if(duoRunning||event.button!==0)return;
@@ -1073,7 +1077,7 @@
       }else if(mode==='group'){
         const label=document.createElement('label');label.className='duo-tool-field';label.textContent='Nome do grupo';const input=document.createElement('input');input.type='text';input.maxLength=50;input.placeholder='Ex.: Bloco de força';label.append(input);
         const apply=document.createElement('button');apply.type='button';apply.className='btn blue';apply.textContent='Aplicar grupo';
-        apply.addEventListener('click',()=>{const group=input.value.trim();if(!group)return;indexes.forEach(n=>lesson[n].group=group);editor.hidden=true;renderDuoLists();});
+        apply.addEventListener('click',()=>{const group=input.value.trim();if(!group)return;const groupId=newDuoGroupId();indexes.forEach(n=>{lesson[n].group=group;lesson[n].groupId=groupId;});editor.hidden=true;renderDuoLists();});
         box.append(label,apply);
       }else{
         const info=document.createElement('p');info.className='subtle';info.textContent='Os exercícios selecionados desta aula serão unidos em um único item.';
@@ -1091,6 +1095,7 @@
         const indexes=selectedDuoIndexes(i);
         if(!indexes.length){showDuoToolEditor(i,document.createTextNode('Marque os exercícios que deseja duplicar.'));return;}
         const copiedGroupNames=new Map();
+        const copiedGroupIds=new Map();
         const usedGroupNames=new Set(duoLessons[i].map(item=>item.group).filter(Boolean));
         const getCopiedGroupName=group=>{
           if(!group)return '';
@@ -1105,7 +1110,12 @@
         // um bloco contínuo, sem intercalar cópias entre os itens do grupo original.
         const copies=indexes.map(index=>{
           const copy={...duoLessons[i][index]};
-          if(copy.group)copy.group=getCopiedGroupName(copy.group);
+          if(copy.group){
+            const sourceKey=duoGroupKey(copy);
+            copy.group=getCopiedGroupName(copy.group);
+            if(!copiedGroupIds.has(sourceKey))copiedGroupIds.set(sourceKey,newDuoGroupId());
+            copy.groupId=copiedGroupIds.get(sourceKey);
+          }
           return copy;
         });
         const firstCopyIndex=duoLessons[i].length;
