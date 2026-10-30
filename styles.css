@@ -678,3 +678,14 @@
 #app:not(.mode-duo) #layout { display:none !important; }
 #app:not(.mode-duo) #duoPanel { display:block !important; }
 #app #layout[hidden] { display:none !important; }
+
+
+/* Estrutura visível da aula Workout */
+.duo-lesson-structure { margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,#171020 0%,#0d0a12 100%); }
+.duo-structure-heading { display:flex;align-items:flex-start;justify-content:space-between;gap:12px; }
+.duo-structure-heading .duo-tool-title { margin:0 0 6px;color:var(--sky); }
+.duo-structure-hint { margin:0;color:var(--muted);font-size:12px;line-height:1.45; }
+.duo-structure-count { flex:none;padding:6px 9px;border:1px solid var(--line);border-radius:999px;color:var(--sky);font-size:11px;font-weight:700; }
+.duo-structure-empty { margin:14px 0 0;padding:16px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:13px;line-height:1.5;text-align:center; }
+.duo-structure-empty[hidden],.duo-exercise-list[hidden] { display:none!important; }
+.duo-lesson-structure .duo-exercise-list { margin:14px 0 0;padding-left:24px; }
