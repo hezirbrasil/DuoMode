@@ -868,8 +868,18 @@
       select.replaceChildren();
       const status=$('duoBankStatus'+i);
       if(i===0){
-        const option=document.createElement('option');option.value='';option.textContent='Banco fitness disponível apenas no Workout';select.append(option);
-        if(status)status.textContent='O banco de exercícios fica disponível na aula Workout.';
+        const categories=['Jab','Direto','Upper','Cruzado','Chute'];
+        const categorySelect=$('duoCategory0');
+        if(categorySelect){
+          const selectedCategory=categorySelect.value;
+          categorySelect.replaceChildren(new Option('Todas as categorias','all'));
+          categories.forEach(label=>categorySelect.add(new Option(label,label.toLocaleLowerCase('pt-BR'))));
+          categorySelect.value=categories.some(label=>label.toLocaleLowerCase('pt-BR')===selectedCategory)?selectedCategory:'all';
+        }
+        const selected=categorySelect?.value||'all';
+        const option=document.createElement('option');option.value='';option.textContent=selected==='all'?'Banco Fight · escolha uma categoria':'Nenhuma técnica cadastrada em '+categories.find(label=>label.toLocaleLowerCase('pt-BR')===selected);
+        select.append(option);
+        if(status)status.textContent='Índice Fight: Jab · Direto · Upper · Cruzado · Chute. As técnicas serão cadastradas dentro de cada categoria.';
         return;
       }
       const category=$('duoCategory'+i)?.value||'all';
@@ -888,8 +898,8 @@
         if(!card)return;
         const bankTools=card.querySelector('.duo-bank-tools');
         if(bankTools){
-          bankTools.hidden=i===0;
-          bankTools.style.display=i===0?'none':'';
+          bankTools.hidden=false;
+          bankTools.style.display='';
         }
         const category=$('duoCategory'+i), selected=category?.value||'all';
         if(i===1 && category && category.options.length===1 && exerciseBank.length){
@@ -1037,8 +1047,14 @@
       if(!button)return;
       const card=button.closest('.duo-card');
       const i=Number(card?.dataset.duo);
-      if(!card||i!==1)return;
+      if(!card)return;
       event.preventDefault();
+      if(i===0){
+        const status=$('duoBankStatus0');
+        if(status)status.textContent='O índice Fight já está criado. Cadastre as técnicas dentro da categoria para adicioná-las à aula.';
+        return;
+      }
+      if(i!==1)return;
       const status=$('duoBankStatus1');
       const bankSelect=$('duoBank1');
       const durationInput=card.querySelector('.duo-bank-tools .duo-duration');
