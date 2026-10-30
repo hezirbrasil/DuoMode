@@ -738,3 +738,11 @@
   .duo-script-item { align-items:flex-start;padding:11px; }
   .duo-script-name { font-size:15px; }
 }
+
+/* Ações principais do Duo ficam agrupadas acima do player. */
+.duo-top-actions { display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;width:100%;margin:0 auto 14px; }
+.duo-top-actions .btn { min-height:40px;padding:9px 16px; }
+@media(max-width:600px) {
+  .duo-top-actions { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:10px; }
+  .duo-top-actions .btn { width:100%;min-width:0;padding:9px 8px;font-size:13px; }
+}
