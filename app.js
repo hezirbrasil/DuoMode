@@ -974,7 +974,29 @@
               else duoCollapsedGroups[i].add(entry.key);
               renderDuoLists();
             });
-            header.append(selectGroup,toggle);list.append(header);return;
+            const deleteGroup=document.createElement('button');
+            deleteGroup.type='button';
+            deleteGroup.className='duo-group-delete';
+            deleteGroup.textContent='Excluir bloco';
+            deleteGroup.title='Excluir este agrupamento e todos os exercícios dele';
+            deleteGroup.setAttribute('aria-label','Excluir bloco '+entry.name+' e seus '+total+' exercícios');
+            deleteGroup.disabled=duoRunning;
+            deleteGroup.addEventListener('click',event=>{
+              event.stopPropagation();
+              if(duoRunning)return;
+              const activeItem=duoLessons[i][duoState[i].index];
+              const removedIndexes=new Set(groupIndexes);
+              const oldSelected=duoSelected[i];
+              duoLessons[i]=duoLessons[i].filter((candidate,index)=>!removedIndexes.has(index));
+              duoSelected[i]=new Set([...oldSelected].filter(index=>!removedIndexes.has(index)).map(index=>index-groupIndexes.filter(removed=>removed<index).length));
+              const activeIndex=duoLessons[i].indexOf(activeItem);
+              duoState[i].index=activeIndex>=0?activeIndex:Math.min(duoState[i].index,Math.max(0,duoLessons[i].length-1));
+              duoState[i].remaining=duoLessons[i].length?Math.min(duoState[i].remaining,duoLessons[i][duoState[i].index].duration):0;
+              duoState[i].total=duoState[i].remaining;
+              duoCollapsedGroups[i].delete(entry.key);
+              renderDuoLists();
+            });
+            header.append(selectGroup,toggle,deleteGroup);list.append(header);return;
           }
           const index=entry.index;
           const item=duoLessons[i][index];
