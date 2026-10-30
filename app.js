@@ -66,10 +66,23 @@
       let lastError = null;
       for (const source of sources) {
         try {
-          setDuoStatus('Carregando banco de exercícios…');
-          const response = await fetch(source, { cache:'no-store' });
-          if (!response.ok) throw new Error('HTTP ' + response.status + ' em ' + source);
-          const data = await response.json();
+          setDuoStatus('Conectando ao banco de exercícios…');
+          const controller = new AbortController();
+          let timeoutId;
+          const request = (async () => {
+            const response = await fetch(source, { cache:'no-store', signal:controller.signal });
+            if (!response.ok) throw new Error('HTTP ' + response.status + ' em ' + source);
+            return await response.json();
+          })();
+          const timeout = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => {
+              controller.abort();
+              reject(new Error('Tempo limite excedido ao acessar ' + source));
+            }, 8000);
+          });
+          let data;
+          try { data = await Promise.race([request, timeout]); }
+          finally { clearTimeout(timeoutId); }
           if (!data || !Array.isArray(data.exercises) || !data.exercises.length) {
             throw new Error('O arquivo foi encontrado, mas não contém uma lista válida de exercícios.');
           }
