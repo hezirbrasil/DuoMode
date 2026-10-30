@@ -778,3 +778,9 @@
 #app.mode-duo:fullscreen:has(#duoPlayer.is-script) #duoScriptToggle {
   display:none !important;
 }
+
+
+/* Em qualquer visualização do Duo em tela cheia (Timer ou Script), ocultar o rótulo de alternância Script. */
+#app.mode-duo:fullscreen #duoScriptToggle {
+  display:none !important;
+}
