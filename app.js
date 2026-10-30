@@ -1061,25 +1061,6 @@
       $('duoSearch'+i).addEventListener('input',()=>renderDuoBank(i));
       $('duoBank'+i).addEventListener('dblclick',()=>{const card=document.querySelector('.duo-card[data-duo="'+i+'"]');card.querySelector('.duo-add-bank').click();});
     });
-    // Liga o clique diretamente aos dois botões do construtor.
-    [0,1].forEach(i=>{
-      const button=document.querySelector('.duo-card[data-duo="'+i+'"] .duo-add-bank');
-      button.addEventListener('click',event=>{
-        event.preventDefault();
-        const card=button.closest('.duo-card');
-        const status=$('duoBankStatus'+i);
-        const name=String($('duoBank'+i)?.value||'').trim();
-        const duration=Number(card.querySelector('.duo-bank-tools .duo-duration')?.value);
-        const rest=Number(card.querySelector('.duo-bank-tools .duo-rest')?.value);
-        if(!name){if(status)status.textContent='Selecione uma opção no banco antes de adicionar.';return;}
-        if(!Number.isInteger(duration)||duration<1||duration>3600){if(status)status.textContent='Tempo inválido: use de 1 a 3600 segundos.';return;}
-        if(!Number.isInteger(rest)||rest<0||rest>3600){if(status)status.textContent='Descanso inválido: use de 0 a 3600 segundos.';return;}
-        const before=duoLessons[i].length;
-        addDuoExercise(i,name,duration,rest);
-        const added=duoLessons[i].length===before+1;
-        if(status)status.textContent=added?name+' adicionado à estrutura da aula.':(duoRunning?'Pause o cronômetro antes de adicionar.':'Não foi possível adicionar este item.');
-      });
-    });
     [0,1].forEach(i=>$('duoTitle'+i).addEventListener('input',renderDuoTimers));
     $('duoStartLessons').addEventListener('click',()=>{
       if(duoRunning)return;
