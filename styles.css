@@ -820,3 +820,9 @@
 .duo-group-move:hover:not(:disabled) { border-color:#a855f7; background:#32164f; color:#fff; }
 .duo-group-move:focus-visible { outline:2px solid var(--lime); outline-offset:2px; }
 .duo-group-move:disabled { opacity:.35; cursor:not-allowed; }
+
+
+.duo-group-rename-form { display:flex;flex:1 1 100%;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px; }
+.duo-group-rename-form input { flex:1 1 140px;min-width:0;min-height:36px;padding:7px 9px;border:1px solid #7540a8;border-radius:8px;background:var(--bg);color:var(--text);font:inherit; }
+.duo-group-rename-form button { flex:0 0 auto; }
+.duo-group-rename { font-size:12px; }
