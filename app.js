@@ -54,8 +54,14 @@
     }
     async function loadExerciseBank() {
       try {
-        const response = await fetch('./data/exercises.json');
-        if (!response.ok) throw new Error('HTTP '+response.status);
+        let response;
+        try {
+          response = await fetch('./data/exercises.json',{cache:'no-store'});
+          if (!response.ok) throw new Error('HTTP '+response.status);
+        } catch (primaryError) {
+          response = await fetch('https://raw.githubusercontent.com/hezirbrasil/DuoMode/main/data/exercises.json',{cache:'no-store'});
+          if (!response.ok) throw new Error('Não foi possível carregar o banco ('+response.status+').');
+        }
         const data = await response.json();
         exerciseBank = Array.isArray(data.exercises) ? data.exercises : [];
         const categories = [...new Set(exerciseBank.map(x=>x.category))].sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR'));
@@ -63,8 +69,10 @@
         bankLoaded=true;renderBankPicker();renderList();renderDuoLists();
       } catch (error) {
         $('bankCount').textContent='Indisponível';
-        $('bankExercise').innerHTML='<option value="">Abra via GitHub Pages para carregar o banco</option>';
-        $('bankStatus').textContent='Não foi possível carregar o JSON. O seletor funciona quando o site é servido por HTTP/HTTPS.';
+        $('bankExercise').innerHTML='<option value="">Banco indisponível</option>';
+        $('bankStatus').textContent='Não foi possível carregar o banco de exercícios.';
+        [0,1].forEach(i=>{const select=$('duoBank'+i);if(select){select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent='Erro ao carregar banco';select.append(option);}});
+        console.error('Falha ao carregar banco de exercícios:',error);
       }
     }
     let running = false, phase = 'exercise', blockIndex = 0, roundIndex = 1, remaining = 45, totalPhase = 45, lastSecond = null, timerId = null, soundEnabled = true, audioCtx = null, finished = false, startedAt = 0;
