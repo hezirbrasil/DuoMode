@@ -802,3 +802,8 @@
 .duo-group-select { flex:0 0 auto; width:18px; height:18px; margin:0 0 0 12px; accent-color:var(--lime); cursor:pointer; }
 .duo-group-tab { display:flex; align-items:center; gap:8px; }
 .duo-group-tab .duo-group-toggle { flex:1; min-width:0; }
+
+/* Keep group selection checkbox above the header row and independently clickable. */
+.duo-exercise-list li.duo-group-tab { position:relative; }
+.duo-exercise-list .duo-group-select { position:relative; z-index:2; display:block; flex:0 0 18px; width:18px; height:18px; min-width:18px; margin:0 4px 0 12px; padding:0; opacity:1; pointer-events:auto; appearance:auto; -webkit-appearance:checkbox; cursor:pointer; }
+.duo-exercise-list .duo-group-toggle { position:relative; z-index:1; width:auto; flex:1 1 auto; }
