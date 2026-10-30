@@ -1101,6 +1101,7 @@
       if(duoRunning)return;
       if(!duoLessons.some(lesson=>lesson.length)){return;}
       $('duoPlayer').hidden=false;
+      $('duoPanel').classList.add('player-active');
       if(duoState.some(s=>s.finished)||duoState.some(s=>s.index>0||s.phase==='rest'))resetDuo();
       [0,1].forEach(i=>{if(duoLessons[i].length&&!duoState[i].finished&&duoState[i].remaining===0){duoState[i].index=0;duoState[i].phase='exercise';duoState[i].remaining=duoLessons[i][0].duration;duoState[i].total=duoState[i].remaining;}});
       renderDuoTimers();window.scrollTo(0,$('duoPlayer').offsetTop); 
@@ -1109,6 +1110,7 @@
     $('duoBack').addEventListener('click',()=>{
       if(duoRunning){duoRunning=false;clearInterval(duoInterval);duoInterval=null;renderDuoTimers();}
       $('duoPlayer').hidden=true;
+      $('duoPanel').classList.remove('player-active');
       $('duoPlayer').classList.remove('is-script');
       $('duoScriptToggle').textContent='Script';
       $('duoScriptToggle').setAttribute('aria-pressed','false');
@@ -1127,6 +1129,7 @@
       if(!duoLessons.some(lesson=>lesson.length))return;
       const player=$('duoPlayer');
       player.hidden=false;
+      $('duoPanel').classList.add('player-active');
       const scriptMode=!player.classList.contains('is-script');
       player.classList.toggle('is-script',scriptMode);
       $('duoScriptToggle').textContent=scriptMode?'Timer':'Script';
