@@ -1040,7 +1040,7 @@
         const state=duoState[i], lesson=duoLessons[i], item=lesson[state.index];
         $('duoPlayerTitle'+i).textContent=$('duoTitle'+i).value.trim()||(i===0?'Fight':'Workout');
         $('duoTime'+i).textContent=duoFmt(state.remaining);
-        $('duoPhase'+i).textContent=state.finished?'Concluída':!item?'Sem exercícios':state.phase==='rest'?'Descanso':duoRunning?'Em execução':'Pronto';
+        $('duoPhase'+i).textContent=state.finished?'Concluída':!item?'Sem exercícios':state.phase==='rest'?'Descanso':duoRunning?'':'Pronto';
         $('duoCurrent'+i).textContent=state.finished?'Aula concluída':item?(state.phase==='rest'?'Descanso · '+item.name:item.name):'Adicione exercícios';
         $('duoMeta'+i)?.remove();
         const duration=state.phase==='rest'?(item?.rest||0):(item?.duration||45), circumference=2*Math.PI*90;
