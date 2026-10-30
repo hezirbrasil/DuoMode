@@ -950,7 +950,7 @@
             const groupItems=duoLessons[i].map((item,index)=>({item,index})).filter(entry=>entry.item.group===entry.name);
             const groupIndexes=groupItems.map(entry=>entry.index);
             const selectedCount=groupIndexes.filter(index=>duoSelected[i].has(index)).length;
-            const selectGroup=document.createElement('input');selectGroup.type='checkbox';selectGroup.className='duo-group-select';selectGroup.checked=selectedCount===total;selectGroup.indeterminate=selectedCount>0&&selectedCount<total;selectGroup.disabled=duoRunning;selectGroup.setAttribute('aria-label','Selecionar todos do grupo '+entry.name);
+            const selectGroup=document.createElement('input');selectGroup.type='checkbox';selectGroup.className='duo-group-select';selectGroup.checked=selectedCount===total;selectGroup.indeterminate=false;selectGroup.disabled=duoRunning;selectGroup.setAttribute('aria-label','Selecionar todos do grupo '+entry.name);
             selectGroup.addEventListener('change',()=>{
               groupIndexes.forEach(index=>selectGroup.checked?duoSelected[i].add(index):duoSelected[i].delete(index));
               renderDuoLists();
@@ -1084,31 +1084,27 @@
         if(duoRunning){showDuoToolEditor(i,document.createTextNode('Pause o timer antes de duplicar exercícios.'));return;}
         const indexes=selectedDuoIndexes(i);
         if(!indexes.length){showDuoToolEditor(i,document.createTextNode('Marque os exercícios que deseja duplicar.'));return;}
-        const selected=new Set(indexes);
-        const duplicated=[];
-        const duplicatedIndexes=[];
         const copiedGroupNames=new Map();
         const usedGroupNames=new Set(duoLessons[i].map(item=>item.group).filter(Boolean));
         const getCopiedGroupName=group=>{
           if(!group)return '';
           if(copiedGroupNames.has(group))return copiedGroupNames.get(group);
           let copyName=group+' (cópia)',suffix=2;
-          while(usedGroupNames.has(copyName))copyName=group+' (cópia '+suffix+++')';
+          while(usedGroupNames.has(copyName)){copyName=group+' (cópia '+suffix+')';suffix++;}
           usedGroupNames.add(copyName);
           copiedGroupNames.set(group,copyName);
           return copyName;
         };
-        duoLessons[i].forEach((item,index)=>{
-          duplicated.push(item);
-          if(selected.has(index)){
-            const copy={...item};
-            if(copy.group)copy.group=getCopiedGroupName(copy.group);
-            duplicated.push(copy);
-            duplicatedIndexes.push(duplicated.length-1);
-          }
+        // Primeiro preserva a sequência original; depois insere cada cópia como
+        // um bloco contínuo, sem intercalar cópias entre os itens do grupo original.
+        const copies=indexes.map(index=>{
+          const copy={...duoLessons[i][index]};
+          if(copy.group)copy.group=getCopiedGroupName(copy.group);
+          return copy;
         });
-        duoLessons[i]=duplicated;
-        duoSelected[i]=new Set(duplicatedIndexes);
+        const firstCopyIndex=duoLessons[i].length;
+        duoLessons[i]=[...duoLessons[i],...copies];
+        duoSelected[i]=new Set(copies.map((_,offset)=>firstCopyIndex+offset));
         $('duoToolEditor'+i).hidden=true;
         renderDuoLists();
       });
