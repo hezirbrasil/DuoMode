@@ -861,6 +861,7 @@
     // Modo Duo novo: aulas separadas, timers independentes e controles compartilhados.
     const duoLessons = [[], []];
     const duoSelected = [new Set(), new Set()];
+    const duoCollapsedGroups = [new Set(), new Set()];
     const duoState = [0, 1].map(() => DuoTimer.createState());
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = DuoTimer.format;
@@ -931,46 +932,73 @@
         if(count)count.textContent=duoLessons[i].length+' exercício(s)';
         if(empty)empty.hidden=duoLessons[i].length>0;
         list.hidden=duoLessons[i].length===0;
+        const orderedEntries=[];
+        const emittedGroups=new Set();
         duoLessons[i].forEach((item,index)=>{
+          if(!item.group){orderedEntries.push({type:'item',index});return;}
+          if(emittedGroups.has(item.group))return;
+          emittedGroups.add(item.group);
+          orderedEntries.push({type:'group',name:item.group});
+          duoLessons[i].forEach((candidate,candidateIndex)=>{
+            if(candidate.group===item.group)orderedEntries.push({type:'item',index:candidateIndex});
+          });
+        });
+        orderedEntries.forEach(entry=>{
+          if(entry.type==='group'){
+            const total=duoLessons[i].filter(item=>item.group===entry.name).length;
+            const header=document.createElement('li');header.className='duo-group-tab';
+            const toggle=document.createElement('button');toggle.type='button';toggle.className='duo-group-toggle';
+            const collapsed=duoCollapsedGroups[i].has(entry.name);
+            toggle.setAttribute('aria-expanded',String(!collapsed));
+            toggle.textContent=(collapsed?'＋ ':'− ')+entry.name+' · '+total+' exercícios';
+            toggle.addEventListener('click',()=>{
+              if(duoCollapsedGroups[i].has(entry.name))duoCollapsedGroups[i].delete(entry.name);
+              else duoCollapsedGroups[i].add(entry.name);
+              renderDuoLists();
+            });
+            header.append(toggle);list.append(header);return;
+          }
+          const index=entry.index;
+          const item=duoLessons[i][index];
           const li=document.createElement('li'),row=document.createElement('div');row.className='duo-item-row';
+          if(item.group&&duoCollapsedGroups[i].has(item.group))li.hidden=true;
           const dragHandle=document.createElement('button');dragHandle.type='button';dragHandle.className='duo-drag-handle';dragHandle.textContent='⋮⋮';dragHandle.title='Arrastar para reorganizar';dragHandle.setAttribute('aria-label','Arrastar '+item.name+' para reorganizar');dragHandle.disabled=duoRunning;
           dragHandle.addEventListener('pointerdown',event=>{
             if(duoRunning||event.button!==0)return;
             event.preventDefault();
             const originalItems=duoLessons[i].slice();
-            const originalIndex=index;
             const activeItem=originalItems[duoState[i].index];
             const selectedBefore=new Set(duoSelected[i]);
-            const handle=dragHandle;
             const startRow=li;
+            let moved=false;
             startRow.classList.add('is-dragging');
-            handle.setPointerCapture(event.pointerId);
             const move=moveEvent=>{
-              if(!handle.hasPointerCapture(moveEvent.pointerId))return;
-              const target=document.elementFromPoint(moveEvent.clientX,moveEvent.clientY)?.closest('.duo-exercise-list li[data-lesson-index]');
+              const target=document.elementFromPoint(moveEvent.clientX,moveEvent.clientY)?.closest('li[data-lesson-index]');
               if(!target||target.parentElement!==list||target===startRow)return;
               const rect=target.getBoundingClientRect();
               const after=moveEvent.clientY>rect.top+rect.height/2;
               list.insertBefore(startRow,after?target.nextSibling:target);
+              moved=true;
             };
-            const finish=upEvent=>{
-              if(handle.hasPointerCapture(upEvent.pointerId))handle.releasePointerCapture(upEvent.pointerId);
-              handle.removeEventListener('pointermove',move);
-              handle.removeEventListener('pointerup',finish);
-              handle.removeEventListener('pointercancel',finish);
+            const finish=()=>{
+              document.removeEventListener('pointermove',move);
+              document.removeEventListener('pointerup',finish);
+              document.removeEventListener('pointercancel',finish);
               startRow.classList.remove('is-dragging');
-              const order=[...list.children].map(node=>Number(node.dataset.lessonIndex)).filter(n=>Number.isInteger(n)&&n>=0&&n<originalItems.length);
-              if(order.length===originalItems.length){
-                duoLessons[i]=order.map(n=>originalItems[n]);
-                duoSelected[i]=new Set(order.map((oldIndex,newIndex)=>selectedBefore.has(oldIndex)?newIndex:-1).filter(n=>n>=0));
-                const activeIndex=duoLessons[i].indexOf(activeItem);
-                if(activeIndex>=0)duoState[i].index=activeIndex;
+              if(moved){
+                const order=[...list.querySelectorAll(':scope > li[data-lesson-index]')].map(node=>Number(node.dataset.lessonIndex));
+                if(order.length===originalItems.length){
+                  duoLessons[i]=order.map(n=>originalItems[n]);
+                  duoSelected[i]=new Set(order.map((oldIndex,newIndex)=>selectedBefore.has(oldIndex)?newIndex:-1).filter(n=>n>=0));
+                  const activeIndex=duoLessons[i].indexOf(activeItem);
+                  if(activeIndex>=0)duoState[i].index=activeIndex;
+                }
               }
               renderDuoLists();
             };
-            handle.addEventListener('pointermove',move);
-            handle.addEventListener('pointerup',finish);
-            handle.addEventListener('pointercancel',finish);
+            document.addEventListener('pointermove',move);
+            document.addEventListener('pointerup',finish,{once:true});
+            document.addEventListener('pointercancel',finish,{once:true});
           });
           li.dataset.lessonIndex=String(index);
                     const select=document.createElement('input');select.type='checkbox';select.className='duo-select-item';select.checked=duoSelected[i].has(index);select.setAttribute('aria-label','Selecionar '+item.name);select.addEventListener('change',()=>{select.checked?duoSelected[i].add(index):duoSelected[i].delete(index);});
@@ -1020,7 +1048,7 @@
     function makeDuoField(labelText,value,aria){const wrap=document.createElement('div');wrap.className='duo-time-pair duo-tool-time-pair';const heading=document.createElement('span');heading.className='duo-time-label';heading.textContent=labelText.replace(' (seg)','');const minLabel=document.createElement('label');minLabel.textContent='Minutos';const minInput=document.createElement('input');minInput.type='number';minInput.min='0';minInput.max='60';minInput.value=String(Math.floor(value/60));minInput.setAttribute('aria-label',aria+' minutos');minLabel.append(minInput);const secLabel=document.createElement('label');secLabel.textContent='Segundos';const secInput=document.createElement('input');secInput.type='number';secInput.min='0';secInput.max='59';secInput.value=String(value%60);secInput.setAttribute('aria-label',aria+' segundos');secLabel.append(secInput);wrap.append(heading,minLabel,secLabel);return {label:wrap,read:()=>Number(minInput.value)*60+Number(secInput.value)};}
     function duoToolApply(i,mode){
       const indexes=selectedDuoIndexes(i), lesson=duoLessons[i], editor=$('duoToolEditor'+i);
-      if(indexes.length<(mode==='group'?1:2)){showDuoToolEditor(i,document.createTextNode('Marque '+(mode==='group'?'pelo menos um exercício.':'pelo menos dois exercícios.')+' nesta aula.'));return;}
+      if(indexes.length<2){showDuoToolEditor(i,document.createTextNode('Marque pelo menos dois exercícios nesta aula.));return;}
       const box=document.createElement('div');box.className='duo-tool-fields';
       if(mode==='standardize'){
         const d=makeDuoField('Tempo',lesson[indexes[0]].duration,'Tempo padronizado');
