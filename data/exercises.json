@@ -1,44 +1,45 @@
 {
   "source": "MMA Conditioning",
   "sourceRepository": "https://github.com/hezirbrasil/MMA--Conditioning-Generator",
-  "importedAt": "2026-10-22",
+  "importedAt": "2026-10-29",
   "categories": {
     "peito": "Peito",
     "costas": "Costas",
     "ombros": "Ombros",
-    "bíceps": "Bíceps",
-    "tríceps": "Tríceps",
-    "pernas": "Pernas",
-    "posterior": "Posterior",
-    "composto": "Compostos",
+    "biceps": "Bíceps",
+    "triceps": "Tríceps",
+    "pernas": "Inferiores",
     "core": "Core e abdômen",
     "cardio": "Cardio e funcional"
   },
   "exercises": [
     {
-      "name": "Supino com Halteres",
+      "name": "Supino",
       "category": "peito",
       "types": [
-        "fullbody"
+        "fullbody",
+        "legblast"
       ]
     },
     {
-      "name": "Supino pegada fechada",
+      "name": "Supino Pegada Fechada",
       "category": "peito",
       "types": [
-        "fullbody"
+        "fullbody",
+        "legblast"
       ]
     },
     {
-      "name": "Crucifixo com Halteres",
+      "name": "Crucifixo",
       "category": "peito",
       "types": [
-        "fullbody"
+        "fullbody",
+        "legblast"
       ]
     },
     {
       "name": "Flexão + Feet Touch",
-      "category": "cardio",
+      "category": "peito",
       "types": [
         "fullbody",
         "legblast"
@@ -48,135 +49,132 @@
       "name": "Pulldown",
       "category": "costas",
       "types": [
-        "fullbody"
+        "fullbody",
+        "legblast"
       ]
     },
     {
       "name": "Remada Aberta",
       "category": "costas",
       "types": [
-        "fullbody"
+        "fullbody",
+        "legblast"
       ]
     },
     {
       "name": "Remada Fechada",
       "category": "costas",
       "types": [
-        "fullbody"
+        "fullbody",
+        "legblast"
       ]
     },
     {
       "name": "Remada Alta",
       "category": "costas",
       "types": [
-        "fullbody"
+        "fullbody",
+        "legblast"
       ]
     },
     {
-      "name": "Remada unilateral com Halter E/D",
+      "name": "Remada Unilateral E",
       "category": "costas",
-      "types": [
-        "fullbody"
-      ]
-    },
-    {
-      "name": "Desenvolvimento com Halteres",
-      "category": "ombros",
-      "types": [
-        "fullbody"
-      ]
-    },
-    {
-      "name": "Desenvolvimento Arnold com Halteres",
-      "category": "ombros",
-      "types": [
-        "fullbody"
-      ]
-    },
-    {
-      "name": "Elevação Lateral com Halteres",
-      "category": "ombros",
-      "types": [
-        "fullbody"
-      ]
-    },
-    {
-      "name": "Elevação Lateral + Frontal com Halteres",
-      "category": "ombros",
-      "types": [
-        "fullbody"
-      ]
-    },
-    {
-      "name": "Crucifixo Invertido com Halteres",
-      "category": "ombros",
-      "types": [
-        "fullbody"
-      ]
-    },
-    {
-      "name": "Bíceps Halter",
-      "category": "bíceps",
-      "types": [
-        "fullbody"
-      ]
-    },
-    {
-      "name": "Recuo + Bíceps com Halteres",
-      "category": "composto",
       "types": [
         "fullbody",
         "legblast"
       ]
     },
     {
-      "name": "Tríceps Francês com Halter",
-      "category": "tríceps",
+      "name": "Remada Unilateral D",
+      "category": "costas",
       "types": [
-        "fullbody"
+        "fullbody",
+        "legblast"
       ]
     },
     {
-      "name": "Tríceps Coice com Halter E/D",
-      "category": "tríceps",
+      "name": "Crucifixo Invertido",
+      "category": "costas",
       "types": [
-        "fullbody"
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Desenvolvimento",
+      "category": "ombros",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Desenvolvimento Arnold",
+      "category": "ombros",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Elevação Lateral",
+      "category": "ombros",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Elevação Lateral + Elevação Frontal",
+      "category": "ombros",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Bíceps",
+      "category": "biceps",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Recuo + Bíceps",
+      "category": "biceps",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Tríceps Francês",
+      "category": "triceps",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Tríceps Coice E",
+      "category": "triceps",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Tríceps Coice D",
+      "category": "triceps",
+      "types": [
+        "fullbody",
+        "legblast"
       ]
     },
     {
       "name": "Agachamento Livre",
-      "category": "pernas",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Agachamento + Touch Down",
-      "category": "cardio",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Agachamento + Troca de Base",
-      "category": "pernas",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Agachamento Búlgaro com Halteres E/D",
-      "category": "pernas",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Afundo + Salto",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -200,7 +198,39 @@
       ]
     },
     {
+      "name": "Agachamento Goblet",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento Lateral",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
       "name": "Agachamento + Rotação",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Touch Down",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Agachamento + Troca de Base",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -232,7 +262,7 @@
       ]
     },
     {
-      "name": "Agachamento Goblet com Halter",
+      "name": "Agachamento + Remada Alta",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -240,15 +270,15 @@
       ]
     },
     {
-      "name": "Agachamento + Remada Alta",
-      "category": "composto",
+      "name": "Agachamento + Desenvolvimento",
+      "category": "pernas",
       "types": [
         "fullbody",
         "legblast"
       ]
     },
     {
-      "name": "Agachamento Lateral",
+      "name": "Agachamento + Panturrilha",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -264,7 +294,7 @@
       ]
     },
     {
-      "name": "Afundo E/D",
+      "name": "Avanço + Elevação Lateral",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -272,8 +302,24 @@
       ]
     },
     {
-      "name": "Avanço + Elevação Lateral com Halteres",
-      "category": "composto",
+      "name": "Afundo E",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Afundo D",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Afundo + Salto",
+      "category": "pernas",
       "types": [
         "fullbody",
         "legblast"
@@ -288,31 +334,7 @@
       ]
     },
     {
-      "name": "Terra",
-      "category": "posterior",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Stiff com Halteres",
-      "category": "posterior",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Stiff unilateral com Halter E/D",
-      "category": "posterior",
-      "types": [
-        "fullbody",
-        "legblast"
-      ]
-    },
-    {
-      "name": "Panturrilha com Halteres",
+      "name": "Búlgaro E",
       "category": "pernas",
       "types": [
         "fullbody",
@@ -320,32 +342,56 @@
       ]
     },
     {
-      "name": "Terra + Desenvolvimento com Halteres",
-      "category": "composto",
+      "name": "Búlgaro D",
+      "category": "pernas",
       "types": [
         "fullbody",
         "legblast"
       ]
     },
     {
-      "name": "Agachamento + Desenvolvimento com Halteres",
-      "category": "composto",
+      "name": "Stiff",
+      "category": "pernas",
       "types": [
         "fullbody",
         "legblast"
       ]
     },
     {
-      "name": "Polichinelo + Desenvolvimento com Halteres",
-      "category": "composto",
+      "name": "Stiff Unilateral E",
+      "category": "pernas",
       "types": [
         "fullbody",
         "legblast"
       ]
     },
     {
-      "name": "Agachamento + Panturrilha",
-      "category": "composto",
+      "name": "Stiff Unilateral D",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Terra",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Terra + Desenvolvimento",
+      "category": "pernas",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Panturrilha",
+      "category": "pernas",
       "types": [
         "fullbody",
         "legblast"
@@ -376,7 +422,15 @@
       ]
     },
     {
-      "name": "Abdominal Oblíquo E/D",
+      "name": "Abdominal Oblíquo E",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Abdominal Oblíquo D",
       "category": "core",
       "types": [
         "fullbody",
@@ -440,6 +494,14 @@
       ]
     },
     {
+      "name": "Prancha Alta + Prancha Baixa",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
       "name": "Prancha Baixa + Prancha Alta",
       "category": "core",
       "types": [
@@ -448,7 +510,7 @@
       ]
     },
     {
-      "name": "Prancha + Shoulder Taps",
+      "name": "Prancha + Feet Touch",
       "category": "core",
       "types": [
         "fullbody",
@@ -464,7 +526,7 @@
       ]
     },
     {
-      "name": "Prancha 3 Apoios E/D",
+      "name": "Prancha 3 Apoios E",
       "category": "core",
       "types": [
         "fullbody",
@@ -472,7 +534,15 @@
       ]
     },
     {
-      "name": "Prancha + Feet Touch",
+      "name": "Prancha 3 Apoios D",
+      "category": "core",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Prancha Tocando o Pé",
       "category": "core",
       "types": [
         "fullbody",
@@ -560,7 +630,15 @@
       ]
     },
     {
-      "name": "Joelhada no Step E/D",
+      "name": "Joelhada no Step E",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
+    },
+    {
+      "name": "Joelhada no Step D",
       "category": "cardio",
       "types": [
         "fullbody",
@@ -574,7 +652,15 @@
         "fullbody",
         "legblast"
       ]
+    },
+    {
+      "name": "Polichinelo + Desenvolvimento",
+      "category": "cardio",
+      "types": [
+        "fullbody",
+        "legblast"
+      ]
     }
   ],
-  "scope": "Aulas coletivas fitness; não inclui luta ou sequências de combate."
+  "scope": "Índice oficial de exercícios fornecido pelo usuário, organizado por grupamento muscular."
 }
