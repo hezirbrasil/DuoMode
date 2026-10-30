@@ -950,9 +950,11 @@
             const groupItems=duoLessons[i].map((item,index)=>({item,index})).filter(entry=>entry.item.group===entry.name);
             const groupIndexes=groupItems.map(entry=>entry.index);
             const selectedCount=groupIndexes.filter(index=>duoSelected[i].has(index)).length;
-            const selectGroup=document.createElement('input');selectGroup.type='checkbox';selectGroup.className='duo-group-select';selectGroup.checked=selectedCount===total;selectGroup.indeterminate=false;selectGroup.disabled=duoRunning;selectGroup.setAttribute('aria-label','Selecionar todos do grupo '+entry.name);
+            const selectGroup=document.createElement('input');selectGroup.type='checkbox';selectGroup.className='duo-group-select';selectGroup.checked=selectedCount===total;selectGroup.disabled=duoRunning;selectGroup.setAttribute('aria-label','Selecionar todos do grupo '+entry.name);
+            selectGroup.addEventListener('click',event=>event.stopPropagation());
             selectGroup.addEventListener('change',()=>{
-              groupIndexes.forEach(index=>selectGroup.checked?duoSelected[i].add(index):duoSelected[i].delete(index));
+              const shouldSelect=selectGroup.checked;
+              groupIndexes.forEach(index=>shouldSelect?duoSelected[i].add(index):duoSelected[i].delete(index));
               renderDuoLists();
             });
             const toggle=document.createElement('button');toggle.type='button';toggle.className='duo-group-toggle';
