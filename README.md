@@ -1,59 +1,68 @@
-# ACUAS Fitness
+# DuoMode — Workout & Fight Timer
 
-Aplicação web para montar, organizar e conduzir aulas coletivas de fitness com uma identidade visual alinhada à marca ACUAS Fitness.
+Aplicação web para montar e conduzir duas aulas simultâneas e independentes: **Fight** (combinações e técnicas de luta) e **Workout** (exercícios físicos). Os dois cronômetros são sincronizados no modo Play.
+
+**Aplicação:** https://hezirbrasil.github.io/DuoMode/  
+**Repositório:** https://github.com/hezirbrasil/DuoMode
 
 ## Funcionalidades
 
-- **Modo Construção:** montar e reorganizar a sequência de exercícios.
-- **Modo Script:** consultar a sequência em um formato simplificado para conduzir a aula.
-- **Modo Play:** acompanhar a aula com cronômetro, progresso e controles de reprodução.
-- **Banco de exercícios:** pesquisar por nome e categoria e adicionar exercícios à aula.
-- **Organização da sequência:** agrupar exercícios, reunir exercícios no mesmo tempo e ajustar a ordem.
-- **Salvamento local:** guardar aulas no navegador atual.
-- **Importação e exportação:** importar e exportar arquivos de aula em JSON.
-- **Sinais sonoros e visuais:** alertas nos últimos segundos e controle de som.
-- **Tela cheia:** ampliar a visualização do cronômetro.
+- Construtores independentes para Fight e Workout.
+- Banco de exercícios do Workout, com pesquisa e filtros por grupamento muscular.
+- Índice de combinações Fight organizado pelo golpe que inicia a sequência.
+- Inclusão de itens pelo banco ou criação manual.
+- Configuração de tempo e descanso em campos separados de minutos e segundos.
+- Edição, reordenação, remoção, agrupamento, desagrupamento e padronização de tempos.
+- Estrutura da aula com contagem e ordem dos exercícios.
+- Modo Play com dois cronômetros sincronizados, controles de reprodução e retorno ao construtor.
+- Exportação e importação das duas aulas em JSON.
+- Interface responsiva com tema preto, roxo e branco.
 
-## Começar a usar
+## Começar
 
-A aplicação não exige etapa de build nem instalação de dependências.
+A aplicação é estática e não exige etapa de build.
 
-1. Clone ou baixe este repositório.
-2. Sirva a pasta por HTTP local (necessário para carregar o banco JSON), por exemplo com a extensão **Live Server** do VS Code.
-3. Abra a URL local no navegador.
+1. Clone o repositório.
+2. Instale as dependências de desenvolvimento: `npm install`.
+3. Inicie um servidor local: `npm run dev`.
+4. Abra `http://localhost:4173`.
 
-> Abrir o arquivo `index.html` diretamente via `file://` pode impedir o carregamento de `data/exercises.json`. O site publicado no GitHub Pages já é servido por HTTPS.
+Também é possível usar qualquer servidor HTTP estático. Evite abrir `index.html` diretamente com `file://`, pois o navegador pode bloquear o carregamento de scripts e dados.
 
-## Estrutura do projeto
+## Estrutura
 
 ```text
 .
-├── index.html           # Estrutura e controles da interface
-├── styles.css           # Estilos, layout e temas visuais
-├── app.js               # Estado da aplicação, eventos, timer e renderização
-└── data/
-    └── exercises.json   # Banco de exercícios e metadados
+├── index.html                 # Estrutura da interface e formulários
+├── styles.css                 # Layout, responsividade e identidade visual
+├── app.js                     # Estado, eventos, renderização e integração dos modos
+├── data/
+│   ├── exercises.js           # Banco de exercícios Workout
+│   ├── duo-timer.js            # Lógica isolada do cronômetro Duo
+│   ├── workout-bank-ui.js      # Filtros e interação do banco
+│   └── duo-diagnostics.js      # Diagnóstico de erros de inicialização
+├── tests/
+│   └── regression.spec.js     # Testes de regressão Playwright
+├── .github/workflows/
+│   ├── pages.yml              # Deploy automático no GitHub Pages
+│   └── automated-tests.yml    # Execução manual dos testes
+├── package.json
+└── playwright.config.js
 ```
 
-## Dados e privacidade
+## Desenvolvimento e qualidade
 
-- As aulas salvas pelo recurso local ficam no armazenamento do navegador utilizado.
-- Para transferir uma aula entre dispositivos ou navegadores, use **Salvar arquivo** e depois **Importar arquivo**.
-- O banco de exercícios é carregado de `data/exercises.json`.
+- Mantenha HTML, CSS, dados e lógica de cronômetro em arquivos separados.
+- Use nomes descritivos e funções pequenas, com responsabilidades claras.
+- Evite duplicar manipuladores de eventos e regras de validação.
+- Preserve os índices Fight por golpe inicial e o banco Workout durante refatorações.
+- Execute `npm test` antes de publicar alterações.
+- O deploy é acionado por push na branch `main`; os testes de regressão são executados manualmente pelo workflow do GitHub Actions.
 
-## Desenvolvimento
+## Tecnologias
 
-- Use nomes descritivos para variáveis, funções, classes e IDs.
-- Prefira alterações pequenas e focadas, mantendo separados estrutura HTML, estilos CSS e comportamento JavaScript.
-- Preserve os modos Construção, Script e Play ao modificar a interface.
-- Não remova nem altere exercícios do banco como parte de uma refatoração visual ou de legibilidade.
-- Antes de publicar, valide a sintaxe JavaScript, o JSON e os principais fluxos da aplicação.
+HTML, CSS, JavaScript (sem framework), Node.js e Playwright para testes de navegador.
 
-## Publicação
+## Privacidade
 
-O projeto está configurado para publicação pelo GitHub Pages. Consulte o workflow em `.github/workflows/pages.yml` para detalhes do processo de deploy.
-
-## Links
-
-- **Aplicação:** https://hezirbrasil.github.io/aulas-coletivas/
-- **Repositório:** https://github.com/hezirbrasil/aulas-coletivas
+A aplicação funciona no navegador. Os dados da aula não são enviados a um servidor de aplicação. A exportação/importação em JSON permite transportar as configurações entre dispositivos.
