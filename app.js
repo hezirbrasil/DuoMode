@@ -837,18 +837,26 @@
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = value => { const n=Math.max(0,Math.ceil(value)); return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); };
     function renderDuoBank(i) {
+      const select=$('duoBank'+i), previous=select.value;
+      select.replaceChildren();
+      if(i===0){
+        const option=document.createElement('option');option.value='';option.textContent='Banco fitness disponível apenas no Workout';select.append(option);
+        return;
+      }
       const category=$('duoCategory'+i).value||'all';
       const query=$('duoSearch'+i).value.trim().toLocaleLowerCase('pt-BR');
       const filtered=exerciseBank.filter(ex=>(category==='all'||ex.category===category)&&ex.name.toLocaleLowerCase('pt-BR').includes(query));
-      const select=$('duoBank'+i), previous=select.value;select.replaceChildren();
       filtered.forEach(ex=>{const option=document.createElement('option');option.value=ex.name;option.textContent=ex.name;select.append(option);});
       if(!filtered.length){const option=document.createElement('option');option.value='';option.textContent='Nenhum exercício encontrado';select.append(option);}
       else if(filtered.some(ex=>ex.name===previous))select.value=previous;
     }
     function renderDuoLists() {
       [0,1].forEach(i=>{
+        const card=document.querySelector('.duo-card[data-duo="'+i+'"]');
+        const bankTools=card.querySelector('.duo-bank-tools');
+        bankTools.hidden=i===0;
         const category=$('duoCategory'+i), selected=category.value||'all';
-        if(category.options.length===1 && exerciseBank.length){
+        if(i===1 && category.options.length===1 && exerciseBank.length){
           [...new Set(exerciseBank.map(ex=>ex.category))].sort((x,y)=>(categoryLabels[x]||x).localeCompare(categoryLabels[y]||y,'pt-BR')).forEach(cat=>{const option=document.createElement('option');option.value=cat;option.textContent=categoryLabels[cat]||cat;category.append(option);});
           category.value=selected;
         }
