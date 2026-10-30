@@ -1010,6 +1010,25 @@
       });
     });
 
+    let duoScriptTab=0;
+    function renderDuoScript(){
+      const list=$('duoScriptList');
+      if(!list)return;
+      list.replaceChildren();
+      const lesson=duoLessons[duoScriptTab]||[];
+      lesson.forEach((item,index)=>{
+        const li=document.createElement('li');
+        li.className='duo-script-item'+(duoState[duoScriptTab].index===index&&!duoState[duoScriptTab].finished?' is-current':'')+(duoState[duoScriptTab].finished||index<duoState[duoScriptTab].index?' is-done':'');
+        const name=document.createElement('span');name.className='duo-script-name';name.textContent=item.name;
+        const time=document.createElement('span');time.className='duo-script-time';time.textContent=duoFmt(item.duration)+(item.rest?' + '+duoFmt(item.rest)+' descanso':'');
+        li.append(name,time);list.append(li);
+      });
+      document.querySelectorAll('[data-script-tab]').forEach(btn=>{
+        const active=Number(btn.dataset.scriptTab)===duoScriptTab;
+        btn.classList.toggle('is-active',active);btn.setAttribute('aria-pressed',String(active));
+      });
+      if(!lesson.length){const empty=document.createElement('li');empty.className='duo-script-empty';empty.textContent='Nenhum item nesta aula. Importe ou monte uma aula primeiro.';list.append(empty);}
+    }
     function renderDuoTimers() {
       [0,1].forEach(i=>{
         const state=duoState[i], lesson=duoLessons[i], item=lesson[state.index];
@@ -1021,6 +1040,7 @@
         const duration=state.phase==='rest'?(item?.rest||0):(item?.duration||45), circumference=2*Math.PI*90;
         const circle=$('duoProgress'+i);circle.style.strokeDasharray=circumference;circle.style.strokeDashoffset=circumference*(1-Math.max(0,Math.min(1,state.remaining/Math.max(1,state.total||duration))));
       });
+      renderDuoScript();
       $('duoPlay').textContent=duoRunning?'Ⅱ':'▶';$('duoPlay').setAttribute('aria-label',duoRunning?'Pausar as duas aulas':'Iniciar as duas aulas');
     }
     function resetDuo() {
@@ -1093,6 +1113,16 @@
     $('duoReset').addEventListener('click',resetDuo);
     $('duoNext').addEventListener('click',()=>{if(duoRunning){duoRunning=false;clearInterval(duoInterval);duoInterval=null;}[0,1].forEach(i=>advanceDuoState(i,true));renderDuoTimers();});
     $('duoPrev').addEventListener('click',()=>{if(duoRunning){duoRunning=false;clearInterval(duoInterval);duoInterval=null;}[0,1].forEach(i=>{const s=duoState[i];s.finished=false;s.index=Math.max(0,s.index-1);s.phase='exercise';s.remaining=duoLessons[i][s.index]?.duration||45;s.total=s.remaining;});renderDuoTimers();});
+    $('duoScriptToggle').addEventListener('click',()=>{
+      const player=$('duoPlayer'),enabled=!player.classList.contains('is-script');
+      player.classList.toggle('is-script',enabled);
+      $('duoScriptToggle').setAttribute('aria-pressed',String(enabled));
+      $('duoScriptToggle').textContent=enabled?'Ver timer':'Ver script';
+      renderDuoScript();
+    });
+    document.querySelectorAll('[data-script-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+      duoScriptTab=Number(btn.dataset.scriptTab);renderDuoScript();
+    }));
     $('duoFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else $('app').requestFullscreen?.().catch(()=>{});});
     $('duoExport').addEventListener('click',()=>{const payload={format:'workout-fight-duo',version:1,titles:[ $('duoTitle0').value,$('duoTitle1').value ],lessons:duoLessons};const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='workout-fight-duo.json';link.click();URL.revokeObjectURL(url);});
     $('duoImport').addEventListener('click',()=>$('duoImportFile').click());
