@@ -864,7 +864,7 @@
     const duoCollapsedGroups = [new Set(), new Set()];
     let duoGroupSequence = 0;
     const duoGroupKey = item => item?.group ? (item.groupId || 'legacy:' + item.group) : null;
-    const newDuoGroupId = () => 'duo-group-' + (++duoGroupSequence);
+    const newDuoGroupId = () => 'duo-group-' + Date.now().toString(36) + '-' + (++duoGroupSequence);
     const duoState = [0, 1].map(() => DuoTimer.createState());
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = DuoTimer.format;
