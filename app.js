@@ -861,6 +861,12 @@
     const duoState = [0, 1].map(() => DuoTimer.createState());
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = DuoTimer.format;
+    const fightCombinations = [
+      { name:'Jab', category:'combinacoes' },
+      { name:'Jab + Direto', category:'combinacoes' },
+      { name:'Jab + Jab + Direto', category:'combinacoes' },
+      { name:'Jab + Direto + Cruzado', category:'combinacoes' }
+    ];
     function renderDuoBank(i) {
       const select=$('duoBank'+i);
       if(!select)return;
@@ -868,18 +874,19 @@
       select.replaceChildren();
       const status=$('duoBankStatus'+i);
       if(i===0){
-        const categories=['Jab','Direto','Upper','Cruzado','Chute'];
         const categorySelect=$('duoCategory0');
         if(categorySelect){
           const selectedCategory=categorySelect.value;
           categorySelect.replaceChildren(new Option('Todas as categorias','all'));
-          categories.forEach(label=>categorySelect.add(new Option(label,label.toLocaleLowerCase('pt-BR'))));
-          categorySelect.value=categories.some(label=>label.toLocaleLowerCase('pt-BR')===selectedCategory)?selectedCategory:'all';
+          categorySelect.add(new Option('Combinações','combinacoes'));
+          categorySelect.value=selectedCategory==='combinacoes'?'combinacoes':'all';
         }
-        const selected=categorySelect?.value||'all';
-        const option=document.createElement('option');option.value='';option.textContent=selected==='all'?'Banco Fight · escolha uma categoria':'Nenhuma técnica cadastrada em '+categories.find(label=>label.toLocaleLowerCase('pt-BR')===selected);
-        select.append(option);
-        if(status)status.textContent='Índice Fight: Jab · Direto · Upper · Cruzado · Chute. As técnicas serão cadastradas dentro de cada categoria.';
+        const query=($('duoSearch0')?.value||'').trim().toLocaleLowerCase('pt-BR');
+        const filtered=fightCombinations.filter(item=>(categorySelect?.value==='all'||categorySelect?.value===item.category)&&item.name.toLocaleLowerCase('pt-BR').includes(query));
+        filtered.forEach(item=>{const option=document.createElement('option');option.value=item.name;option.textContent=item.name;select.append(option);});
+        if(!filtered.length){const option=document.createElement('option');option.value='';option.textContent='Nenhuma combinação encontrada';select.append(option);}
+        else if(filtered.some(item=>item.name===previous))select.value=previous;
+        if(status)status.textContent=filtered.length+' combinações Fight disponíveis.';
         return;
       }
       const category=$('duoCategory'+i)?.value||'all';
@@ -949,6 +956,11 @@
       const before = duoLessons[1].length;
       addDuoExercise(1, String(name || '').trim(), Number(duration), Number(rest));
       return duoLessons[1].length === before + 1;
+    };
+    window.addFightCombinationFromBank = function(name, duration, rest) {
+      const before = duoLessons[0].length;
+      addDuoExercise(0, String(name || '').trim(), Number(duration), Number(rest));
+      return duoLessons[0].length === before + 1;
     };
 
     function selectedDuoIndexes(i){return [...duoSelected[i]].filter(n=>n>=0&&n<duoLessons[i].length).sort((a,b)=>a-b);}
