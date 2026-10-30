@@ -663,3 +663,11 @@
   text-align:center;
   overflow-wrap:anywhere;
 }
+
+
+/* DuoMode é um aplicativo exclusivamente Duo. */
+#app > header .brand p { display:none; }
+#app > header .header-actions { display:flex;justify-content:flex-end; }
+#app:not(.mode-duo) #layout { display:none !important; }
+#app:not(.mode-duo) #duoPanel { display:block !important; }
+#app #layout[hidden] { display:none !important; }
