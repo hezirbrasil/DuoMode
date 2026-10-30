@@ -861,11 +861,12 @@
     const duoState = [0, 1].map(() => DuoTimer.createState());
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = DuoTimer.format;
+    // A categoria de cada combinação é sempre o primeiro golpe executado.
     const fightCombinations = [
-      { name:'Jab', category:'combinacoes' },
-      { name:'Jab + Direto', category:'combinacoes' },
-      { name:'Jab + Jab + Direto', category:'combinacoes' },
-      { name:'Jab + Direto + Cruzado', category:'combinacoes' }
+      { name:'Jab', category:'jab' },
+      { name:'Jab + Direto', category:'jab' },
+      { name:'Jab + Jab + Direto', category:'jab' },
+      { name:'Jab + Direto + Cruzado', category:'jab' }
     ];
     function renderDuoBank(i) {
       const select=$('duoBank'+i);
@@ -878,8 +879,8 @@
         if(categorySelect){
           const selectedCategory=categorySelect.value;
           categorySelect.replaceChildren(new Option('Todas as categorias','all'));
-          categorySelect.add(new Option('Combinações','combinacoes'));
-          categorySelect.value=selectedCategory==='combinacoes'?'combinacoes':'all';
+          ['Jab','Direto','Upper','Cruzado','Chute'].forEach(golpe=>categorySelect.add(new Option(golpe,golpe.toLocaleLowerCase('pt-BR'))));
+          categorySelect.value=['jab','direto','upper','cruzado','chute'].includes(selectedCategory)?selectedCategory:'all';
         }
         const query=($('duoSearch0')?.value||'').trim().toLocaleLowerCase('pt-BR');
         const filtered=fightCombinations.filter(item=>(categorySelect?.value==='all'||categorySelect?.value===item.category)&&item.name.toLocaleLowerCase('pt-BR').includes(query));
