@@ -45,13 +45,15 @@
   // Captura o clique fora do app principal. Isso evita depender do registro
   // de eventos do construtor e mostra o motivo caso a ponte não esteja pronta.
   document.addEventListener('click', event => {
-    const button = event.target instanceof Element ? event.target.closest('.duo-card[data-duo="1"] .duo-add-bank') : null;
+    const button = event.target instanceof Element ? event.target.closest('.duo-card .duo-add-bank') : null;
     if (!button) return;
     event.preventDefault();
     event.stopImmediatePropagation();
     const card = button.closest('.duo-card');
-    const selected = document.getElementById('duoBank1');
-    const status = document.getElementById('duoBankStatus1');
+    const lessonIndex = Number(card?.dataset.duo);
+    if (!card || (lessonIndex !== 0 && lessonIndex !== 1)) return;
+    const selected = document.getElementById('duoBank' + lessonIndex);
+    const status = document.getElementById('duoBankStatus' + lessonIndex);
     const duration = Number(card.querySelector('.duo-bank-tools .duo-duration')?.value);
     const rest = Number(card.querySelector('.duo-bank-tools .duo-rest')?.value);
     const name = String(selected?.value || '').trim();
@@ -62,11 +64,14 @@
     if (!Number.isInteger(rest) || rest < 0 || rest > 3600) {
       if (status) status.textContent = 'Confira o descanso: use de 0 a 3600 segundos.'; return;
     }
-    if (typeof window.addWorkoutExerciseFromBank !== 'function') {
+    const addFromBank = lessonIndex === 0
+      ? window.addFightCombinationFromBank
+      : window.addWorkoutExerciseFromBank;
+    if (typeof addFromBank !== 'function') {
       if (status) status.textContent = 'O construtor não iniciou corretamente. Atualize a página e tente novamente.';
       return;
     }
-    const added = window.addWorkoutExerciseFromBank(name, duration, rest);
+    const added = addFromBank(name, duration, rest);
     if (status) status.textContent = added
       ? name + ' adicionado à estrutura da aula.'
       : 'Não foi possível adicionar. Pause o cronômetro e tente novamente.';
