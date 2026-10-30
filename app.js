@@ -69,7 +69,8 @@
         categories.forEach(cat=>{const opt=document.createElement('option');opt.value=cat;opt.textContent=categoryLabels[cat]||cat;$('bankCategory').append(opt);});
         bankLoaded=true;renderBankPicker();renderList();renderDuoLists();
       } catch (error) {
-        $('bankCount').textContent='Indisponível';
+        const bankCount=$('bankCount');if(bankCount)bankCount.textContent='Indisponível';
+        const duoStatus=$('duoBankStatus1');if(duoStatus)duoStatus.textContent='Falha ao carregar o banco: '+(error?.message||'erro desconhecido');
         $('bankExercise').innerHTML='<option value="">Banco indisponível</option>';
         $('bankStatus').textContent='Não foi possível carregar o banco de exercícios.';
         [0,1].forEach(i=>{const select=$('duoBank'+i);if(select){select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent='Erro ao carregar banco';select.append(option);}});
@@ -846,18 +847,25 @@
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = value => { const n=Math.max(0,Math.ceil(value)); return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); };
     function renderDuoBank(i) {
-      const select=$('duoBank'+i), previous=select.value;
+      const select=$('duoBank'+i);
+      if(!select)return;
+      const previous=select.value;
       select.replaceChildren();
+      const status=$('duoBankStatus'+i);
       if(i===0){
         const option=document.createElement('option');option.value='';option.textContent='Banco fitness disponível apenas no Workout';select.append(option);
+        if(status)status.textContent='O banco de exercícios fica disponível na aula Workout.';
         return;
       }
-      const category=$('duoCategory'+i).value||'all';
-      const query=$('duoSearch'+i).value.trim().toLocaleLowerCase('pt-BR');
-      const filtered=exerciseBank.filter(ex=>(category==='all'||ex.category===category)&&ex.name.toLocaleLowerCase('pt-BR').includes(query));
+      const category=$('duoCategory'+i)?.value||'all';
+      const query=($('duoSearch'+i)?.value||'').trim().toLocaleLowerCase('pt-BR');
+      const filtered=exerciseBank.filter(ex=>(category==='all'||ex.category===category)&&String(ex.name||'').toLocaleLowerCase('pt-BR').includes(query));
       filtered.forEach(ex=>{const option=document.createElement('option');option.value=ex.name;option.textContent=ex.name;select.append(option);});
-      if(!filtered.length){const option=document.createElement('option');option.value='';option.textContent='Nenhum exercício encontrado';select.append(option);}
+      if(!filtered.length){const option=document.createElement('option');option.value='';option.textContent=exerciseBank.length?'Nenhum exercício encontrado':'Carregando banco…';select.append(option);}
       else if(filtered.some(ex=>ex.name===previous))select.value=previous;
+      if(status)status.textContent=exerciseBank.length
+        ? filtered.length+' de '+exerciseBank.length+' exercícios disponíveis · selecione um e clique em Adicionar do banco.'
+        : 'Carregando banco de exercícios…';
     }
     function renderDuoLists() {
       [0,1].forEach(i=>{
