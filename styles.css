@@ -543,6 +543,8 @@
 /* Construtores Duo alinhados ao padrão do Modo Construção Solo. */
 .duo-card { display:flex;flex-direction:column;gap:12px; }
 .duo-bank-tools { display:flex;flex-direction:column;gap:7px;padding:12px;border:1px solid var(--line);border-radius:13px;background:#0719207a; }
+.duo-bank-tools[hidden] { display:none !important; }
+.duo-bank-status { margin:0;font-size:12px;line-height:1.45; }
 .duo-bank-tools .duo-label { margin:4px 0 0; }
 .duo-bank-tools select,.duo-bank-tools input { width:100%;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text); }
 .duo-bank-tools .duo-fields { margin-top:5px; }
