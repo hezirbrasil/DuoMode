@@ -1070,7 +1070,7 @@
             const collapsed=duoCollapsedGroups[i].has(entry.key);
             toggle.setAttribute('aria-expanded',String(!collapsed));
             const groupDuration=groupItems.reduce((sum,groupEntry)=>sum+(Number(groupEntry.item.duration)||0)+(Number(groupEntry.item.rest)||0),0);
-            toggle.textContent=(collapsed?'＋ ':'− ')+entry.name+' · '+total+' exercícios · '+duoFmt(groupDuration)+' total';
+            toggle.textContent=(collapsed?'▸ ':'▾ ')+entry.name+' · '+total+' exercícios · '+duoFmt(groupDuration)+' total';
             toggle.addEventListener('click',()=>{
               if(duoCollapsedGroups[i].has(entry.key))duoCollapsedGroups[i].delete(entry.key);
               else duoCollapsedGroups[i].add(entry.key);
