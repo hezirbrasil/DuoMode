@@ -807,3 +807,9 @@
 .duo-exercise-list li.duo-group-tab { position:relative; }
 .duo-exercise-list .duo-group-select { position:relative; z-index:2; display:block; flex:0 0 18px; width:18px; height:18px; min-width:18px; margin:0 4px 0 12px; padding:0; opacity:1; pointer-events:auto; appearance:auto; -webkit-appearance:checkbox; cursor:pointer; }
 .duo-exercise-list .duo-group-toggle { position:relative; z-index:1; width:auto; flex:1 1 auto; }
+
+
+.duo-group-delete { flex:0 0 auto; margin:0 10px 0 0; padding:7px 9px; border:1px solid #713c8f; border-radius:8px; background:#24132f; color:#e8d7f4; font:600 12px/1.2 inherit; cursor:pointer; }
+.duo-group-delete:hover { background:#3a1c4d; border-color:#a56bd0; }
+.duo-group-delete:focus-visible { outline:2px solid var(--lime); outline-offset:2px; }
+.duo-group-delete:disabled { opacity:.45; cursor:not-allowed; }
