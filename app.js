@@ -48,7 +48,8 @@
       const select = $('bankExercise');
       select.innerHTML = '';
       filtered.forEach(ex => { const opt=document.createElement('option'); opt.value=ex.name; opt.textContent=ex.name; select.append(opt); });
-      $('bankCount').textContent = exerciseBank.length+' exercícios';
+      const bankCount = $('bankCount');
+      if (bankCount) bankCount.textContent = exerciseBank.length+' exercícios';
       $('bankStatus').textContent = filtered.length ? filtered.length+' exercício(s) disponível(is) para adicionar à aula.' : 'Nenhum exercício encontrado para esse filtro.';
       if (!filtered.length) { const opt=document.createElement('option');opt.value='';opt.textContent='Nenhum resultado';select.append(opt); }
     }
