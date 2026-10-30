@@ -1141,7 +1141,34 @@
             moveDown.title='Mover agrupamento para baixo';moveDown.setAttribute('aria-label','Mover agrupamento '+entry.name+' para baixo');
             moveDown.disabled=duoRunning||groupIndexes[groupIndexes.length-1]===duoLessons[i].length-1;
             moveDown.addEventListener('click',event=>{event.stopPropagation();moveDuoGroup(i,entry.key,1);});
-            header.append(selectGroup,toggle,moveUp,moveDown,deleteGroup);list.append(header);return;
+            const renameGroup=document.createElement('button');
+            renameGroup.type='button';renameGroup.className='duo-group-move duo-group-rename';
+            renameGroup.textContent='Renomear';renameGroup.title='Renomear agrupamento';
+            renameGroup.setAttribute('aria-label','Renomear agrupamento '+entry.name);
+            renameGroup.disabled=duoRunning;
+            renameGroup.addEventListener('click',event=>{
+              event.stopPropagation();
+              if(duoRunning||header.querySelector('.duo-group-rename-form'))return;
+              const form=document.createElement('form');form.className='duo-group-rename-form';
+              const input=document.createElement('input');input.type='text';input.maxLength=60;input.required=true;input.value=entry.name;
+              input.setAttribute('aria-label','Novo nome do agrupamento');
+              const save=document.createElement('button');save.type='submit';save.className='duo-group-move';save.textContent='Salvar';
+              const cancel=document.createElement('button');cancel.type='button';cancel.className='duo-group-move';cancel.textContent='Cancelar';
+              cancel.addEventListener('click',()=>form.remove());
+              form.addEventListener('submit',submitEvent=>{
+                submitEvent.preventDefault();
+                const nextName=input.value.trim();
+                if(!nextName)return;
+                groupItems.forEach(({item})=>{item.group=nextName;item.groupId=entry.key;});
+                if(duoCollapsedGroups[i].has(entry.key)){
+                  duoCollapsedGroups[i].delete(entry.key);
+                  duoCollapsedGroups[i].add(entry.key);
+                }
+                renderDuoLists();
+              });
+              form.append(input,save,cancel);header.append(form);input.focus();input.select();
+            });
+            header.append(selectGroup,toggle,moveUp,moveDown,renameGroup,deleteGroup);list.append(header);return;
           }
           const index=entry.index;
           const item=duoLessons[i][index];
