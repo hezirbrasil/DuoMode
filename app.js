@@ -1109,6 +1109,9 @@
     $('duoBack').addEventListener('click',()=>{
       if(duoRunning){duoRunning=false;clearInterval(duoInterval);duoInterval=null;renderDuoTimers();}
       $('duoPlayer').hidden=true;
+      $('duoPlayer').classList.remove('is-script');
+      $('duoScriptToggle').textContent='Script';
+      $('duoScriptToggle').setAttribute('aria-pressed','false');
       window.scrollTo(0,0);
     });
     $('duoPlay').addEventListener('click',()=>{
@@ -1124,9 +1127,10 @@
       if(!duoLessons.some(lesson=>lesson.length))return;
       const player=$('duoPlayer');
       player.hidden=false;
-      player.classList.add('is-script');
-      $('duoViewToggle').textContent='Timer';
-      $('duoViewToggle').setAttribute('aria-pressed','true');
+      const scriptMode=!player.classList.contains('is-script');
+      player.classList.toggle('is-script',scriptMode);
+      $('duoScriptToggle').textContent=scriptMode?'Timer':'Script';
+      $('duoScriptToggle').setAttribute('aria-pressed',String(scriptMode));
       renderDuoTimers();renderDuoScript();
       window.scrollTo(0,player.offsetTop);
     });
