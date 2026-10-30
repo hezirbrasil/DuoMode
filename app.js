@@ -319,7 +319,28 @@
             const saveName=document.createElement('button');saveName.type='button';saveName.className='group-rename';saveName.textContent='Salvar';saveName.addEventListener('click',()=>finish(true));
             rename.replaceWith(input);headerRow.append(saveName);input.focus();input.select();
           });
-          headerRow.append(header,rename);els.list.append(headerRow);
+          // O cabeçalho também é uma zona de soltura: permite mover um exercício
+          // para o início do grupo, inclusive quando o grupo está no topo da lista.
+          headerRow.addEventListener('dragover',e=>{
+            if(!running&&draggedBlockIndex!==null){e.preventDefault();e.dataTransfer.dropEffect='move';headerRow.classList.add('drag-over');}
+          });
+          headerRow.addEventListener('dragleave',()=>headerRow.classList.remove('drag-over'));
+          headerRow.addEventListener('drop',e=>{
+            e.preventDefault();e.stopPropagation();headerRow.classList.remove('drag-over');
+            if(running||draggedBlockIndex===null)return;
+            const targetIndex=blocks.findIndex(item=>item.group===groupName);
+            if(targetIndex>=0&&draggedBlockIndex!==targetIndex)reorderBlock(draggedBlockIndex,targetIndex);
+          });
+          const deleteGroup=document.createElement('button');
+          deleteGroup.type='button';deleteGroup.className='group-rename group-delete';
+          deleteGroup.textContent='Excluir bloco';deleteGroup.title='Excluir todos os exercícios deste agrupamento';
+          deleteGroup.setAttribute('aria-label','Excluir o agrupamento '+groupName+' inteiro');
+          deleteGroup.addEventListener('click',e=>{
+            e.stopPropagation();
+            if(running){showNotice('Pause o timer antes de excluir um agrupamento.');return;}
+            removeGroup(groupName);
+          });
+          headerRow.append(header,rename,deleteGroup);els.list.append(headerRow);
         }
         // Grupos recolhidos escondem os cartões no editor sem alterar a sequência do timer.
         const isGroupCollapsed = Boolean(b.group && collapsedGroups.has(b.group));
@@ -564,8 +585,35 @@
       reorderBlock(i,j);
     }
     function removeBlock(i) {
-      blocks.splice(i,1);selectedBlocks=new Set([...selectedBlocks].filter(k=>k!==i).map(k=>k>i?k-1:k));if(!blocks.length){reset();remaining=0;totalPhase=1;render();return;}
-      if(blockIndex>=blocks.length)blockIndex=blocks.length-1;reset();
+      if(!Number.isInteger(i)||i<0||i>=blocks.length)return;
+      blocks.splice(i,1);
+      selectedBlocks=new Set([...selectedBlocks].filter(k=>k!==i).map(k=>k>i?k-1:k));
+      if(!blocks.length){reset();remaining=0;totalPhase=1;render();return;}
+      if(blockIndex>=blocks.length)blockIndex=blocks.length-1;
+      reset();
+    }
+    function removeGroup(groupName) {
+      if(!groupName||running)return;
+      const removedIndexes=[];
+      blocks.forEach((item,index)=>{if(item.group===groupName)removedIndexes.push(index);});
+      if(!removedIndexes.length)return;
+      const removed=new Set(removedIndexes);
+      const oldBlockIndex=blockIndex;
+      blocks=blocks.filter(item=>item.group!==groupName);
+      selectedBlocks=new Set([...selectedBlocks]
+        .filter(index=>!removed.has(index))
+        .map(index=>index-removedIndexes.filter(removedIndex=>removedIndex<index).length));
+      collapsedGroups.delete(groupName);
+      if(!blocks.length){reset();remaining=0;totalPhase=1;render();return;}
+      const removedBeforeCurrent=removedIndexes.filter(index=>index<oldBlockIndex).length;
+      blockIndex=removed.has(oldBlockIndex)
+        ? Math.min(removedIndexes[0]-removedBeforeCurrent,blocks.length-1)
+        : Math.max(0,oldBlockIndex-removedBeforeCurrent);
+      reset();
+      blockIndex=Math.max(0,Math.min(blockIndex,blocks.length-1));
+      remaining=blocks[blockIndex]?.duration||45;totalPhase=remaining;
+      render();
+      showNotice('Agrupamento "'+groupName+'" excluído por completo.');
     }
     function save() {
       const title='Minha aula coletiva';
