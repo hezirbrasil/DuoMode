@@ -447,10 +447,10 @@
       const max=Math.max(1,totalPhase);
       els.time.textContent=fmt(remaining);
       const isRecovery=phase==='rest'||current?.type==='rest';
-      els.phaseText.textContent=finished?'Aula concluída':running?(isRecovery?'Descanso':'Exercício'):noBlocks?'Adicione blocos':'Pronto para começar';
+      els.phaseText.textContent=finished?'Aula concluída':running?(isRecovery?'Rest':'Exercício'):noBlocks?'Adicione blocos':'Pronto para começar';
       els.phaseBadge.classList.toggle('rest',isRecovery&&!finished);
       els.clockWrap.classList.toggle('rest',isRecovery&&!finished);
-      els.caption.textContent=finished?'Tempo total concluído':isRecovery?'Tempo de recuperação':'Tempo restante';
+      els.caption.textContent=finished?'Tempo total concluído':isRecovery?'':'Tempo restante';
       els.progress.style.strokeDasharray=CIRC;
       els.progress.style.strokeDashoffset=CIRC*(1-Math.max(0,Math.min(1,remaining/max)));
       els.name.replaceChildren();
@@ -1040,8 +1040,8 @@
         const state=duoState[i], lesson=duoLessons[i], item=lesson[state.index];
         $('duoPlayerTitle'+i).textContent=$('duoTitle'+i).value.trim()||(i===0?'Fight':'Workout');
         $('duoTime'+i).textContent=duoFmt(state.remaining);
-        $('duoPhase'+i).textContent=state.finished?'Concluída':!item?'Sem exercícios':state.phase==='rest'?'Descanso':duoRunning?'':'Pronto';
-        $('duoCurrent'+i).textContent=state.finished?'Aula concluída':item?(state.phase==='rest'?'Descanso · '+item.name:item.name):'Adicione exercícios';
+        $('duoPhase'+i).textContent=state.finished?'Concluída':!item?'Sem exercícios':state.phase==='rest'?'Rest':duoRunning?'':'Pronto';
+        $('duoCurrent'+i).textContent=state.finished?'Aula concluída':item?(state.phase==='rest'?'Rest':item.name):'Adicione exercícios';
         $('duoMeta'+i)?.remove();
         const duration=state.phase==='rest'?(item?.rest||0):(item?.duration||45), circumference=2*Math.PI*90;
         const circle=$('duoProgress'+i);circle.style.strokeDasharray=circumference;circle.style.strokeDashoffset=circumference*(1-Math.max(0,Math.min(1,state.remaining/Math.max(1,state.total||duration))));
