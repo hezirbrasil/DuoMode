@@ -1023,8 +1023,7 @@
         li.tabIndex=0;li.setAttribute('role','button');li.setAttribute('aria-label','Marcar '+item.name+' como exercício em foco');
         li.addEventListener('click',()=>{duoScriptFocus[duoScriptTab]=index;renderDuoScript();});
         const name=document.createElement('span');name.className='duo-script-name';name.textContent=item.name;
-        const time=document.createElement('span');time.className='duo-script-time';time.textContent=duoFmt(item.duration)+(item.rest?' + '+duoFmt(item.rest)+' descanso':'');
-        li.append(name,time);list.append(li);
+        li.append(name);list.append(li);
       });
       document.querySelectorAll('[data-script-tab]').forEach(btn=>{
         const active=Number(btn.dataset.scriptTab)===duoScriptTab;
