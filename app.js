@@ -19,6 +19,8 @@
     let nextGroupId = 1;
     let bankLoaded = false;
     const categoryLabels = { peito:'Peito', costas:'Costas', ombros:'Ombros', biceps:'Bíceps', triceps:'Tríceps', bíceps:'Bíceps', tríceps:'Tríceps', pernas:'Inferiores', posterior:'Posterior', composto:'Compostos', core:'Core e abdômen', cardio:'Cardio e funcional' };
+    // Banco embutido para o construtor continuar funcionando mesmo sem buscar arquivos externos.
+    const BUILTIN_EXERCISE_BANK = [{"name":"Supino","category":"peito","types":["fullbody","legblast"]},{"name":"Supino Pegada Fechada","category":"peito","types":["fullbody","legblast"]},{"name":"Crucifixo","category":"peito","types":["fullbody","legblast"]},{"name":"Flexão + Feet Touch","category":"peito","types":["fullbody","legblast"]},{"name":"Pulldown","category":"costas","types":["fullbody","legblast"]},{"name":"Remada Aberta","category":"costas","types":["fullbody","legblast"]},{"name":"Remada Fechada","category":"costas","types":["fullbody","legblast"]},{"name":"Remada Alta","category":"costas","types":["fullbody","legblast"]},{"name":"Remada Unilateral E","category":"costas","types":["fullbody","legblast"]},{"name":"Remada Unilateral D","category":"costas","types":["fullbody","legblast"]},{"name":"Crucifixo Invertido","category":"costas","types":["fullbody","legblast"]},{"name":"Desenvolvimento","category":"ombros","types":["fullbody","legblast"]},{"name":"Desenvolvimento Arnold","category":"ombros","types":["fullbody","legblast"]},{"name":"Elevação Lateral","category":"ombros","types":["fullbody","legblast"]},{"name":"Elevação Lateral + Elevação Frontal","category":"ombros","types":["fullbody","legblast"]},{"name":"Bíceps","category":"biceps","types":["fullbody","legblast"]},{"name":"Recuo + Bíceps","category":"biceps","types":["fullbody","legblast"]},{"name":"Tríceps Francês","category":"triceps","types":["fullbody","legblast"]},{"name":"Tríceps Coice E","category":"triceps","types":["fullbody","legblast"]},{"name":"Tríceps Coice D","category":"triceps","types":["fullbody","legblast"]},{"name":"Agachamento Livre","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento Neutro","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento Sumô","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento Goblet","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento Lateral","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento + Rotação","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento + Touch Down","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento + Troca de Base","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento + Abre e Fecha Tocando o Solo","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento + Pico de Contração + Salto","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento + Salto","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento + Remada Alta","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento + Desenvolvimento","category":"pernas","types":["fullbody","legblast"]},{"name":"Agachamento + Panturrilha","category":"pernas","types":["fullbody","legblast"]},{"name":"Avanço","category":"pernas","types":["fullbody","legblast"]},{"name":"Avanço + Elevação Lateral","category":"pernas","types":["fullbody","legblast"]},{"name":"Afundo E","category":"pernas","types":["fullbody","legblast"]},{"name":"Afundo D","category":"pernas","types":["fullbody","legblast"]},{"name":"Afundo + Salto","category":"pernas","types":["fullbody","legblast"]},{"name":"Afundo + Troca de Base","category":"pernas","types":["fullbody","legblast"]},{"name":"Búlgaro E","category":"pernas","types":["fullbody","legblast"]},{"name":"Búlgaro D","category":"pernas","types":["fullbody","legblast"]},{"name":"Stiff","category":"pernas","types":["fullbody","legblast"]},{"name":"Stiff Unilateral E","category":"pernas","types":["fullbody","legblast"]},{"name":"Stiff Unilateral D","category":"pernas","types":["fullbody","legblast"]},{"name":"Terra","category":"pernas","types":["fullbody","legblast"]},{"name":"Terra + Desenvolvimento","category":"pernas","types":["fullbody","legblast"]},{"name":"Panturrilha","category":"pernas","types":["fullbody","legblast"]},{"name":"Abdominal Remador","category":"core","types":["fullbody","legblast"]},{"name":"Abdominal Remador Unilateral","category":"core","types":["fullbody","legblast"]},{"name":"Abdominal Bicicleta","category":"core","types":["fullbody","legblast"]},{"name":"Abdominal Oblíquo E","category":"core","types":["fullbody","legblast"]},{"name":"Abdominal Oblíquo D","category":"core","types":["fullbody","legblast"]},{"name":"Abdominal + Jab + Direto","category":"core","types":["fullbody","legblast"]},{"name":"Abdominal Infra","category":"core","types":["fullbody","legblast"]},{"name":"Abdominal Infra Alternado","category":"core","types":["fullbody","legblast"]},{"name":"Abdominal Supra + Rotação de Tronco","category":"core","types":["fullbody","legblast"]},{"name":"Superman","category":"core","types":["fullbody","legblast"]},{"name":"Abdominal + Passar as Pernas por Cima","category":"core","types":["fullbody","legblast"]},{"name":"Prancha","category":"core","types":["fullbody","legblast"]},{"name":"Prancha Alta + Prancha Baixa","category":"core","types":["fullbody","legblast"]},{"name":"Prancha Baixa + Prancha Alta","category":"core","types":["fullbody","legblast"]},{"name":"Prancha + Feet Touch","category":"core","types":["fullbody","legblast"]},{"name":"Prancha Alternada","category":"core","types":["fullbody","legblast"]},{"name":"Prancha 3 Apoios E","category":"core","types":["fullbody","legblast"]},{"name":"Prancha 3 Apoios D","category":"core","types":["fullbody","legblast"]},{"name":"Prancha Tocando o Pé","category":"core","types":["fullbody","legblast"]},{"name":"Prancha Abre e Fecha","category":"core","types":["fullbody","legblast"]},{"name":"Prancha T","category":"core","types":["fullbody","legblast"]},{"name":"Escalador","category":"cardio","types":["fullbody","legblast"]},{"name":"Sprawl","category":"cardio","types":["fullbody","legblast"]},{"name":"Sprawl + Salto","category":"cardio","types":["fullbody","legblast"]},{"name":"Hop Out Step","category":"cardio","types":["fullbody","legblast"]},{"name":"Sprint","category":"cardio","types":["fullbody","legblast"]},{"name":"Corrida Lateral + Touch Down","category":"cardio","types":["fullbody","legblast"]},{"name":"Hand Walk","category":"cardio","types":["fullbody","legblast"]},{"name":"Senta, Levanta e Pula","category":"cardio","types":["fullbody","legblast"]},{"name":"Joelhada no Step E","category":"cardio","types":["fullbody","legblast"]},{"name":"Joelhada no Step D","category":"cardio","types":["fullbody","legblast"]},{"name":"Joelhada no Step Alternada","category":"cardio","types":["fullbody","legblast"]},{"name":"Polichinelo + Desenvolvimento","category":"cardio","types":["fullbody","legblast"]}];
     function renderBankPicker() {
       const category = $('bankCategory').value || 'all';
       const query = ($('bankSearch').value || '').trim().toLocaleLowerCase('pt-BR');
@@ -53,72 +55,32 @@
       $('bankStatus').textContent = filtered.length ? filtered.length+' exercício(s) disponível(is) para adicionar à aula.' : 'Nenhum exercício encontrado para esse filtro.';
       if (!filtered.length) { const opt=document.createElement('option');opt.value='';opt.textContent='Nenhum resultado';select.append(opt); }
     }
-    async function loadExerciseBank() {
+    function loadExerciseBank() {
       const setDuoStatus = message => {
         const status = $('duoBankStatus1');
         if (status) status.textContent = message;
       };
-      const sources = [
-        new URL('./data/exercises.json', document.baseURI).href,
-        'https://cdn.jsdelivr.net/gh/hezirbrasil/DuoMode@main/data/exercises.json',
-        'https://raw.githubusercontent.com/hezirbrasil/DuoMode/main/data/exercises.json'
-      ];
-      let lastError = null;
-      for (const source of sources) {
-        try {
-          setDuoStatus('Conectando ao banco de exercícios…');
-          const controller = new AbortController();
-          let timeoutId;
-          const request = (async () => {
-            const response = await fetch(source, { cache:'no-store', signal:controller.signal });
-            if (!response.ok) throw new Error('HTTP ' + response.status + ' em ' + source);
-            return await response.json();
-          })();
-          const timeout = new Promise((_, reject) => {
-            timeoutId = setTimeout(() => {
-              controller.abort();
-              reject(new Error('Tempo limite excedido ao acessar ' + source));
-            }, 8000);
-          });
-          let data;
-          try { data = await Promise.race([request, timeout]); }
-          finally { clearTimeout(timeoutId); }
-          if (!data || !Array.isArray(data.exercises) || !data.exercises.length) {
-            throw new Error('O arquivo foi encontrado, mas não contém uma lista válida de exercícios.');
-          }
-          exerciseBank = data.exercises.filter(ex => ex && typeof ex.name === 'string' && ex.name.trim());
-          if (!exerciseBank.length) throw new Error('O banco não contém exercícios válidos.');
-          bankLoaded = true;
-          const categories = [...new Set(exerciseBank.map(x=>x.category).filter(Boolean))]
-            .sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR'));
-          const bankCategory = $('bankCategory');
-          if (bankCategory) {
-            bankCategory.replaceChildren(new Option('Todos os grupamentos','all'));
-            categories.forEach(cat => bankCategory.append(new Option(categoryLabels[cat]||cat,cat)));
-          }
-          try { renderBankPicker(); } catch (error) { console.warn('Seletor geral do banco indisponível:', error); }
-          try { renderList(); } catch (error) { console.warn('Lista geral indisponível:', error); }
-          try { renderDuoLists(); } catch (error) { console.error('Falha ao montar banco do Workout:', error); }
-          setDuoStatus(exerciseBank.length + ' exercícios carregados. Escolha um exercício para adicionar.');
-          const bankStatus = $('bankStatus');
-          if (bankStatus) bankStatus.textContent = exerciseBank.length + ' exercícios carregados.';
-          return;
-        } catch (error) {
-          lastError = error;
-          console.warn('Falha ao carregar banco em ' + source, error);
+      try {
+        exerciseBank = BUILTIN_EXERCISE_BANK.filter(ex => ex && typeof ex.name === 'string' && ex.name.trim());
+        if (!exerciseBank.length) throw new Error('O banco interno está vazio.');
+        bankLoaded = true;
+        const categories = [...new Set(exerciseBank.map(x=>x.category).filter(Boolean))]
+          .sort((a,b)=>(categoryLabels[a]||a).localeCompare(categoryLabels[b]||b,'pt-BR'));
+        const bankCategory = $('bankCategory');
+        if (bankCategory) {
+          bankCategory.replaceChildren(new Option('Todos os grupamentos','all'));
+          categories.forEach(cat => bankCategory.append(new Option(categoryLabels[cat]||cat,cat)));
         }
+        try { renderBankPicker(); } catch (error) { console.warn('Seletor geral do banco indisponível:', error); }
+        try { renderList(); } catch (error) { console.warn('Lista geral indisponível:', error); }
+        try { renderDuoLists(); } catch (error) { console.error('Falha ao montar banco do Workout:', error); }
+        setDuoStatus(exerciseBank.length + ' exercícios carregados. Escolha um exercício para adicionar.');
+        const bankStatus = $('bankStatus');
+        if (bankStatus) bankStatus.textContent = exerciseBank.length + ' exercícios carregados.';
+      } catch (error) {
+        setDuoStatus('Erro ao inicializar o banco interno: ' + (error?.message || error));
+        console.error('Falha ao inicializar banco de exercícios:', error);
       }
-      const message = lastError?.message || 'Não foi possível acessar o arquivo de exercícios.';
-      setDuoStatus('Não foi possível carregar o banco. ' + message);
-      const bankCount = $('bankCount');
-      if (bankCount) bankCount.textContent = 'Indisponível';
-      const bankExercise = $('bankExercise');
-      if (bankExercise) bankExercise.replaceChildren(new Option('Banco indisponível',''));
-      const bankStatus = $('bankStatus');
-      if (bankStatus) bankStatus.textContent = 'Não foi possível carregar o banco de exercícios.';
-      const duoSelect = $('duoBank1');
-      if (duoSelect) duoSelect.replaceChildren(new Option('Falha ao carregar — veja a mensagem abaixo',''));
-      console.error('Falha ao carregar banco de exercícios:', lastError);
     }
     let running = false, phase = 'exercise', blockIndex = 0, roundIndex = 1, remaining = 45, totalPhase = 45, lastSecond = null, timerId = null, soundEnabled = true, audioCtx = null, finished = false, startedAt = 0;
     const temporaryNames = new Map();
