@@ -713,3 +713,6 @@
 
 /* Em tela cheia no Duo, ocultar toda a barra de botões; sair com Esc. */
 #app.mode-duo:fullscreen .duo-controls { display:none !important; }
+
+/* Centralizar os títulos Fight e Workout sobre cada cronômetro no Duo em tela cheia. */
+#app.mode-duo:fullscreen .duo-player-title { text-align:center !important; width:100%; }
