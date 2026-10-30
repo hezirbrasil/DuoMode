@@ -572,10 +572,10 @@
       const [moved]=blocks.splice(from,1);blocks.splice(to,0,moved);
       const remap=index=>index===from?to:from<to&&index>from&&index<=to?index-1:from>to&&index>=to&&index<from?index+1:index;
       selectedBlocks=new Set([...selectedBlocks].map(remap));
-      blockIndex=remap(blockIndex);
+      const nextBlockIndex=remap(blockIndex);
       draggedBlockIndex=null;
       reset();
-      blockIndex=Math.max(0,Math.min(blockIndex,blocks.length-1));
+      blockIndex=Math.max(0,Math.min(nextBlockIndex,blocks.length-1));
       remaining=blocks[blockIndex]?.duration||45;totalPhase=remaining;
       render();
       showNotice('Blocos reorganizados.');
@@ -606,11 +606,11 @@
       collapsedGroups.delete(groupName);
       if(!blocks.length){reset();remaining=0;totalPhase=1;render();return;}
       const removedBeforeCurrent=removedIndexes.filter(index=>index<oldBlockIndex).length;
-      blockIndex=removed.has(oldBlockIndex)
+      const nextBlockIndex=removed.has(oldBlockIndex)
         ? Math.min(removedIndexes[0]-removedBeforeCurrent,blocks.length-1)
         : Math.max(0,oldBlockIndex-removedBeforeCurrent);
       reset();
-      blockIndex=Math.max(0,Math.min(blockIndex,blocks.length-1));
+      blockIndex=Math.max(0,Math.min(nextBlockIndex,blocks.length-1));
       remaining=blocks[blockIndex]?.duration||45;totalPhase=remaining;
       render();
       showNotice('Agrupamento "'+groupName+'" excluído por completo.');
