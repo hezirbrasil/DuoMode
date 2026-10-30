@@ -42,41 +42,6 @@
     search.addEventListener('input', render);
     render();
   }
-  // Captura o clique fora do app principal. Isso evita depender do registro
-  // de eventos do construtor e mostra o motivo caso a ponte não esteja pronta.
-  document.addEventListener('click', event => {
-    const button = event.target instanceof Element ? event.target.closest('.duo-card .duo-add-bank') : null;
-    if (!button) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const card = button.closest('.duo-card');
-    const lessonIndex = Number(card?.dataset.duo);
-    if (!card || (lessonIndex !== 0 && lessonIndex !== 1)) return;
-    const selected = document.getElementById('duoBank' + lessonIndex);
-    const status = document.getElementById('duoBankStatus' + lessonIndex);
-    const duration = Number(card.querySelector('.duo-bank-tools .duo-duration')?.value);
-    const rest = Number(card.querySelector('.duo-bank-tools .duo-rest')?.value);
-    const name = String(selected?.value || '').trim();
-    if (!name) { if (status) status.textContent = 'Selecione um exercício no banco.'; return; }
-    if (!Number.isInteger(duration) || duration < 1 || duration > 3600) {
-      if (status) status.textContent = 'Confira o tempo: use de 1 a 3600 segundos.'; return;
-    }
-    if (!Number.isInteger(rest) || rest < 0 || rest > 3600) {
-      if (status) status.textContent = 'Confira o descanso: use de 0 a 3600 segundos.'; return;
-    }
-    const addFromBank = lessonIndex === 0
-      ? window.addFightCombinationFromBank
-      : window.addWorkoutExerciseFromBank;
-    if (typeof addFromBank !== 'function') {
-      if (status) status.textContent = 'O construtor não iniciou corretamente. Atualize a página e tente novamente.';
-      return;
-    }
-    const added = addFromBank(name, duration, rest);
-    if (status) status.textContent = added
-      ? name + ' adicionado à estrutura da aula.'
-      : 'Não foi possível adicionar. Pause o cronômetro e tente novamente.';
-  }, true);
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initWorkoutBank, { once:true });
   } else {
