@@ -1026,29 +1026,31 @@
       $('duoCategory'+i).addEventListener('change',()=>renderDuoBank(i));
       $('duoSearch'+i).addEventListener('input',()=>renderDuoBank(i));
       $('duoBank'+i).addEventListener('dblclick',()=>{const card=document.querySelector('.duo-card[data-duo="'+i+'"]');card.querySelector('.duo-add-bank').click();});
-      document.querySelector('.duo-card[data-duo="'+i+'"] .duo-add-bank').addEventListener('click',()=>{
-        const card=document.querySelector('.duo-card[data-duo="'+i+'"]');
-        const status=$('duoBankStatus'+i);
-        const bankSelect=$('duoBank'+i);
-        const durationInput=card.querySelector('.duo-bank-tools .duo-duration');
-        const restInput=card.querySelector('.duo-bank-tools .duo-rest');
-        const name=String(bankSelect?.value||'').trim();
-        const duration=Number(durationInput?.value);
-        const rest=Number(restInput?.value);
-        if(i!==1){if(status)status.textContent='O banco de exercícios está disponível na aula Workout.';return;}
-        if(duoRunning){if(status)status.textContent='Pause o cronômetro antes de adicionar exercícios.';return;}
-        if(!name){if(status)status.textContent='Selecione um exercício válido no banco.';return;}
-        if(!Number.isInteger(duration)||duration<1||duration>3600){if(status)status.textContent='Informe um tempo entre 1 e 3600 segundos.';durationInput?.focus();return;}
-        if(!Number.isInteger(rest)||rest<0||rest>3600){if(status)status.textContent='Informe um descanso entre 0 e 3600 segundos.';restInput?.focus();return;}
-        const before=duoLessons[i].length;
-        addDuoExercise(i,name,duration,rest);
-        if(duoLessons[i].length===before+1){
-          if(status)status.textContent='“'+name+'” adicionado à aula Workout.';
-        }else if(status){
-          status.textContent='Não foi possível adicionar o exercício. Confira os campos e tente novamente.';
-        }
-      });
     });
+    // Delegação no documento: o clique continua funcionando mesmo se a lista
+    // for reconstruída durante a renderização do construtor.
+    document.addEventListener('click',event=>{
+      const button=event.target.closest('.duo-add-bank');
+      if(!button)return;
+      const card=button.closest('.duo-card');
+      const i=Number(card?.dataset.duo);
+      if(!card||i!==1)return;
+      event.preventDefault();
+      const status=$('duoBankStatus1');
+      const bankSelect=$('duoBank1');
+      const durationInput=card.querySelector('.duo-bank-tools .duo-duration');
+      const restInput=card.querySelector('.duo-bank-tools .duo-rest');
+      const name=String(bankSelect?.value||'').trim();
+      const duration=Number(durationInput?.value);
+      const rest=Number(restInput?.value);
+      if(duoRunning){if(status)status.textContent='Pause o cronômetro antes de adicionar exercícios.';return;}
+      if(!name){if(status)status.textContent='Selecione um exercício no banco.';return;}
+      if(!Number.isInteger(duration)||duration<1||duration>3600){if(status)status.textContent='Informe um tempo entre 1 e 3600 segundos.';durationInput?.focus();return;}
+      if(!Number.isInteger(rest)||rest<0||rest>3600){if(status)status.textContent='Informe um descanso entre 0 e 3600 segundos.';restInput?.focus();return;}
+      const before=duoLessons[1].length;
+      addDuoExercise(1,name,duration,rest);
+      if(status)status.textContent=duoLessons[1].length===before+1?'“'+name+'” adicionado à aula Workout.':'Não foi possível adicionar. Tente novamente.';
+    });;
     [0,1].forEach(i=>$('duoTitle'+i).addEventListener('input',renderDuoTimers));
     $('duoStartLessons').addEventListener('click',()=>{
       if(duoRunning)return;
