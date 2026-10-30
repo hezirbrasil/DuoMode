@@ -797,3 +797,8 @@
 #app.mode-duo:fullscreen #duoScriptToggle {
   display:none !important;
 }
+
+/* Seleção rápida de todos os exercícios dentro de um grupo recolhível. */
+.duo-group-select { flex:0 0 auto; width:18px; height:18px; margin:0 0 0 12px; accent-color:var(--lime); cursor:pointer; }
+.duo-group-tab { display:flex; align-items:center; gap:8px; }
+.duo-group-tab .duo-group-toggle { flex:1; min-width:0; }
