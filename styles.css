@@ -750,7 +750,6 @@
 /* Barra principal fixa no topo do construtor; em execução, mantém apenas o retorno. */
 #duoPanel > .duo-top-actions { order:-1; }
 #duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoStartLessons,
-#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoScriptToggle,
 #duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoExport,
 #duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoImport { display:none !important; }
 
@@ -758,3 +757,9 @@
 .duo-view-toggle { min-height:40px;padding:8px 13px; }
 .duo-player.is-script .duo-controls { display:flex;justify-content:center;align-items:center; }
 .duo-player.is-script .duo-view-toggle { display:inline-flex !important; }
+
+/* O seletor de visualização fica sempre na barra superior, tanto no Timer quanto no Script. */
+#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoScriptToggle { display:inline-flex !important; }
+#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoScriptToggle[aria-pressed="true"] { border-color:#8b45c5;background:#32164f;color:#fff; }
+#duoPanel .duo-view-toggle { display:none !important; }
+#app.mode-duo:fullscreen #duoBackTop { display:none !important; }
