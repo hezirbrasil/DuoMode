@@ -932,12 +932,12 @@
             if(duoRunning)return;
             const editor=document.createElement('form');editor.className='duo-inline-editor';
             const nameLabel=document.createElement('label');nameLabel.textContent='Exercício';const nameInput=document.createElement('input');nameInput.type='text';nameInput.maxLength=90;nameInput.required=true;nameInput.value=item.name;nameLabel.append(nameInput);
-            const durationLabel=document.createElement('label');durationLabel.textContent='Tempo (seg)';const durationInput=document.createElement('input');durationInput.type='number';durationInput.min='1';durationInput.max='3600';durationInput.step='1';durationInput.required=true;durationInput.value=String(item.duration);durationLabel.append(durationInput);
-            const restLabel=document.createElement('label');restLabel.textContent='Descanso (seg)';const restInput=document.createElement('input');restInput.type='number';restInput.min='0';restInput.max='3600';restInput.step='1';restInput.required=true;restInput.value=String(item.rest);restLabel.append(restInput);
+            const makeEditPair=(title,total,kind)=>{const wrap=document.createElement('div');wrap.className='duo-time-pair';wrap.dataset.timeKind=kind;const heading=document.createElement('span');heading.className='duo-time-label';heading.textContent=title;const minLabel=document.createElement('label');minLabel.textContent='Min';const minInput=document.createElement('input');minInput.type='number';minInput.min='0';minInput.max='60';minInput.value=String(Math.floor(total/60));minInput.required=true;minLabel.append(minInput);const secLabel=document.createElement('label');secLabel.textContent='Seg';const secInput=document.createElement('input');secInput.type='number';secInput.min='0';secInput.max='59';secInput.value=String(total%60);secInput.required=true;secLabel.append(secInput);wrap.append(heading,minLabel,secLabel);return {wrap,read:()=>Number(minInput.value)*60+Number(secInput.value)};};
+            const durationPair=makeEditPair('Tempo',item.duration,'duration'),restPair=makeEditPair('Descanso',item.rest,'rest');
             const save=document.createElement('button');save.type='submit';save.className='btn blue';save.textContent='Salvar alterações';
             const cancel=document.createElement('button');cancel.type='button';cancel.className='duo-remove';cancel.textContent='Cancelar';cancel.addEventListener('click',renderDuoLists);
-            editor.addEventListener('submit',event=>{event.preventDefault();const nextName=nameInput.value.trim(),duration=Number(durationInput.value),rest=Number(restInput.value);if(!nextName||!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;item.name=nextName;item.duration=duration;item.rest=rest;if(duoState[i].index===index&&!duoState[i].finished){duoState[i].remaining=duoState[i].phase==='rest'?rest:duration;duoState[i].total=duoState[i].remaining;}renderDuoLists();});
-            editor.append(nameLabel,durationLabel,restLabel,save,cancel);li.append(editor);nameInput.focus();
+            editor.addEventListener('submit',event=>{event.preventDefault();const nextName=nameInput.value.trim(),duration=durationPair.read(),rest=restPair.read();if(!nextName||!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;item.name=nextName;item.duration=duration;item.rest=rest;if(duoState[i].index===index&&!duoState[i].finished){duoState[i].remaining=duoState[i].phase==='rest'?rest:duration;duoState[i].total=duoState[i].remaining;}renderDuoLists();});
+            editor.append(nameLabel,durationPair.wrap,restPair.wrap,save,cancel);li.append(editor);nameInput.focus();
           });
           const up=document.createElement('button');up.type='button';up.className='duo-remove';up.textContent='↑';up.title='Mover para cima';up.disabled=index===0||duoRunning;up.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index-1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index-1]];renderDuoLists();});
           const down=document.createElement('button');down.type='button';down.className='duo-remove';down.textContent='↓';down.title='Mover para baixo';down.disabled=index===duoLessons[i].length-1||duoRunning;down.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index+1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index+1]];renderDuoLists();});
@@ -969,7 +969,7 @@
 
     function selectedDuoIndexes(i){return [...duoSelected[i]].filter(n=>n>=0&&n<duoLessons[i].length).sort((a,b)=>a-b);}
     function showDuoToolEditor(i,content){const editor=$('duoToolEditor'+i);editor.replaceChildren();editor.hidden=false;editor.append(content);}
-    function makeDuoField(labelText,value,aria){const label=document.createElement('label');label.className='duo-tool-field';label.textContent=labelText;const input=document.createElement('input');input.type='number';input.min='0';input.max='3600';input.step='1';input.value=String(value);input.setAttribute('aria-label',aria);label.append(input);return {label,input};}
+    function makeDuoField(labelText,value,aria){const wrap=document.createElement('div');wrap.className='duo-time-pair duo-tool-time-pair';const heading=document.createElement('span');heading.className='duo-time-label';heading.textContent=labelText;const minLabel=document.createElement('label');minLabel.textContent='Min';const minInput=document.createElement('input');minInput.type='number';minInput.min='0';minInput.max='60';minInput.value=String(Math.floor(value/60));minInput.setAttribute('aria-label',aria+' minutos');minLabel.append(minInput);const secLabel=document.createElement('label');secLabel.textContent='Seg';const secInput=document.createElement('input');secInput.type='number';secInput.min='0';secInput.max='59';secInput.value=String(value%60);secInput.setAttribute('aria-label',aria+' segundos');secLabel.append(secInput);wrap.append(heading,minLabel,secLabel);return {label:wrap,read:()=>Number(minInput.value)*60+Number(secInput.value)};}
     function duoToolApply(i,mode){
       const indexes=selectedDuoIndexes(i), lesson=duoLessons[i], editor=$('duoToolEditor'+i);
       if(indexes.length<(mode==='group'?1:2)){showDuoToolEditor(i,document.createTextNode('Marque '+(mode==='group'?'pelo menos um exercício.':'pelo menos dois exercícios.')+' nesta aula.'));return;}
@@ -978,7 +978,7 @@
         const d=makeDuoField('Tempo (seg)',lesson[indexes[0]].duration,'Tempo padronizado em segundos');
         const r=makeDuoField('Descanso (seg)',lesson[indexes[0]].rest,'Descanso padronizado em segundos');
         const apply=document.createElement('button');apply.type='button';apply.className='btn blue';apply.textContent='Aplicar tempos';
-        apply.addEventListener('click',()=>{const duration=Number(d.input.value),rest=Number(r.input.value);if(!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;indexes.forEach(n=>{lesson[n].duration=duration;lesson[n].rest=rest;});editor.hidden=true;renderDuoLists();});
+        apply.addEventListener('click',()=>{const duration=d.read(),rest=r.read();if(!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;indexes.forEach(n=>{lesson[n].duration=duration;lesson[n].rest=rest;});editor.hidden=true;renderDuoLists();});
         box.append(d.label,r.label,apply);
       }else if(mode==='group'){
         const label=document.createElement('label');label.className='duo-tool-field';label.textContent='Nome do grupo';const input=document.createElement('input');input.type='text';input.maxLength=50;input.placeholder='Ex.: Bloco de força';label.append(input);
@@ -990,7 +990,7 @@
         const d=makeDuoField('Tempo (seg)',lesson[indexes[0]].duration,'Tempo compartilhado em segundos');
         const r=makeDuoField('Descanso (seg)',lesson[indexes[indexes.length-1]].rest,'Descanso compartilhado em segundos');
         const apply=document.createElement('button');apply.type='button';apply.className='btn blue';apply.textContent='Juntar exercícios';
-        apply.addEventListener('click',()=>{const duration=Number(d.input.value),rest=Number(r.input.value);if(!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;const names=indexes.map(n=>lesson[n].name);const first=indexes[0];lesson[first]={name:names.join(' + '),duration,rest,group:lesson[first].group||''};for(let k=indexes.length-1;k>=1;k--)lesson.splice(indexes[k],1);duoSelected[i].clear();duoState[i].index=Math.min(duoState[i].index,lesson.length-1);editor.hidden=true;renderDuoLists();});
+        apply.addEventListener('click',()=>{const duration=d.read(),rest=r.read();if(!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;const names=indexes.map(n=>lesson[n].name);const first=indexes[0];lesson[first]={name:names.join(' + '),duration,rest,group:lesson[first].group||''};for(let k=indexes.length-1;k>=1;k--)lesson.splice(indexes[k],1);duoSelected[i].clear();duoState[i].index=Math.min(duoState[i].index,lesson.length-1);editor.hidden=true;renderDuoLists();});
         box.append(info,d.label,r.label,apply);
       }
       const cancel=document.createElement('button');cancel.type='button';cancel.className='btn';cancel.textContent='Cancelar';cancel.addEventListener('click',()=>{editor.hidden=true;});box.append(cancel);showDuoToolEditor(i,box);
@@ -1056,8 +1056,10 @@
     // Registra todos os controles antes da primeira renderização da tela.
     // Assim, uma falha visual inicial não deixa os botões sem eventos.
     document.querySelectorAll('.duo-add-form').forEach(form=>form.addEventListener('submit',event=>{
-      event.preventDefault();if(duoRunning)return;const i=Number(form.dataset.duo),name=form.querySelector('.duo-exercise-name').value.trim(),duration=Number(form.querySelector('.duo-duration').value),rest=Number(form.querySelector('.duo-rest').value);
-      addDuoExercise(i,name,duration,rest);if(name)form.querySelector('.duo-exercise-name').value='';
+      event.preventDefault();if(duoRunning)return;const i=Number(form.dataset.duo),name=form.querySelector('.duo-exercise-name').value.trim();
+       const readPair=kind=>{const pair=form.querySelector('[data-time-kind="'+kind+'"]'),prefix=kind==='duration'?'duo-duration':'duo-rest',min=Number(pair.querySelector('.'+prefix+'-min').value),sec=Number(pair.querySelector('.'+prefix+'-sec').value);return min*60+sec;};
+       const duration=readPair('duration'),rest=readPair('rest');
+       addDuoExercise(i,name,duration,rest);if(name)form.querySelector('.duo-exercise-name').value='';
     }));
     [0,1].forEach(i=>{
       $('duoCategory'+i).addEventListener('change',()=>renderDuoBank(i));
