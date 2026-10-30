@@ -56,11 +56,12 @@
     try {
       const select = document.getElementById('duoBank' + index);
       const name = String(select && select.value || '').trim();
-      const duration = Number(card.querySelector('.duo-bank-tools .duo-duration')?.value);
-      const rest = Number(card.querySelector('.duo-bank-tools .duo-rest')?.value);
+      const readPair = kind => { const pair=card.querySelector('.duo-bank-tools [data-time-kind="'+kind+'"]'); const prefix=kind==='duration'?'duo-duration':'duo-rest'; const min=Number(pair?.querySelector('.'+prefix+'-min')?.value); const sec=Number(pair?.querySelector('.'+prefix+'-sec')?.value); return {min,sec,total:min*60+sec}; };
+      const durationPair=readPair('duration'), restPair=readPair('rest');
+      const duration=durationPair.total, rest=restPair.total;
       if (!name) { say('ERRO: nenhum exercício selecionado no banco.'); return; }
-      if (!Number.isInteger(duration) || duration < 1 || duration > 3600) { say('ERRO: tempo inválido (1 a 3600 segundos).'); return; }
-      if (!Number.isInteger(rest) || rest < 0 || rest > 3600) { say('ERRO: descanso inválido (0 a 3600 segundos).'); return; }
+      if (!Number.isInteger(durationPair.min) || durationPair.min < 0 || durationPair.min > 60 || !Number.isInteger(durationPair.sec) || durationPair.sec < 0 || durationPair.sec > 59 || duration < 1 || duration > 3600) { say('ERRO: tempo inválido. Use minutos e segundos (mínimo 1 segundo).'); return; }
+      if (!Number.isInteger(restPair.min) || restPair.min < 0 || restPair.min > 60 || !Number.isInteger(restPair.sec) || restPair.sec < 0 || restPair.sec > 59 || rest > 3600) { say('ERRO: descanso inválido. Use minutos e segundos.'); return; }
       const add = index === 0 ? window.addFightCombinationFromBank : window.addWorkoutExerciseFromBank;
       if (typeof add !== 'function') {
         say('ERRO: o construtor não iniciou. O app.js não disponibilizou a função de inclusão.');
