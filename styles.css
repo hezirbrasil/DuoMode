@@ -772,3 +772,9 @@
 #app.mode-duo:fullscreen #duoPanel:has(#duoPlayer.is-script) #duoBackTop {
   display:none !important;
 }
+
+
+/* Em tela cheia no Script Duo, ocultar também o botão que exibe a palavra Script. */
+#app.mode-duo:fullscreen:has(#duoPlayer.is-script) #duoScriptToggle {
+  display:none !important;
+}
