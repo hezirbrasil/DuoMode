@@ -895,6 +895,10 @@
         }
         renderDuoBank(i);
         const list=$('duoList'+i);if(!list) return;list.replaceChildren();
+        const count=$('duoCount'+i), empty=$('duoEmpty'+i);
+        if(count)count.textContent=duoLessons[i].length+' exercício(s)';
+        if(empty)empty.hidden=duoLessons[i].length>0;
+        list.hidden=duoLessons[i].length===0;
         duoLessons[i].forEach((item,index)=>{
           const li=document.createElement('li'),row=document.createElement('div');row.className='duo-item-row';
           const select=document.createElement('input');select.type='checkbox';select.className='duo-select-item';select.checked=duoSelected[i].has(index);select.setAttribute('aria-label','Selecionar '+item.name);select.addEventListener('change',()=>{select.checked?duoSelected[i].add(index):duoSelected[i].delete(index);});
