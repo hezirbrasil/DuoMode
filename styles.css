@@ -689,3 +689,11 @@
 .duo-structure-empty { margin:14px 0 0;padding:16px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:13px;line-height:1.5;text-align:center; }
 .duo-structure-empty[hidden],.duo-exercise-list[hidden] { display:none!important; }
 .duo-lesson-structure .duo-exercise-list { margin:14px 0 0;padding-left:24px; }
+
+/* Minutos e segundos em todos os campos de tempo do Duo */
+.duo-time-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:end;min-width:0}
+.duo-time-pair .duo-time-label{grid-column:1/-1;font-size:13px;font-weight:800;color:var(--text)}
+.duo-time-pair label{display:grid;gap:5px;min-width:0;font-size:12px;color:var(--muted);font-weight:700}
+.duo-time-pair input{width:100%;min-width:0;box-sizing:border-box}
+.duo-tool-time-pair{margin:6px 0}
+.duo-fields{align-items:start}
