@@ -945,13 +945,17 @@
       if(duoState.every(s=>s.finished||!duoLessons[duoState.indexOf(s)].length)){duoRunning=false;clearInterval(duoInterval);duoInterval=null;}
       renderDuoTimers();
     }
-    $('modeDuoBtn').addEventListener('click',()=>{
-      $('app').classList.remove('mode-play','mode-script','mode-edit');$('app').classList.add('mode-duo');
-      $('duoPanel').hidden=false;$('layout')?.setAttribute('hidden','');$('modeDuoBtn').setAttribute('aria-pressed','true');
-      ['modePlayBtn','modeConstructBtn','modeScriptBtn'].forEach(id=>$(id).setAttribute('aria-pressed','false'));
-      renderDuoLists();window.scrollTo(0,0);
-    });
-    $('duoBackBtn').addEventListener('click',()=>{resetDuo();renderDuoLists();window.scrollTo(0,0);});
+    function openDuoWorkspace(){
+      $('app').classList.remove('mode-play','mode-script','mode-edit');
+      $('app').classList.add('mode-duo');
+      $('duoPanel').hidden=false;
+      $('layout').setAttribute('hidden','');
+      $('modeDuoBtn').setAttribute('aria-pressed','true');
+      renderDuoLists();
+      window.scrollTo(0,0);
+    }
+    $('modeDuoBtn').addEventListener('click',openDuoWorkspace);
+    openDuoWorkspace();
     document.querySelectorAll('.duo-add-form').forEach(form=>form.addEventListener('submit',event=>{
       event.preventDefault();if(duoRunning)return;const i=Number(form.dataset.duo),name=form.querySelector('.duo-exercise-name').value.trim(),duration=Number(form.querySelector('.duo-duration').value),rest=Number(form.querySelector('.duo-rest').value);
       addDuoExercise(i,name,duration,rest);if(name)form.querySelector('.duo-exercise-name').value='';
