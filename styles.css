@@ -749,9 +749,9 @@
 
 /* Barra principal fixa no topo do construtor; em execução, mantém apenas o retorno. */
 #duoPanel > .duo-top-actions { order:-1; }
-#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoStartLessons,
-#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoExport,
-#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoImport { display:none !important; }
+#duoPanel.player-active > .duo-top-actions #duoStartLessons,
+#duoPanel.player-active > .duo-top-actions #duoExport,
+#duoPanel.player-active > .duo-top-actions #duoImport { display:none !important; }
 
 /* Alternância entre Timer e Script fica disponível nos dois modos de execução. */
 .duo-view-toggle { min-height:40px;padding:8px 13px; }
@@ -759,7 +759,9 @@
 .duo-player.is-script .duo-view-toggle { display:inline-flex !important; }
 
 /* O seletor de visualização fica sempre na barra superior, tanto no Timer quanto no Script. */
-#duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoScriptToggle { display:inline-flex !important; }
+#duoPanel.player-active > .duo-top-actions #duoScriptToggle { display:inline-flex !important; }
 #duoPanel:has(.duo-player:not([hidden])) > .duo-top-actions #duoScriptToggle[aria-pressed="true"] { border-color:#8b45c5;background:#32164f;color:#fff; }
 #duoPanel .duo-view-toggle { display:none !important; }
-#app.mode-duo:fullscreen #duoBackTop { display:none !important; }
+#app.mode-duo:fullscreen #duoBackTop,
+#duoPlayer:fullscreen ~ .duo-top-actions #duoBackTop,
+#duoPanel.player-active:fullscreen #duoBackTop { display:none !important; }
