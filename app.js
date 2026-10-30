@@ -1017,8 +1017,7 @@
         $('duoTime'+i).textContent=duoFmt(state.remaining);
         $('duoPhase'+i).textContent=state.finished?'Concluída':!item?'Sem exercícios':state.phase==='rest'?'Descanso':duoRunning?'Em execução':'Pronto';
         $('duoCurrent'+i).textContent=state.finished?'Aula concluída':item?(state.phase==='rest'?'Descanso · '+item.name:item.name):'Adicione exercícios';
-        $('duoMeta'+i).textContent='';
-        $('duoMeta'+i).hidden=true;
+        $('duoMeta'+i)?.remove();
         const duration=state.phase==='rest'?(item?.rest||0):(item?.duration||45), circumference=2*Math.PI*90;
         const circle=$('duoProgress'+i);circle.style.strokeDasharray=circumference;circle.style.strokeDashoffset=circumference*(1-Math.max(0,Math.min(1,state.remaining/Math.max(1,state.total||duration))));
       });
