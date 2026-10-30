@@ -876,7 +876,8 @@
       { name:'Upper T + Upper F + Upper T + Upper F + Cruzado T + Cruzado F', category:'upper' },
       { name:'Chute T + Chute F', category:'chute' },
       { name:'Cruzado', category:'cruzado' },
-      { name:'Chute T', category:'chute' }
+      { name:'Chute T', category:'chute' },
+      { name:'Direto + Chute T + Jab + Chute F', category:'direto' }
     ];
     function renderDuoBank(i) {
       const select=$('duoBank'+i);
