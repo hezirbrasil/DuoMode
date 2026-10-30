@@ -869,7 +869,8 @@
       { name:'Jab', category:'jab' },
       { name:'Jab + Direto', category:'jab' },
       { name:'Jab + Jab + Direto', category:'jab' },
-      { name:'Jab + Direto + Cruzado', category:'jab' }
+      { name:'Jab + Direto + Cruzado', category:'jab' },
+      { name:'Direto + Jab + Chute T', category:'direto' }
     ];
     function renderDuoBank(i) {
       const select=$('duoBank'+i);
