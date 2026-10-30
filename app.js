@@ -947,6 +947,14 @@
           if(entry.type==='group'){
             const total=duoLessons[i].filter(item=>item.group===entry.name).length;
             const header=document.createElement('li');header.className='duo-group-tab';
+            const groupItems=duoLessons[i].map((item,index)=>({item,index})).filter(entry=>entry.item.group===entry.name);
+            const groupIndexes=groupItems.map(entry=>entry.index);
+            const selectedCount=groupIndexes.filter(index=>duoSelected[i].has(index)).length;
+            const selectGroup=document.createElement('input');selectGroup.type='checkbox';selectGroup.className='duo-group-select';selectGroup.checked=selectedCount===total;selectGroup.indeterminate=selectedCount>0&&selectedCount<total;selectGroup.disabled=duoRunning;selectGroup.setAttribute('aria-label','Selecionar todos do grupo '+entry.name);
+            selectGroup.addEventListener('change',()=>{
+              groupIndexes.forEach(index=>selectGroup.checked?duoSelected[i].add(index):duoSelected[i].delete(index));
+              renderDuoLists();
+            });
             const toggle=document.createElement('button');toggle.type='button';toggle.className='duo-group-toggle';
             const collapsed=duoCollapsedGroups[i].has(entry.name);
             toggle.setAttribute('aria-expanded',String(!collapsed));
@@ -956,7 +964,7 @@
               else duoCollapsedGroups[i].add(entry.name);
               renderDuoLists();
             });
-            header.append(toggle);list.append(header);return;
+            header.append(selectGroup,toggle);list.append(header);return;
           }
           const index=entry.index;
           const item=duoLessons[i][index];
@@ -1078,12 +1086,16 @@
         if(!indexes.length){showDuoToolEditor(i,document.createTextNode('Marque os exercícios que deseja duplicar.'));return;}
         const selected=new Set(indexes);
         const duplicated=[];
+        const duplicatedIndexes=[];
         duoLessons[i].forEach((item,index)=>{
           duplicated.push(item);
-          if(selected.has(index)) duplicated.push({...item});
+          if(selected.has(index)){
+            duplicated.push({...item});
+            duplicatedIndexes.push(duplicated.length-1);
+          }
         });
         duoLessons[i]=duplicated;
-        duoSelected[i].clear();
+        duoSelected[i]=new Set(duplicatedIndexes);
         $('duoToolEditor'+i).hidden=true;
         renderDuoLists();
       });
