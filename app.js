@@ -1016,7 +1016,8 @@
       window.scrollTo(0,0);
     }
     $('modeDuoBtn').addEventListener('click',openDuoWorkspace);
-    openDuoWorkspace();
+    // Registra todos os controles antes da primeira renderização da tela.
+    // Assim, uma falha visual inicial não deixa os botões sem eventos.
     document.querySelectorAll('.duo-add-form').forEach(form=>form.addEventListener('submit',event=>{
       event.preventDefault();if(duoRunning)return;const i=Number(form.dataset.duo),name=form.querySelector('.duo-exercise-name').value.trim(),duration=Number(form.querySelector('.duo-duration').value),rest=Number(form.querySelector('.duo-rest').value);
       addDuoExercise(i,name,duration,rest);if(name)form.querySelector('.duo-exercise-name').value='';
@@ -1070,7 +1071,9 @@
     $('duoExport').addEventListener('click',()=>{const payload={format:'workout-fight-duo',version:1,titles:[ $('duoTitle0').value,$('duoTitle1').value ],lessons:duoLessons};const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='workout-fight-duo.json';link.click();URL.revokeObjectURL(url);});
     $('duoImport').addEventListener('click',()=>$('duoImportFile').click());
     $('duoImportFile').addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=='workout-fight-duo'||!Array.isArray(data.lessons)||data.lessons.length!==2||data.lessons.some(list=>!Array.isArray(list)||list.some(x=>typeof x.name!=='string'||!Number.isFinite(x.duration)||x.duration<1||!Number.isFinite(x.rest)||x.rest<0)))throw new Error('Formato inválido');resetDuo();[0,1].forEach(i=>{duoLessons[i].splice(0,duoLessons[i].length,...data.lessons[i]);$('duoTitle'+i).value=String(data.titles?.[i]||'Aula '+(i+1));});renderDuoLists();}catch(error){$('duoImportFile').value='';return;}event.target.value='';});
-    renderDuoLists();
+    // Inicializa a tela somente depois que os eventos de clique estão registrados.
+    try { openDuoWorkspace(); } catch(error) { console.error('Falha ao abrir o construtor Duo:',error); }
+    try { renderDuoLists(); } catch(error) { console.error('Falha ao renderizar as listas Duo:',error); }
     loadExerciseBank();
 
   })();
