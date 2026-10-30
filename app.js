@@ -1011,6 +1011,7 @@
     });
 
     let duoScriptTab=0;
+    const duoScriptFocus=[0,0];
     function renderDuoScript(){
       const list=$('duoScriptList');
       if(!list)return;
@@ -1018,7 +1019,9 @@
       const lesson=duoLessons[duoScriptTab]||[];
       lesson.forEach((item,index)=>{
         const li=document.createElement('li');
-        li.className='duo-script-item'+(duoState[duoScriptTab].index===index&&!duoState[duoScriptTab].finished?' is-current':'')+(duoState[duoScriptTab].finished||index<duoState[duoScriptTab].index?' is-done':'');
+        li.className='duo-script-item'+(duoScriptFocus[duoScriptTab]===index?' is-current':'');
+        li.tabIndex=0;li.setAttribute('role','button');li.setAttribute('aria-label','Marcar '+item.name+' como exercício em foco');
+        li.addEventListener('click',()=>{duoScriptFocus[duoScriptTab]=index;renderDuoScript();});
         const name=document.createElement('span');name.className='duo-script-name';name.textContent=item.name;
         const time=document.createElement('span');time.className='duo-script-time';time.textContent=duoFmt(item.duration)+(item.rest?' + '+duoFmt(item.rest)+' descanso':'');
         li.append(name,time);list.append(li);
