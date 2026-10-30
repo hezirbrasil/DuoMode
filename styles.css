@@ -516,6 +516,12 @@
 .duo-add-form .btn { justify-self:start; }
 .duo-exercise-list { display:flex;flex-direction:column;gap:8px;padding-left:26px; }
 .duo-exercise-list li { padding:10px;border:1px solid var(--line);border-radius:10px;background:#ffffff05;overflow-wrap:anywhere; }
+.duo-exercise-list li.is-dragging { opacity:.55;border-color:var(--lime); }
+.duo-drag-handle { flex:0 0 30px;align-self:stretch;display:grid;place-items:center;border:1px solid var(--line);border-radius:7px;background:#ffffff08;color:var(--muted);font-size:18px;letter-spacing:-3px;cursor:grab;touch-action:none; }
+.duo-drag-handle:active { cursor:grabbing;color:var(--lime); }
+.duo-item-row { justify-content:flex-start; }
+.duo-item-row strong { flex:1;min-width:0; }
+.duo-item-actions { margin-left:auto;display:flex;gap:5px;flex-wrap:wrap; }
 .duo-item-row { display:flex;justify-content:space-between;align-items:center;gap:8px; }
 .duo-item-row strong { font-size:14px; }
 .duo-item-meta { color:var(--muted);font-size:12px;margin-top:4px; }
