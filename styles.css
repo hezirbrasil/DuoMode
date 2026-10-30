@@ -516,6 +516,13 @@
 .duo-add-form .btn { justify-self:start; }
 .duo-exercise-list { display:flex;flex-direction:column;gap:8px;padding-left:26px; }
 .duo-exercise-list li { padding:10px;border:1px solid var(--line);border-radius:10px;background:#ffffff05;overflow-wrap:anywhere; }
+.duo-exercise-list li.duo-group-tab { padding:0;margin-top:7px;border:1px solid #7540a8;background:#170f20; }
+.duo-group-toggle { display:flex;width:100%;align-items:center;gap:8px;padding:11px 13px;border:0;background:transparent;color:var(--lime);font-weight:700;text-align:left;cursor:pointer; }
+.duo-group-toggle:focus-visible { outline:2px solid var(--lime);outline-offset:2px; }
+.duo-exercise-list li[hidden] { display:none!important; }
+.duo-drag-handle { touch-action:none;user-select:none;-webkit-user-select:none; }
+.duo-exercise-list li.is-dragging { opacity:.55;border-color:var(--lime); }
+
 .duo-exercise-list li.is-dragging { opacity:.55;border-color:var(--lime); }
 .duo-drag-handle { flex:0 0 30px;align-self:stretch;display:grid;place-items:center;border:1px solid var(--line);border-radius:7px;background:#ffffff08;color:var(--muted);font-size:18px;letter-spacing:-3px;cursor:grab;touch-action:none; }
 .duo-drag-handle:active { cursor:grabbing;color:var(--lime); }
