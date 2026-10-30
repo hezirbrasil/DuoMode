@@ -786,9 +786,6 @@
       $('app').classList.toggle('mode-play',play);
       $('app').classList.toggle('mode-script',mode==='script');
       $('app').classList.toggle('mode-edit',mode==='edit');
-      $('modePlayBtn').setAttribute('aria-pressed',String(play));
-      $('modeConstructBtn').setAttribute('aria-pressed',String(mode==='edit'));
-      $('modeScriptBtn').setAttribute('aria-pressed',String(mode==='script'));
       if(play) {
         render();
         window.scrollTo(0,0);
@@ -796,26 +793,7 @@
         document.exitFullscreen().catch(()=>{});
       }
     }
-    $('modePlayBtn').addEventListener('click',()=>{
-      if($('app').classList.contains('mode-duo')){
-        $('app').classList.remove('mode-duo');$('duoPanel').hidden=true;$('layout').removeAttribute('hidden');
-        setViewMode('edit');$('modeDuoBtn').setAttribute('aria-pressed','false');
-        return;
-      }
-      setViewMode('play');
-    });
-    $('modeConstructBtn').addEventListener('click',()=>setViewMode('edit'));
-    $('modeScriptBtn').addEventListener('click',()=>setViewMode('script'));
-    $('scriptBackBtn').addEventListener('click',()=>setViewMode('edit'));
-    document.addEventListener('fullscreenchange',()=>{
-      if(!document.fullscreenElement && $('app').classList.contains('mode-play')) {
-        $('app').classList.remove('mode-play');
-        $('app').classList.add('mode-script');
-        $('modePlayBtn').setAttribute('aria-pressed','false');
-        $('modeConstructBtn').setAttribute('aria-pressed','false');
-        $('modeScriptBtn').setAttribute('aria-pressed','true');
-      }
-    });
+
     $('exportClassBtn').addEventListener('click',()=>{
       if(!blocks.length){showNotice('Adicione pelo menos um bloco antes de exportar a aula.');return;}
       const title='Minha aula coletiva';
@@ -973,7 +951,7 @@
       ['modePlayBtn','modeConstructBtn','modeScriptBtn'].forEach(id=>$(id).setAttribute('aria-pressed','false'));
       renderDuoLists();window.scrollTo(0,0);
     });
-    $('duoBackBtn').addEventListener('click',()=>{resetDuo();$('app').classList.remove('mode-duo');$('duoPanel').hidden=true;setViewMode('edit');$('modeDuoBtn').setAttribute('aria-pressed','false');});
+    $('duoBackBtn').addEventListener('click',()=>{resetDuo();renderDuoLists();window.scrollTo(0,0);});
     document.querySelectorAll('.duo-add-form').forEach(form=>form.addEventListener('submit',event=>{
       event.preventDefault();if(duoRunning)return;const i=Number(form.dataset.duo),name=form.querySelector('.duo-exercise-name').value.trim(),duration=Number(form.querySelector('.duo-duration').value),rest=Number(form.querySelector('.duo-rest').value);
       addDuoExercise(i,name,duration,rest);if(name)form.querySelector('.duo-exercise-name').value='';
