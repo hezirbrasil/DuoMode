@@ -870,24 +870,36 @@
     function renderDuoLists() {
       [0,1].forEach(i=>{
         const card=document.querySelector('.duo-card[data-duo="'+i+'"]');
+        if(!card)return;
         const bankTools=card.querySelector('.duo-bank-tools');
-        bankTools.hidden=i===0;
-        const category=$('duoCategory'+i), selected=category.value||'all';
-        if(i===1 && category.options.length===1 && exerciseBank.length){
+        if(bankTools)bankTools.hidden=i===0;
+        const category=$('duoCategory'+i), selected=category?.value||'all';
+        if(i===1 && category && category.options.length===1 && exerciseBank.length){
           [...new Set(exerciseBank.map(ex=>ex.category))].sort((x,y)=>(categoryLabels[x]||x).localeCompare(categoryLabels[y]||y,'pt-BR')).forEach(cat=>{const option=document.createElement('option');option.value=cat;option.textContent=categoryLabels[cat]||cat;category.append(option);});
           category.value=selected;
         }
         renderDuoBank(i);
-        const list=$('duoList'+i);list.replaceChildren();
+        const list=$('duoList'+i);if(!list) return;list.replaceChildren();
         duoLessons[i].forEach((item,index)=>{
           const li=document.createElement('li'),row=document.createElement('div');row.className='duo-item-row';
           const select=document.createElement('input');select.type='checkbox';select.className='duo-select-item';select.checked=duoSelected[i].has(index);select.setAttribute('aria-label','Selecionar '+item.name);select.addEventListener('change',()=>{select.checked?duoSelected[i].add(index):duoSelected[i].delete(index);});
           const name=document.createElement('strong');name.textContent=item.name+(item.group?' · '+item.group:'');
           const actions=document.createElement('div');actions.className='duo-item-actions';
-          const up=document.createElement('button');up.type='button';up.className='duo-remove';up.textContent='↑';up.title='Mover para cima';up.disabled=index===0;up.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index-1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index-1]];renderDuoLists();});
-          const down=document.createElement('button');down.type='button';down.className='duo-remove';down.textContent='↓';down.title='Mover para baixo';down.disabled=index===duoLessons[i].length-1;down.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index+1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index+1]];renderDuoLists();});
-          const remove=document.createElement('button');remove.type='button';remove.className='duo-remove';remove.textContent='Remover';remove.addEventListener('click',()=>{if(duoRunning)return;duoLessons[i].splice(index,1);duoSelected[i]=new Set([...duoSelected[i]].filter(n=>n!==index).map(n=>n>index?n-1:n));duoState[i].index=Math.min(duoState[i].index,Math.max(0,duoLessons[i].length-1));renderDuoLists();});
-          actions.append(up,down,remove);row.append(select,name,actions);const meta=document.createElement('div');meta.className='duo-item-meta';meta.textContent=duoFmt(item.duration)+' de exercício · '+duoFmt(item.rest)+' de descanso';li.append(row,meta);list.append(li);
+          const edit=document.createElement('button');edit.type='button';edit.className='duo-remove';edit.textContent='Editar';edit.disabled=duoRunning;edit.addEventListener('click',()=>{
+            if(duoRunning)return;
+            const editor=document.createElement('form');editor.className='duo-inline-editor';
+            const nameLabel=document.createElement('label');nameLabel.textContent='Exercício';const nameInput=document.createElement('input');nameInput.type='text';nameInput.maxLength=90;nameInput.required=true;nameInput.value=item.name;nameLabel.append(nameInput);
+            const durationLabel=document.createElement('label');durationLabel.textContent='Tempo (seg)';const durationInput=document.createElement('input');durationInput.type='number';durationInput.min='1';durationInput.max='3600';durationInput.step='1';durationInput.required=true;durationInput.value=String(item.duration);durationLabel.append(durationInput);
+            const restLabel=document.createElement('label');restLabel.textContent='Descanso (seg)';const restInput=document.createElement('input');restInput.type='number';restInput.min='0';restInput.max='3600';restInput.step='1';restInput.required=true;restInput.value=String(item.rest);restLabel.append(restInput);
+            const save=document.createElement('button');save.type='submit';save.className='btn blue';save.textContent='Salvar alterações';
+            const cancel=document.createElement('button');cancel.type='button';cancel.className='duo-remove';cancel.textContent='Cancelar';cancel.addEventListener('click',renderDuoLists);
+            editor.addEventListener('submit',event=>{event.preventDefault();const nextName=nameInput.value.trim(),duration=Number(durationInput.value),rest=Number(restInput.value);if(!nextName||!Number.isInteger(duration)||duration<1||duration>3600||!Number.isInteger(rest)||rest<0||rest>3600)return;item.name=nextName;item.duration=duration;item.rest=rest;if(duoState[i].index===index&&!duoState[i].finished){duoState[i].remaining=duoState[i].phase==='rest'?rest:duration;duoState[i].total=duoState[i].remaining;}renderDuoLists();});
+            editor.append(nameLabel,durationLabel,restLabel,save,cancel);li.append(editor);nameInput.focus();
+          });
+          const up=document.createElement('button');up.type='button';up.className='duo-remove';up.textContent='↑';up.title='Mover para cima';up.disabled=index===0||duoRunning;up.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index-1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index-1]];renderDuoLists();});
+          const down=document.createElement('button');down.type='button';down.className='duo-remove';down.textContent='↓';down.title='Mover para baixo';down.disabled=index===duoLessons[i].length-1||duoRunning;down.addEventListener('click',()=>{if(duoRunning)return;[duoLessons[i][index+1],duoLessons[i][index]]=[duoLessons[i][index],duoLessons[i][index+1]];renderDuoLists();});
+          const remove=document.createElement('button');remove.type='button';remove.className='duo-remove';remove.textContent='Remover';remove.disabled=duoRunning;remove.addEventListener('click',()=>{if(duoRunning)return;duoLessons[i].splice(index,1);duoSelected[i]=new Set([...duoSelected[i]].filter(n=>n!==index).map(n=>n>index?n-1:n));duoState[i].index=Math.min(duoState[i].index,Math.max(0,duoLessons[i].length-1));renderDuoLists();});
+          actions.append(edit,up,down,remove);row.append(select,name,actions);const meta=document.createElement('div');meta.className='duo-item-meta';meta.textContent=duoFmt(item.duration)+' de exercício · '+duoFmt(item.rest)+' de descanso';li.append(row,meta);list.append(li);
         });
       });
       renderDuoTimers();
