@@ -1004,6 +1004,23 @@
       const cancel=document.createElement('button');cancel.type='button';cancel.className='btn';cancel.textContent='Cancelar';cancel.addEventListener('click',()=>{editor.hidden=true;});box.append(cancel);showDuoToolEditor(i,box);
     }
     [0,1].forEach(i=>{
+      $('duoDuplicate'+i).addEventListener('click',()=>{
+        if(duoRunning){showDuoToolEditor(i,document.createTextNode('Pause o timer antes de duplicar exercícios.'));return;}
+        const indexes=selectedDuoIndexes(i);
+        if(!indexes.length){showDuoToolEditor(i,document.createTextNode('Marque os exercícios que deseja duplicar.'));return;}
+        const selected=new Set(indexes);
+        const duplicated=[];
+        duoLessons[i].forEach((item,index)=>{
+          duplicated.push(item);
+          if(selected.has(index)) duplicated.push({...item});
+        });
+        duoLessons[i]=duplicated;
+        duoSelected[i].clear();
+        $('duoToolEditor'+i).hidden=true;
+        renderDuoLists();
+      });
+    });
+    [0,1].forEach(i=>{
       $('duoStandardize'+i).addEventListener('click',()=>duoToolApply(i,'standardize'));
       $('duoMerge'+i).addEventListener('click',()=>duoToolApply(i,'merge'));
       $('duoGroup'+i).addEventListener('click',()=>duoToolApply(i,'group'));
