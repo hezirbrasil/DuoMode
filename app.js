@@ -848,9 +848,9 @@
     // Modo Duo novo: aulas separadas, timers independentes e controles compartilhados.
     const duoLessons = [[], []];
     const duoSelected = [new Set(), new Set()];
-    const duoState = [0, 1].map(() => ({ index:0, remaining:45, phase:'exercise', total:45, finished:false }));
+    const duoState = [0, 1].map(() => DuoTimer.createState());
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
-    const duoFmt = fmt;
+    const duoFmt = DuoTimer.format;
     function renderDuoBank(i) {
       const select=$('duoBank'+i);
       if(!select)return;
@@ -970,35 +970,17 @@
     }
     function resetDuo() {
       duoRunning=false;clearInterval(duoInterval);duoInterval=null;
-      [0,1].forEach(i=>{duoState[i]={index:0,remaining:duoLessons[i][0]?.duration||45,phase:'exercise',total:duoLessons[i][0]?.duration||45,finished:false};});
+      [0,1].forEach(i=>{duoState[i]=DuoTimer.createState(duoLessons[i][0]?.duration||45);});
       renderDuoTimers();
     }
     function advanceDuoState(i, manual=false) {
-      const state=duoState[i], lesson=duoLessons[i], item=lesson[state.index];
-      if(!lesson.length){state.finished=true;state.remaining=0;return;}
-      if(!manual && state.phase==='exercise' && item.rest>0){state.phase='rest';state.remaining=item.rest;state.total=item.rest;return;}
-      state.index++;
-      if(state.index>=lesson.length){state.finished=true;state.remaining=0;state.phase='exercise';return;}
-      state.phase='exercise';state.remaining=lesson[state.index].duration;state.total=state.remaining;
+      DuoTimer.advance(duoState[i], duoLessons[i], manual);
     }
     function duoTick() {
       const now = Date.now();
       const elapsed = Math.max(0, (now - duoLastTick) / 1000);
       duoLastTick = now;
-
-      duoState.forEach((state, index) => {
-        if (state.finished) return;
-
-        state.remaining -= elapsed;
-        let transitions = 0;
-
-        while (state.remaining <= 0 && !state.finished && transitions < 20) {
-          const overflow = state.remaining;
-          advanceDuoState(index);
-          if (!state.finished) state.remaining += overflow;
-          transitions++;
-        }
-      });
+      DuoTimer.tick(duoState, duoLessons, elapsed);
 
       const allComplete = duoState.every((state, index) =>
         state.finished || duoLessons[index].length === 0
@@ -1008,7 +990,6 @@
         clearInterval(duoInterval);
         duoInterval = null;
       }
-
       renderDuoTimers();
     }
     function openDuoWorkspace(){
