@@ -1143,7 +1143,7 @@
             moveDown.addEventListener('click',event=>{event.stopPropagation();moveDuoGroup(i,entry.key,1);});
             const renameGroup=document.createElement('button');
             renameGroup.type='button';renameGroup.className='duo-group-move duo-group-rename';
-            renameGroup.textContent='Ren';renameGroup.title='Renomear agrupamento';
+            renameGroup.textContent='Re';renameGroup.title='Renomear agrupamento';
             renameGroup.setAttribute('aria-label','Renomear agrupamento '+entry.name);
             renameGroup.disabled=duoRunning;
             renameGroup.addEventListener('click',event=>{
