@@ -7,7 +7,7 @@
     .app { max-width:1180px; margin:auto; padding:24px clamp(14px,3vw,34px) 40px; }
     header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:22px; }
     .brand { display:flex; align-items:center; gap:13px; }
-    .brand-mark { width:46px;height:46px;border:2px solid var(--lime);border-radius:15px;display:grid;place-items:center;color:var(--lime);font-weight:900;font-size:21px; transform:rotate(-3deg); }
+    .brand-logo { width:54px;height:54px;display:block;flex:0 0 54px;object-fit:contain;border-radius:15px;filter:drop-shadow(0 0 8px #8b00ff66); }
     .brand h1 { margin:0; font-size:clamp(20px,3vw,29px);letter-spacing:.05em;line-height:1.1; }
     .brand p { margin:5px 0 0;color:var(--muted);font-size:12px;letter-spacing:.22em;text-transform:uppercase; }
     .header-actions { display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end; }
