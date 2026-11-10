@@ -962,6 +962,82 @@
     let duoGroupSequence = 0;
     const duoGroupKey = item => item?.group ? (item.groupId || 'legacy:' + item.group) : null;
     const newDuoGroupId = () => 'duo-group-' + Date.now().toString(36) + '-' + (++duoGroupSequence);
+    function buildDuoPresetFight() {
+      const lesson=[];
+      const addGroup=(round,items)=>{
+        const groupId='preset-fight-'+round;
+        items.forEach(([name,duration,rest=0])=>lesson.push({name,duration,rest,group:round,groupId}));
+      };
+      ['R1','R2'].forEach(round=>{
+        const items=[];
+        for(let n=0;n<4;n++)items.push(['-',60,0]);
+        items.push(['Pausa Ativa',40,0]);
+        for(let n=0;n<4;n++)items.push(['-',60,0]);
+        items.push(['Pausa Ativa',40,0]);
+        for(let n=0;n<4;n++)items.push(['-',60,0]);
+        items.push(['Troca',90,0]);
+        addGroup(round,items);
+      });
+      ['R3','R4'].forEach(round=>{
+        const items=[];
+        for(let n=0;n<4;n++)items.push(['-',60,0]);
+        items.push(['Pausa Ativa',40,0]);
+        for(let n=0;n<4;n++)items.push(['-',60,0]);
+        items.push(['Troca',90,0]);
+        addGroup(round,items);
+      });
+      return lesson;
+    }
+    function buildDuoPresetWorkout(preset) {
+      const lesson=[];
+      const addGroup=(round,items)=>{
+        const groupId='preset-'+preset+'-workout-'+round;
+        items.forEach(([name,duration,rest=0])=>lesson.push({name,duration,rest,group:round,groupId}));
+      };
+      if(preset==='330'){
+        ['R1','R2'].forEach(round=>{
+          const items=[];
+          for(let n=0;n<2;n++)items.push(['-',210,50]);
+          for(let n=0;n<4;n++)items.push(['-',50,15]);
+          items.push(['Troca',110,0]);
+          addGroup(round,items);
+        });
+        ['R3','R4'].forEach(round=>{
+          const items=[];
+          for(let n=0;n<4;n++)items.push(['-',50,15]);
+          items.push(['-',210,50],['Troca',90,0]);
+          addGroup(round,items);
+        });
+      } else {
+        ['R1','R2'].forEach(round=>{
+          const items=[];
+          for(let n=0;n<12;n++)items.push(['-',50,15]);
+          items.push(['Troca',110,0]);
+          addGroup(round,items);
+        });
+        ['R3','R4'].forEach(round=>{
+          const items=[];
+          for(let n=0;n<8;n++)items.push(['-',50,15]);
+          items.push(['Troca',90,0]);
+          addGroup(round,items);
+        });
+      }
+      return lesson;
+    }
+    function loadDuoPreset(preset) {
+      if(duoRunning)return;
+      const label=preset==='330'?'3:30':'00:50';
+      if(duoLessons.some(lesson=>lesson.length)&&!window.confirm('Carregar o modelo '+label+'? Isso substituirá as aulas atuais de Fight e Workout.'))return;
+      const nextLessons=[buildDuoPresetFight(),buildDuoPresetWorkout(preset)];
+      [0,1].forEach(i=>{
+        duoLessons[i].splice(0,duoLessons[i].length,...nextLessons[i]);
+        $('duoTitle'+i).value=i===0?'Fight':'Workout';
+        duoSelected[i].clear();
+        duoCollapsedGroups[i].clear();
+      });
+      resetDuo();
+      renderDuoLists();
+    }
     const duoState = [0, 1].map(() => DuoTimer.createState());
     let duoRunning = false, duoInterval = null, duoLastTick = 0;
     const duoFmt = DuoTimer.format;
@@ -1464,6 +1540,8 @@
       duoScriptTab=Number(btn.dataset.scriptTab);renderDuoScript();
     }));
     $('duoFullscreen').addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else $('app').requestFullscreen?.().catch(()=>{});});
+    $('duoPreset330').addEventListener('click',()=>loadDuoPreset('330'));
+    $('duoPreset050').addEventListener('click',()=>loadDuoPreset('050'));
     $('duoExport').addEventListener('click',()=>{const payload={format:'workout-fight-duo',version:1,titles:[ $('duoTitle0').value,$('duoTitle1').value ],lessons:duoLessons};const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='workout-fight-duo.json';link.click();URL.revokeObjectURL(url);});
     $('duoImport').addEventListener('click',()=>$('duoImportFile').click());
     $('duoImportFile').addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=='workout-fight-duo'||!Array.isArray(data.lessons)||data.lessons.length!==2||data.lessons.some(list=>!Array.isArray(list)||list.some(x=>typeof x.name!=='string'||!Number.isFinite(x.duration)||x.duration<1||!Number.isFinite(x.rest)||x.rest<0)))throw new Error('Formato inválido');resetDuo();[0,1].forEach(i=>{duoLessons[i].splice(0,duoLessons[i].length,...data.lessons[i]);$('duoTitle'+i).value=String(data.titles?.[i]||'Aula '+(i+1));});renderDuoLists();}catch(error){$('duoImportFile').value='';return;}event.target.value='';});
