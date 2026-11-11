@@ -1586,6 +1586,10 @@
         });
       });
 
+      if (data.titles !== undefined && (!Array.isArray(data.titles) || data.titles.length !== 2)) {
+        throw new Error('A lista de nomes das aulas deve conter dois títulos.');
+      }
+
       const titles = [0, 1].map(i => {
         const title = data.titles?.[i];
         if (title !== undefined && title !== null && typeof title !== 'string') {
