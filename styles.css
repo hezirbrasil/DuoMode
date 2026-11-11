@@ -914,3 +914,8 @@
   .duo-lesson-structure .duo-item-row > .duo-drag-handle { width:26px;min-width:26px; }
   .duo-lesson-structure .duo-item-actions { justify-content:flex-start; }
 }
+
+
+/* Os atalhos de modelos ficam apenas no construtor, nunca na tela cheia. */
+#app.mode-duo:fullscreen #duoPreset330,
+#app.mode-duo:fullscreen #duoPreset050 { display:none !important; }
