@@ -1544,7 +1544,94 @@
     $('duoPreset050').addEventListener('click',()=>loadDuoPreset('050'));
     $('duoExport').addEventListener('click',()=>{const payload={format:'workout-fight-duo',version:1,titles:[ $('duoTitle0').value,$('duoTitle1').value ],lessons:duoLessons};const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='workout-fight-duo.json';link.click();URL.revokeObjectURL(url);});
     $('duoImport').addEventListener('click',()=>$('duoImportFile').click());
-    $('duoImportFile').addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=='workout-fight-duo'||!Array.isArray(data.lessons)||data.lessons.length!==2||data.lessons.some(list=>!Array.isArray(list)||list.some(x=>typeof x.name!=='string'||!Number.isFinite(x.duration)||x.duration<1||!Number.isFinite(x.rest)||x.rest<0)))throw new Error('Formato inválido');resetDuo();[0,1].forEach(i=>{duoLessons[i].splice(0,duoLessons[i].length,...data.lessons[i]);$('duoTitle'+i).value=String(data.titles?.[i]||'Aula '+(i+1));});renderDuoLists();}catch(error){$('duoImportFile').value='';return;}event.target.value='';});
+    const MAX_DUO_IMPORT_BYTES = 1024 * 1024;
+    function normalizeDuoImport(data) {
+      if (!data || typeof data !== 'object' || Array.isArray(data) ||
+          data.format !== 'workout-fight-duo' || data.version !== 1 ||
+          !Array.isArray(data.lessons) || data.lessons.length !== 2) {
+        throw new Error('Formato de arquivo incompatível.');
+      }
+
+      const lessons = data.lessons.map(lesson => {
+        if (!Array.isArray(lesson) || lesson.length > 500) {
+          throw new Error('Cada aula deve conter no máximo 500 itens.');
+        }
+        return lesson.map(item => {
+          if (!item || typeof item !== 'object' || Array.isArray(item)) {
+            throw new Error('Item de aula inválido.');
+          }
+          const name = typeof item.name === 'string' ? item.name.trim() : '';
+          const duration = item.duration;
+          const rest = item.rest;
+          if (!name || name.length > 90 ||
+              !Number.isInteger(duration) || duration < 1 || duration > 3600 ||
+              !Number.isInteger(rest) || rest < 0 || rest > 3600) {
+            throw new Error('Nome, tempo ou descanso inválido.');
+          }
+
+          const normalized = { name, duration, rest };
+          if (item.group !== undefined && item.group !== null && item.group !== '') {
+            if (typeof item.group !== 'string' || item.group.trim().length > 60) {
+              throw new Error('Nome de grupo inválido.');
+            }
+            normalized.group = item.group.trim();
+          }
+          if (item.groupId !== undefined && item.groupId !== null && item.groupId !== '') {
+            if (typeof item.groupId !== 'string' || item.groupId.length > 100) {
+              throw new Error('Identificador de grupo inválido.');
+            }
+            normalized.groupId = item.groupId;
+          }
+          return normalized;
+        });
+      });
+
+      if (data.titles !== undefined && (!Array.isArray(data.titles) || data.titles.length !== 2)) {
+        throw new Error('A lista de nomes das aulas deve conter dois títulos.');
+      }
+
+      const titles = [0, 1].map(i => {
+        const title = data.titles?.[i];
+        if (title !== undefined && title !== null && typeof title !== 'string') {
+          throw new Error('Nome de aula inválido.');
+        }
+        if (typeof title === 'string' && title.trim().length > 60) {
+          throw new Error('Nome de aula muito longo.');
+        }
+        return typeof title === 'string' && title.trim()
+          ? title.trim()
+          : (i === 0 ? 'Fight' : 'Workout');
+      });
+
+      return { lessons, titles };
+    }
+
+    $('duoImportFile').addEventListener('change', async event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        if (duoRunning) throw new Error('Pause as aulas antes de importar.');
+        if (file.size > MAX_DUO_IMPORT_BYTES) throw new Error('O arquivo excede o limite de 1 MB.');
+        const data = normalizeDuoImport(JSON.parse(await file.text()));
+
+        [0, 1].forEach(i => {
+          duoLessons[i].splice(0, duoLessons[i].length, ...data.lessons[i]);
+          $('duoTitle' + i).value = data.titles[i];
+          duoSelected[i].clear();
+          duoCollapsedGroups[i].clear();
+        });
+        resetDuo();
+        $('duoToolEditor1').hidden = true;
+        renderDuoLists();
+      } catch (error) {
+        console.warn('Falha ao importar arquivo Duo:', error);
+        showDuoToolEditor(1, document.createTextNode(
+          'Não foi possível importar: ' + String(error?.message || 'arquivo inválido')
+        ));
+      } finally {
+        event.target.value = '';
+      }
+    });
     // Inicializa a tela somente depois que os eventos de clique estão registrados.
     try { openDuoWorkspace(); } catch(error) { console.error('Falha ao abrir o construtor Duo:',error); }
     try { renderDuoLists(); } catch(error) { console.error('Falha ao renderizar as listas Duo:',error); }
