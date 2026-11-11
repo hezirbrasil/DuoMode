@@ -66,3 +66,27 @@ test('rejeita arquivo de importação acima de 1 MB', async ({ page }) => {
 
   await expect(page.locator('#duoToolEditor1')).toContainText('O arquivo excede o limite de 1 MB.');
 });
+
+
+test('rejeita estrutura inválida de títulos sem substituir as aulas', async ({ page }) => {
+  const fight = page.locator('.duo-card[data-duo="0"]');
+  await fight.locator('#duoCustom0').fill('Combinação preservada');
+  await fight.locator('.duo-add-form .duo-duration-sec').fill('30');
+  await fight.getByRole('button', { name: /Criar e adicionar/i }).click();
+
+  const payload = {
+    format: 'workout-fight-duo',
+    version: 1,
+    titles: 'FightWorkout',
+    lessons: [[], []]
+  };
+
+  await page.locator('#duoImportFile').setInputFiles({
+    name: 'titulos-invalidos.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(payload))
+  });
+
+  await expect(page.locator('#duoList0')).toContainText('Combinação preservada');
+  await expect(page.locator('#duoToolEditor1')).toContainText('A lista de nomes das aulas deve conter dois títulos.');
+});
