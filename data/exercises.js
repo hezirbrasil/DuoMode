@@ -1,4 +1,4 @@
-/* Banco de exercícios do Workout.
+/* Banco de exercícios do DuoMode — atualizado com a lista JAB HOUSE.
  * Mantido separado da lógica da interface para facilitar manutenção.
  */
 window.WORKOUT_EXERCISE_BANK = [
@@ -11,23 +11,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Supino Pegada Fechada",
-    "category": "peito",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
     "name": "Crucifixo",
-    "category": "peito",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Flexão + Feet Touch",
     "category": "peito",
     "types": [
       "fullbody",
@@ -51,14 +35,6 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Remada Fechada",
-    "category": "costas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
     "name": "Remada Alta",
     "category": "costas",
     "types": [
@@ -67,23 +43,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Remada Unilateral E",
-    "category": "costas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Remada Unilateral D",
-    "category": "costas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Crucifixo Invertido",
+    "name": "Remada Unilateral",
     "category": "costas",
     "types": [
       "fullbody",
@@ -115,7 +75,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Elevação Lateral + Elevação Frontal",
+    "name": "Elevação Frontal",
     "category": "ombros",
     "types": [
       "fullbody",
@@ -123,7 +83,15 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Bíceps",
+    "name": "Crucifixo Invertido",
+    "category": "ombros",
+    "types": [
+      "fullbody",
+      "legblast"
+    ]
+  },
+  {
+    "name": "Bíceps com Halter com Rotação",
     "category": "biceps",
     "types": [
       "fullbody",
@@ -131,15 +99,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Recuo + Bíceps",
-    "category": "biceps",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Tríceps Francês",
+    "name": "Tríceps Francês com Halter",
     "category": "triceps",
     "types": [
       "fullbody",
@@ -147,15 +107,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Tríceps Coice E",
-    "category": "triceps",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Tríceps Coice D",
+    "name": "Tríceps Coice com Halter",
     "category": "triceps",
     "types": [
       "fullbody",
@@ -164,7 +116,7 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Agachamento Livre",
-    "category": "pernas",
+    "category": "agachamentos",
     "types": [
       "fullbody",
       "legblast"
@@ -172,7 +124,7 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Agachamento Neutro",
-    "category": "pernas",
+    "category": "agachamentos",
     "types": [
       "fullbody",
       "legblast"
@@ -180,7 +132,39 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Agachamento Sumô",
-    "category": "pernas",
+    "category": "agachamentos",
+    "types": [
+      "fullbody",
+      "legblast"
+    ]
+  },
+  {
+    "name": "Agachamento com Rotação",
+    "category": "agachamentos",
+    "types": [
+      "fullbody",
+      "legblast"
+    ]
+  },
+  {
+    "name": "Agachamento Abre e Fecha Tocando o Solo",
+    "category": "agachamentos",
+    "types": [
+      "fullbody",
+      "legblast"
+    ]
+  },
+  {
+    "name": "Agachamento com Pico de Contração e Salto",
+    "category": "agachamentos",
+    "types": [
+      "fullbody",
+      "legblast"
+    ]
+  },
+  {
+    "name": "Agachamento com Salto",
+    "category": "agachamentos",
     "types": [
       "fullbody",
       "legblast"
@@ -188,7 +172,7 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Agachamento Goblet",
-    "category": "pernas",
+    "category": "agachamentos",
     "types": [
       "fullbody",
       "legblast"
@@ -196,142 +180,30 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Agachamento Lateral",
-    "category": "pernas",
+    "category": "agachamentos",
     "types": [
       "fullbody",
       "legblast"
     ]
   },
   {
-    "name": "Agachamento + Rotação",
-    "category": "pernas",
+    "name": "Afundo",
+    "category": "afundos",
     "types": [
       "fullbody",
       "legblast"
     ]
   },
   {
-    "name": "Agachamento + Touch Down",
-    "category": "pernas",
+    "name": "Afundo com Troca de Base",
+    "category": "afundos",
     "types": [
       "fullbody",
       "legblast"
     ]
   },
   {
-    "name": "Agachamento + Troca de Base",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Agachamento + Abre e Fecha Tocando o Solo",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Agachamento + Pico de Contração + Salto",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Agachamento + Salto",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Agachamento + Remada Alta",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Agachamento + Desenvolvimento",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Agachamento + Panturrilha",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Avanço",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Avanço + Elevação Lateral",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Afundo E",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Afundo D",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Afundo + Salto",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Afundo + Troca de Base",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Búlgaro E",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Búlgaro D",
+    "name": "Terra",
     "category": "pernas",
     "types": [
       "fullbody",
@@ -347,23 +219,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Stiff Unilateral E",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Stiff Unilateral D",
-    "category": "pernas",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Terra",
+    "name": "Panturrilha",
     "category": "pernas",
     "types": [
       "fullbody",
@@ -372,15 +228,23 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Terra + Desenvolvimento",
-    "category": "pernas",
+    "category": "compostos",
     "types": [
       "fullbody",
       "legblast"
     ]
   },
   {
-    "name": "Panturrilha",
-    "category": "pernas",
+    "name": "Agachamento + Desenvolvimento",
+    "category": "compostos",
+    "types": [
+      "fullbody",
+      "legblast"
+    ]
+  },
+  {
+    "name": "Desenvolvimento com Polichinelo",
+    "category": "compostos",
     "types": [
       "fullbody",
       "legblast"
@@ -411,7 +275,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Abdominal Oblíquo E",
+    "name": "Abdominal Oblíquo Externo",
     "category": "core",
     "types": [
       "fullbody",
@@ -419,15 +283,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Abdominal Oblíquo D",
-    "category": "core",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Abdominal + Jab + Direto",
+    "name": "Abdominal + Jab e Direto",
     "category": "core",
     "types": [
       "fullbody",
@@ -451,7 +307,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Abdominal Supra + Rotação de Tronco",
+    "name": "Abdominal Supra com Rotação de Tronco",
     "category": "core",
     "types": [
       "fullbody",
@@ -467,7 +323,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Abdominal + Passar as Pernas por Cima",
+    "name": "Abdominal passando as pernas por cima do halter",
     "category": "core",
     "types": [
       "fullbody",
@@ -476,31 +332,7 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Prancha",
-    "category": "core",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Prancha Alta + Prancha Baixa",
-    "category": "core",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Prancha Baixa + Prancha Alta",
-    "category": "core",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Prancha + Feet Touch",
-    "category": "core",
+    "category": "pranchas",
     "types": [
       "fullbody",
       "legblast"
@@ -508,23 +340,15 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Prancha Alternada",
-    "category": "core",
+    "category": "pranchas",
     "types": [
       "fullbody",
       "legblast"
     ]
   },
   {
-    "name": "Prancha 3 Apoios E",
-    "category": "core",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Prancha 3 Apoios D",
-    "category": "core",
+    "name": "Prancha 3 Apoios",
+    "category": "pranchas",
     "types": [
       "fullbody",
       "legblast"
@@ -532,7 +356,7 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Prancha Tocando o Pé",
-    "category": "core",
+    "category": "pranchas",
     "types": [
       "fullbody",
       "legblast"
@@ -540,7 +364,7 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Prancha Abre e Fecha",
-    "category": "core",
+    "category": "pranchas",
     "types": [
       "fullbody",
       "legblast"
@@ -548,7 +372,7 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Prancha T",
-    "category": "core",
+    "category": "pranchas",
     "types": [
       "fullbody",
       "legblast"
@@ -563,7 +387,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Sprawl",
+    "name": "Sprawl com Salto",
     "category": "cardio",
     "types": [
       "fullbody",
@@ -571,15 +395,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Sprawl + Salto",
-    "category": "cardio",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Hop Out Step",
+    "name": "Salto no Step",
     "category": "cardio",
     "types": [
       "fullbody",
@@ -595,7 +411,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Corrida Lateral + Touch Down",
+    "name": "Corrida Lateral com Touch Down",
     "category": "cardio",
     "types": [
       "fullbody",
@@ -603,7 +419,7 @@ window.WORKOUT_EXERCISE_BANK = [
     ]
   },
   {
-    "name": "Hand Walk",
+    "name": "Elevação de Joelho no Step",
     "category": "cardio",
     "types": [
       "fullbody",
@@ -612,38 +428,6 @@ window.WORKOUT_EXERCISE_BANK = [
   },
   {
     "name": "Senta, Levanta e Pula",
-    "category": "cardio",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Joelhada no Step E",
-    "category": "cardio",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Joelhada no Step D",
-    "category": "cardio",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Joelhada no Step Alternada",
-    "category": "cardio",
-    "types": [
-      "fullbody",
-      "legblast"
-    ]
-  },
-  {
-    "name": "Polichinelo + Desenvolvimento",
     "category": "cardio",
     "types": [
       "fullbody",
