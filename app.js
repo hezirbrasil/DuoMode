@@ -32,7 +32,7 @@
     let selectedBlocks = new Set();
     let collapsedGroups = new Set();
     let nextGroupId = 1;
-    const categoryLabels = { peito:'Peito', costas:'Costas', ombros:'Ombros', biceps:'Bíceps', triceps:'Tríceps', bíceps:'Bíceps', tríceps:'Tríceps', pernas:'Inferiores', posterior:'Posterior', composto:'Compostos', core:'Core e abdômen', cardio:'Cardio e funcional' };
+    const categoryLabels = { peito:'Peito', costas:'Costas', ombros:'Ombros', biceps:'Bíceps', triceps:'Tríceps', agachamentos:'Agachamentos', afundos:'Afundos', pernas:'Cadeia posterior / pernas', compostos:'Compostos', core:'Core', pranchas:'Pranchas', cardio:'Cardio / funcional', bíceps:'Bíceps', tríceps:'Tríceps' };
     // Banco embutido para o construtor continuar funcionando mesmo sem buscar arquivos externos.
     // Banco de exercícios carregado do módulo de dados antes deste arquivo.
     function renderBankPicker() {
